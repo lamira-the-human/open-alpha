@@ -289,11 +289,22 @@ router.post('/quiz', async (req: Request, res: Response) => {
       5
     );
 
+    console.log('[Quiz] Raw LLM response:', quizJson.substring(0, 500));
+
     // Parse and return quiz
     try {
-      const quiz = JSON.parse(quizJson);
+      // Extract JSON from markdown code blocks if present
+      let jsonStr = quizJson;
+      const jsonMatch = quizJson.match(/```(?:json)?\s*([\s\S]*?)```/);
+      if (jsonMatch) {
+        jsonStr = jsonMatch[1].trim();
+      }
+
+      const quiz = JSON.parse(jsonStr);
       res.json(quiz);
-    } catch {
+    } catch (parseError) {
+      console.error('[Quiz] Parse error:', parseError);
+      console.error('[Quiz] Failed to parse:', quizJson.substring(0, 200));
       res.status(500).json({ error: 'Failed to generate quiz' });
     }
   } catch (error) {
