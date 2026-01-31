@@ -1,6 +1,6 @@
 import crypto from 'crypto';
-import { executeSql } from '../_lib/db';
-import { getAuthFromRequest, unauthorized } from '../_lib/auth';
+import { executeSql } from '../_lib/db.js';
+import { getAuthFromRequest, unauthorized } from '../_lib/auth.js';
 
 interface ParentLink {
   id: number;

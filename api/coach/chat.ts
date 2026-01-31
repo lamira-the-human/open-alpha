@@ -1,7 +1,7 @@
-import { executeSql } from '../_lib/db';
-import { getAuthFromRequest, unauthorized } from '../_lib/auth';
-import { chatWithCoach, ChatMessage, CoachContext } from '../_lib/llm';
-import { subjects } from '../_lib/curriculum';
+import { executeSql } from '../_lib/db.js';
+import { getAuthFromRequest, unauthorized } from '../_lib/auth.js';
+import { chatWithCoach, ChatMessage, CoachContext } from '../_lib/llm.js';
+import { subjects } from '../_lib/curriculum.js';
 
 interface Child {
   student_id: number;

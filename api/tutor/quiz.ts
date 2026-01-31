@@ -1,7 +1,7 @@
-import { executeSql } from '../_lib/db';
-import { getAuthFromRequest, unauthorized } from '../_lib/auth';
-import { generateQuizQuestions } from '../_lib/llm';
-import { getConcept } from '../_lib/curriculum';
+import { executeSql } from '../_lib/db.js';
+import { getAuthFromRequest, unauthorized } from '../_lib/auth.js';
+import { generateQuizQuestions } from '../_lib/llm.js';
+import { getConcept } from '../_lib/curriculum.js';
 
 interface User {
   grade_level: number | null;

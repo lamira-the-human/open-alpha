@@ -1,6 +1,6 @@
-import { executeSql } from '../_lib/db';
-import { getAuthFromRequest, unauthorized } from '../_lib/auth';
-import { subjects } from '../_lib/curriculum';
+import { executeSql } from '../_lib/db.js';
+import { getAuthFromRequest, unauthorized } from '../_lib/auth.js';
+import { subjects } from '../_lib/curriculum.js';
 
 interface Progress {
   subject: string;

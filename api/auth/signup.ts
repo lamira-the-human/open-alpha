@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
-import { executeSql } from '../_lib/db';
-import { signToken } from '../_lib/auth';
+import { executeSql } from '../_lib/db.js';
+import { signToken } from '../_lib/auth.js';
 
 interface User {
   id: number;

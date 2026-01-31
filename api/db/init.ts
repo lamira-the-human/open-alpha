@@ -1,4 +1,4 @@
-import { initializeSchema } from '../_lib/db';
+import { initializeSchema } from '../_lib/db.js';
 
 export async function POST(request: Request) {
   // Simple auth check - in production use a proper admin key

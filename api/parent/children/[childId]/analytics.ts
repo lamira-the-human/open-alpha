@@ -1,6 +1,6 @@
-import { executeSql } from '../../../_lib/db';
-import { getAuthFromRequest, unauthorized, forbidden } from '../../../_lib/auth';
-import { subjects } from '../../../_lib/curriculum';
+import { executeSql } from '../../../_lib/db.js';
+import { getAuthFromRequest, unauthorized, forbidden } from '../../../_lib/auth.js';
+import { subjects } from '../../../_lib/curriculum.js';
 
 export async function GET(request: Request, { params }: { params: { childId: string } }) {
   try {
