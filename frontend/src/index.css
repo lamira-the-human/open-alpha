@@ -353,7 +353,16 @@ input:focus-visible {
   display: none;
 }
 
+/* Responsive utilities */
+.hide-mobile {
+  display: inline;
+}
+
 @media (max-width: 768px) {
+  .hide-mobile {
+    display: none !important;
+  }
+
   .container {
     padding: 0 0.75rem;
   }

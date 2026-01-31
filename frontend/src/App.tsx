@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
 import ErrorBoundary from './components/ErrorBoundary';
 import Spinner from './components/Spinner';
+import Header from './components/Header';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import StudentDashboard from './pages/StudentDashboard';
@@ -108,6 +109,7 @@ function App() {
     <ErrorBoundary>
       <BrowserRouter>
         <AuthProvider>
+          <Header />
           <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />

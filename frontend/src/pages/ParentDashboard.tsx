@@ -53,7 +53,7 @@ interface Analytics {
 }
 
 export default function ParentDashboard() {
-  const { user, logout, token } = useAuth();
+  const { user, token } = useAuth();
   const [children, setChildren] = useState<Child[]>([]);
   const [selectedChild, setSelectedChild] = useState<Child | null>(null);
   const [childProgress, setChildProgress] = useState<SubjectSummary[]>([]);
@@ -211,25 +211,6 @@ export default function ParentDashboard() {
 
   return (
     <div style={{ minHeight: '100vh' }}>
-      {/* Header */}
-      <header style={{ padding: '1rem 0', borderBottom: '1px solid var(--border)', background: 'var(--surface)' }}>
-        <div className="container mobile-header">
-          <h1 style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--primary)' }}>Open Alpha</h1>
-          <div className="mobile-header-actions parent-header-actions">
-            <Link to="/parent/coach" className="btn btn-secondary" style={{ padding: '0.5rem 1rem' }}>
-              Parent Coach
-            </Link>
-            <span className="desktop-user-info" style={{ color: 'var(--text-light)' }}>{user?.displayName || user?.email}</span>
-            <button onClick={logout} className="btn btn-outline" style={{ padding: '0.5rem 1rem' }}>
-              Sign Out
-            </button>
-          </div>
-          <div className="mobile-user-info">
-            {user?.displayName || user?.email}
-          </div>
-        </div>
-      </header>
-
       {/* Main Content */}
       <main className="container" style={{ padding: '2rem 1rem' }}>
         <h2 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '1.5rem' }}>Parent Dashboard</h2>

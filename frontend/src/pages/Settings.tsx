@@ -1,10 +1,8 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../App';
 
 export default function Settings() {
   const { user, token, updateUser } = useAuth();
-  const navigate = useNavigate();
   const [displayName, setDisplayName] = useState(user?.displayName || '');
   const [gradeLevel, setGradeLevel] = useState(user?.gradeLevel ?? 5);
   const [saving, setSaving] = useState(false);
@@ -64,16 +62,6 @@ export default function Settings() {
 
   return (
     <div style={{ minHeight: '100vh' }}>
-      {/* Header */}
-      <header style={{ padding: '1rem 0', borderBottom: '1px solid var(--border)', background: 'var(--surface)' }}>
-        <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h1 style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--primary)' }}>Settings</h1>
-          <button onClick={() => navigate('/dashboard')} className="btn btn-outline" style={{ padding: '0.5rem 1rem' }}>
-            Back to Dashboard
-          </button>
-        </div>
-      </header>
-
       {/* Main Content */}
       <main className="container" style={{ padding: '2rem 1rem', maxWidth: '600px' }}>
         <div className="card">
@@ -166,18 +154,9 @@ export default function Settings() {
               </div>
             )}
 
-            <div style={{ display: 'flex', gap: '1rem' }}>
-              <button type="submit" className="btn btn-primary" disabled={saving}>
-                {saving ? 'Saving...' : 'Save Changes'}
-              </button>
-              <button
-                type="button"
-                className="btn btn-outline"
-                onClick={() => navigate('/dashboard')}
-              >
-                Cancel
-              </button>
-            </div>
+            <button type="submit" className="btn btn-primary" disabled={saving}>
+              {saving ? 'Saving...' : 'Save Changes'}
+            </button>
           </form>
         </div>
 

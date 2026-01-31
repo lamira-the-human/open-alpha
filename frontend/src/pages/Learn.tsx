@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../App';
 import Chat from '../components/Chat';
 import Quiz from '../components/Quiz';
@@ -129,15 +129,10 @@ export default function Learn() {
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      {/* Header */}
-      <header style={{ padding: '1rem 0', borderBottom: '1px solid var(--border)', background: 'var(--surface)' }}>
-        <div className="container mobile-header">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <Link to="/dashboard" style={{ color: 'var(--text-light)', textDecoration: 'none' }}>
-              ← Back
-            </Link>
-            <h1 style={{ fontSize: '1.25rem', fontWeight: 600 }}>{subjectNames[subject || '']}</h1>
-          </div>
+      {/* Subject bar with quiz button */}
+      <div style={{ padding: '0.75rem 1rem', borderBottom: '1px solid var(--border)', background: 'var(--surface)' }}>
+        <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <h2 style={{ fontSize: '1.125rem', fontWeight: 600 }}>{subjectNames[subject || '']}</h2>
           {selectedConcept && (
             <button
               onClick={() => setShowQuiz(true)}
@@ -148,7 +143,7 @@ export default function Learn() {
             </button>
           )}
         </div>
-      </header>
+      </div>
 
       {/* Main Content */}
       <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>

@@ -15,7 +15,7 @@ interface Child {
 }
 
 export default function ParentCoach() {
-  const { logout, token } = useAuth();
+  const { token } = useAuth();
   const [children, setChildren] = useState<Child[]>([]);
   const [selectedChild, setSelectedChild] = useState<Child | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -129,42 +129,32 @@ export default function ParentCoach() {
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      {/* Header */}
-      <header style={{ padding: '1rem 0', borderBottom: '1px solid var(--border)', background: 'var(--surface)' }}>
-        <div className="container mobile-header">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <Link to="/parent" style={{ color: 'var(--text-light)', textDecoration: 'none' }}>
-              ← Dashboard
-            </Link>
-            <h1 style={{ fontSize: '1.25rem', fontWeight: 600 }}>Parent Coach</h1>
-          </div>
-          <div className="mobile-header-actions">
-            {children.length > 0 && (
-              <select
-                value={selectedChild?.student_id || ''}
-                onChange={(e) => {
-                  const child = children.find((c) => c.student_id === parseInt(e.target.value, 10));
-                  if (child) {
-                    setSelectedChild(child);
-                    startNewSession();
-                  }
-                }}
-                className="input"
-                style={{ width: 'auto', minWidth: '120px' }}
-              >
-                {children.map((child) => (
-                  <option key={child.student_id} value={child.student_id}>
-                    {child.display_name || `Child (${gradeLabels[child.grade_level]})`}
-                  </option>
-                ))}
-              </select>
-            )}
-            <button onClick={logout} className="btn btn-outline" style={{ padding: '0.5rem 1rem' }}>
-              Sign Out
-            </button>
+      {/* Child selector bar */}
+      {children.length > 1 && (
+        <div style={{ padding: '0.75rem 1rem', borderBottom: '1px solid var(--border)', background: 'var(--surface)' }}>
+          <div className="container" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <span style={{ fontSize: '0.875rem', color: 'var(--text-light)' }}>Discussing:</span>
+            <select
+              value={selectedChild?.student_id || ''}
+              onChange={(e) => {
+                const child = children.find((c) => c.student_id === parseInt(e.target.value, 10));
+                if (child) {
+                  setSelectedChild(child);
+                  startNewSession();
+                }
+              }}
+              className="input"
+              style={{ width: 'auto', minWidth: '150px', padding: '0.5rem' }}
+            >
+              {children.map((child) => (
+                <option key={child.student_id} value={child.student_id}>
+                  {child.display_name || `Child (${gradeLabels[child.grade_level]})`}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
-      </header>
+      )}
 
       {/* Main Content */}
       <main style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
