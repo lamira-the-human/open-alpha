@@ -131,14 +131,14 @@ export default function ParentCoach() {
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       {/* Header */}
       <header style={{ padding: '1rem 0', borderBottom: '1px solid var(--border)', background: 'var(--surface)' }}>
-        <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className="container mobile-header">
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
             <Link to="/parent" style={{ color: 'var(--text-light)', textDecoration: 'none' }}>
               ← Dashboard
             </Link>
             <h1 style={{ fontSize: '1.25rem', fontWeight: 600 }}>Parent Coach</h1>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <div className="mobile-header-actions">
             {children.length > 0 && (
               <select
                 value={selectedChild?.student_id || ''}
@@ -150,7 +150,7 @@ export default function ParentCoach() {
                   }
                 }}
                 className="input"
-                style={{ width: 'auto' }}
+                style={{ width: 'auto', minWidth: '120px' }}
               >
                 {children.map((child) => (
                   <option key={child.student_id} value={child.student_id}>

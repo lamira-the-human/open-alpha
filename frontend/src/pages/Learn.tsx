@@ -4,6 +4,7 @@ import { useAuth } from '../App';
 import Chat from '../components/Chat';
 import Quiz from '../components/Quiz';
 import Spinner from '../components/Spinner';
+import ErrorAlert from '../components/ErrorAlert';
 
 interface Concept {
   id: string;
@@ -23,49 +24,55 @@ export default function Learn() {
   const [selectedConcept, setSelectedConcept] = useState<Concept | null>(null);
   const [showQuiz, setShowQuiz] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  useEffect(() => {
-    async function fetchConcepts() {
-      try {
-        const res = await fetch(`/api/tutor/concepts/${subject}`, {
+  async function fetchConcepts() {
+    setError(null);
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/tutor/concepts/${subject}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!res.ok) {
+        throw new Error('Failed to load concepts');
+      }
+
+      const data = await res.json();
+      setConcepts(data.concepts);
+
+      // If conceptId is provided, select that concept
+      if (conceptId) {
+        const concept = data.concepts.find((c: Concept) => c.id === conceptId);
+        if (concept) {
+          setSelectedConcept(concept);
+        }
+      } else if (data.concepts.length > 0) {
+        // Otherwise find the next recommended concept
+        const nextRes = await fetch(`/api/tutor/next/${subject}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-
-        if (res.ok) {
-          const data = await res.json();
-          setConcepts(data.concepts);
-
-          // If conceptId is provided, select that concept
-          if (conceptId) {
-            const concept = data.concepts.find((c: Concept) => c.id === conceptId);
-            if (concept) {
-              setSelectedConcept(concept);
-            }
-          } else if (data.concepts.length > 0) {
-            // Otherwise find the next recommended concept
-            const nextRes = await fetch(`/api/tutor/next/${subject}`, {
-              headers: { Authorization: `Bearer ${token}` },
-            });
-            if (nextRes.ok) {
-              const nextData = await nextRes.json();
-              if (nextData.concept) {
-                setSelectedConcept(nextData.concept);
-              } else {
-                // All done - select first uncompleted or first
-                const uncompleted = data.concepts.find((c: Concept) => !c.completed);
-                setSelectedConcept(uncompleted || data.concepts[0]);
-              }
-            }
+        if (nextRes.ok) {
+          const nextData = await nextRes.json();
+          if (nextData.concept) {
+            setSelectedConcept(nextData.concept);
+          } else {
+            // All done - select first uncompleted or first
+            const uncompleted = data.concepts.find((c: Concept) => !c.completed);
+            setSelectedConcept(uncompleted || data.concepts[0]);
           }
         }
-      } catch (error) {
-        console.error('Failed to fetch concepts:', error);
-      } finally {
-        setLoading(false);
       }
+    } catch (err) {
+      console.error('Failed to fetch concepts:', err);
+      setError(err instanceof Error ? err : new Error('Failed to load concepts'));
+    } finally {
+      setLoading(false);
     }
+  }
 
+  useEffect(() => {
     fetchConcepts();
   }, [subject, conceptId, token]);
 
@@ -107,11 +114,24 @@ export default function Learn() {
     return <Spinner size="large" text="Loading concepts..." />;
   }
 
+  if (error) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <ErrorAlert
+          title="Couldn't load concepts"
+          message="We had trouble loading the learning content. Please try again."
+          error={error}
+          onRetry={fetchConcepts}
+        />
+      </div>
+    );
+  }
+
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       {/* Header */}
       <header style={{ padding: '1rem 0', borderBottom: '1px solid var(--border)', background: 'var(--surface)' }}>
-        <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className="container mobile-header">
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
             <Link to="/dashboard" style={{ color: 'var(--text-light)', textDecoration: 'none' }}>
               ← Back

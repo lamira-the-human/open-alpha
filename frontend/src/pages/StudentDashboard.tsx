@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../App';
 import Spinner from '../components/Spinner';
+import ErrorAlert from '../components/ErrorAlert';
 
 interface SubjectSummary {
   subjectId: string;
@@ -26,37 +27,68 @@ export default function StudentDashboard() {
   const [summary, setSummary] = useState<SubjectSummary[]>([]);
   const [recentActivity, setRecentActivity] = useState<Activity[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+  const [inviteCode, setInviteCode] = useState<string | null>(null);
+  const [generatingCode, setGeneratingCode] = useState(false);
+
+  async function fetchData() {
+    setError(null);
+    setLoading(true);
+    try {
+      const [summaryRes, activityRes] = await Promise.all([
+        fetch('/api/progress/summary', {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        fetch('/api/progress/activity/recent', {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+      ]);
+
+      if (!summaryRes.ok || !activityRes.ok) {
+        throw new Error('Failed to load dashboard data');
+      }
+
+      const summaryData = await summaryRes.json();
+      const activityData = await activityRes.json();
+
+      setSummary(summaryData.summary);
+      setRecentActivity(activityData.recentProgress || []);
+    } catch (err) {
+      console.error('Failed to fetch dashboard data:', err);
+      setError(err instanceof Error ? err : new Error('Failed to load dashboard'));
+    } finally {
+      setLoading(false);
+    }
+  }
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const [summaryRes, activityRes] = await Promise.all([
-          fetch('/api/progress/summary', {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
-          fetch('/api/progress/activity/recent', {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
-        ]);
-
-        if (summaryRes.ok) {
-          const data = await summaryRes.json();
-          setSummary(data.summary);
-        }
-
-        if (activityRes.ok) {
-          const data = await activityRes.json();
-          setRecentActivity(data.recentProgress || []);
-        }
-      } catch (error) {
-        console.error('Failed to fetch dashboard data:', error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
     fetchData();
   }, [token]);
+
+  async function generateInviteCode() {
+    setGeneratingCode(true);
+    try {
+      const res = await fetch('/api/parent/generate-invite', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setInviteCode(data.inviteCode);
+      }
+    } catch (err) {
+      console.error('Failed to generate invite code:', err);
+    } finally {
+      setGeneratingCode(false);
+    }
+  }
+
+  function copyInviteCode() {
+    if (inviteCode) {
+      navigator.clipboard.writeText(inviteCode);
+    }
+  }
 
   const gradeLabels: Record<number, string> = {
     0: 'Kindergarten',
@@ -84,19 +116,35 @@ export default function StudentDashboard() {
     return <Spinner size="large" text="Loading your progress..." />;
   }
 
+  if (error) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <ErrorAlert
+          title="Couldn't load your dashboard"
+          message="We had trouble loading your progress. Please try again."
+          error={error}
+          onRetry={fetchData}
+        />
+      </div>
+    );
+  }
+
   return (
     <div style={{ minHeight: '100vh' }}>
       {/* Header */}
       <header style={{ padding: '1rem 0', borderBottom: '1px solid var(--border)', background: 'var(--surface)' }}>
-        <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className="container mobile-header">
           <h1 style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--primary)' }}>Open Alpha</h1>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <span style={{ color: 'var(--text-light)' }}>
+          <div className="mobile-header-actions">
+            <span className="desktop-user-info" style={{ color: 'var(--text-light)' }}>
               {user?.displayName || user?.email} · {gradeLabels[user?.gradeLevel || 0]}
             </span>
             <button onClick={logout} className="btn btn-outline" style={{ padding: '0.5rem 1rem' }}>
               Sign Out
             </button>
+          </div>
+          <div className="mobile-user-info">
+            {user?.displayName || user?.email} · {gradeLabels[user?.gradeLevel || 0]}
           </div>
         </div>
       </header>
@@ -159,7 +207,7 @@ export default function StudentDashboard() {
         </section>
 
         {/* Recent Activity */}
-        <section>
+        <section style={{ marginBottom: '3rem' }}>
           <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '1rem' }}>Recent Activity</h3>
           {recentActivity.length === 0 ? (
             <p style={{ color: 'var(--text-light)' }}>No activity yet. Start learning to see your progress!</p>
@@ -169,6 +217,7 @@ export default function StudentDashboard() {
                 {recentActivity.slice(0, 5).map((activity, index) => (
                   <li
                     key={index}
+                    className="activity-item"
                     style={{
                       padding: '0.75rem 0',
                       borderBottom: index < recentActivity.length - 1 ? '1px solid var(--border)' : 'none',
@@ -181,7 +230,7 @@ export default function StudentDashboard() {
                       <span style={{ marginRight: '0.5rem' }}>{subjectEmojis[activity.subject]}</span>
                       <span style={{ fontWeight: 500 }}>{activity.concept_id.replace(`${activity.subject}-`, '').replace(/-/g, ' ')}</span>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <div className="activity-item-actions" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                       <span
                         style={{
                           padding: '0.25rem 0.5rem',
@@ -208,6 +257,51 @@ export default function StudentDashboard() {
               </ul>
             </div>
           )}
+        </section>
+
+        {/* Parent Link Section */}
+        <section>
+          <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '1rem' }}>Connect a Parent</h3>
+          <div className="card">
+            <p style={{ color: 'var(--text-light)', marginBottom: '1rem' }}>
+              Want your parent to see your progress? Generate a code for them to link their account.
+            </p>
+            {inviteCode ? (
+              <div className="invite-code-display" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <div
+                  style={{
+                    flex: 1,
+                    padding: '0.75rem 1rem',
+                    background: 'var(--background)',
+                    borderRadius: '0.5rem',
+                    fontFamily: 'monospace',
+                    fontSize: '1.5rem',
+                    fontWeight: 700,
+                    letterSpacing: '0.25em',
+                    textAlign: 'center',
+                  }}
+                >
+                  {inviteCode}
+                </div>
+                <button onClick={copyInviteCode} className="btn btn-secondary">
+                  Copy
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={generateInviteCode}
+                className="btn btn-primary"
+                disabled={generatingCode}
+              >
+                {generatingCode ? 'Generating...' : 'Generate Invite Code'}
+              </button>
+            )}
+            {inviteCode && (
+              <p style={{ fontSize: '0.875rem', color: 'var(--text-light)', marginTop: '0.75rem' }}>
+                Share this code with your parent. It can only be used once.
+              </p>
+            )}
+          </div>
         </section>
       </main>
     </div>

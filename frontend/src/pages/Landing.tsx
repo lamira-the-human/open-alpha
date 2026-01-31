@@ -27,10 +27,10 @@ export default function Landing() {
       {/* Hero */}
       <section style={{ padding: '4rem 0', textAlign: 'center' }}>
         <div className="container">
-          <h2 style={{ fontSize: '3rem', fontWeight: 700, marginBottom: '1rem', color: 'var(--text)' }}>
+          <h2 className="hero-title" style={{ fontSize: '3rem', fontWeight: 700, marginBottom: '1rem', color: 'var(--text)' }}>
             AI-Powered Learning for K-12
           </h2>
-          <p style={{ fontSize: '1.25rem', color: 'var(--text-light)', maxWidth: '600px', margin: '0 auto 2rem' }}>
+          <p className="hero-subtitle" style={{ fontSize: '1.25rem', color: 'var(--text-light)', maxWidth: '600px', margin: '0 auto 2rem' }}>
             Personalized tutoring that adapts to every student. Math, Reading, and Science - from kindergarten through high school.
           </p>
           <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../App';
 import Spinner from '../components/Spinner';
+import ErrorAlert from '../components/ErrorAlert';
 
 interface Child {
   id: number;
@@ -60,9 +61,35 @@ export default function ParentDashboard() {
   const [linkCode, setLinkCode] = useState('');
   const [linkError, setLinkError] = useState('');
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+
+  async function fetchData() {
+    setError(null);
+    setLoading(true);
+    try {
+      const res = await fetch('/api/parent/children', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!res.ok) {
+        throw new Error('Failed to load dashboard');
+      }
+
+      const data = await res.json();
+      setChildren(data.children);
+      if (data.children.length > 0 && !selectedChild) {
+        setSelectedChild(data.children[0]);
+      }
+    } catch (err) {
+      console.error('Failed to fetch children:', err);
+      setError(err instanceof Error ? err : new Error('Failed to load dashboard'));
+    } finally {
+      setLoading(false);
+    }
+  }
 
   useEffect(() => {
-    fetchChildren();
+    fetchData();
   }, [token]);
 
   useEffect(() => {
@@ -71,26 +98,6 @@ export default function ParentDashboard() {
       fetchChildAnalytics(selectedChild.id);
     }
   }, [selectedChild, token]);
-
-  async function fetchChildren() {
-    try {
-      const res = await fetch('/api/parent/children', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        setChildren(data.children);
-        if (data.children.length > 0 && !selectedChild) {
-          setSelectedChild(data.children[0]);
-        }
-      }
-    } catch (error) {
-      console.error('Failed to fetch children:', error);
-    } finally {
-      setLoading(false);
-    }
-  }
 
   async function fetchChildProgress(childId: number) {
     try {
@@ -157,7 +164,7 @@ export default function ParentDashboard() {
       }
 
       setLinkCode('');
-      fetchChildren();
+      fetchData();
     } catch (error) {
       setLinkError(error instanceof Error ? error.message : 'Failed to link');
     }
@@ -189,20 +196,36 @@ export default function ParentDashboard() {
     return <Spinner size="large" text="Loading dashboard..." />;
   }
 
+  if (error) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <ErrorAlert
+          title="Couldn't load your dashboard"
+          message="We had trouble loading your data. Please try again."
+          error={error}
+          onRetry={fetchData}
+        />
+      </div>
+    );
+  }
+
   return (
     <div style={{ minHeight: '100vh' }}>
       {/* Header */}
       <header style={{ padding: '1rem 0', borderBottom: '1px solid var(--border)', background: 'var(--surface)' }}>
-        <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className="container mobile-header">
           <h1 style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--primary)' }}>Open Alpha</h1>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <div className="mobile-header-actions parent-header-actions">
             <Link to="/parent/coach" className="btn btn-secondary" style={{ padding: '0.5rem 1rem' }}>
               Parent Coach
             </Link>
-            <span style={{ color: 'var(--text-light)' }}>{user?.displayName || user?.email}</span>
+            <span className="desktop-user-info" style={{ color: 'var(--text-light)' }}>{user?.displayName || user?.email}</span>
             <button onClick={logout} className="btn btn-outline" style={{ padding: '0.5rem 1rem' }}>
               Sign Out
             </button>
+          </div>
+          <div className="mobile-user-info">
+            {user?.displayName || user?.email}
           </div>
         </div>
       </header>

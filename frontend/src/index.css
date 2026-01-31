@@ -292,6 +292,67 @@ input:focus-visible {
   z-index: 50;
 }
 
+/* Error Alert Component */
+.error-alert {
+  background: rgba(239, 68, 68, 0.05);
+  border: 1px solid var(--error);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  text-align: center;
+  margin: 1rem;
+}
+
+.error-alert-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--error);
+  color: white;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+}
+
+.error-alert h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.error-alert p {
+  color: var(--text-light);
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+}
+
+.error-alert-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Mobile header utilities */
+.mobile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.mobile-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mobile-user-info {
+  display: none;
+}
+
 @media (max-width: 768px) {
   .container {
     padding: 0 0.75rem;
@@ -324,5 +385,70 @@ input:focus-visible {
 
   .learn-sidebar.open {
     transform: translateX(0);
+  }
+
+  /* Mobile header adjustments */
+  .mobile-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .mobile-header-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .mobile-user-info {
+    display: block;
+    font-size: 0.875rem;
+    color: var(--text-light);
+    width: 100%;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--border);
+    margin-top: 0.5rem;
+  }
+
+  .desktop-user-info {
+    display: none;
+  }
+
+  /* Hero section mobile */
+  .hero-title {
+    font-size: 2rem !important;
+  }
+
+  .hero-subtitle {
+    font-size: 1rem !important;
+  }
+
+  /* Activity list mobile */
+  .activity-item {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 0.5rem;
+  }
+
+  .activity-item-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  /* Parent dashboard mobile */
+  .parent-header-actions {
+    flex-wrap: wrap;
+  }
+
+  .parent-header-actions .btn {
+    flex: 1;
+    min-width: 100px;
+  }
+
+  /* Invite code display */
+  .invite-code-display {
+    flex-direction: column;
+  }
+
+  .invite-code-display .btn {
+    width: 100%;
   }
 }
