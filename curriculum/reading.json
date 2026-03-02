@@ -1,0 +1,119 @@
+{
+  "id": "reading",
+  "name": "Reading & Language Arts",
+  "description": "Develop reading comprehension and analytical skills",
+  "concepts": [
+    {
+      "id": "read-alphabet",
+      "name": "Alphabet Recognition",
+      "description": "Learning letters and their sounds",
+      "prerequisites": [],
+      "level": 0
+    },
+    {
+      "id": "read-phonics",
+      "name": "Basic Phonics",
+      "description": "Sounding out simple words",
+      "prerequisites": ["read-alphabet"],
+      "level": 1
+    },
+    {
+      "id": "read-sight-words",
+      "name": "Sight Words",
+      "description": "Recognizing common words by sight",
+      "prerequisites": ["read-alphabet"],
+      "level": 1
+    },
+    {
+      "id": "read-simple-sentences",
+      "name": "Reading Simple Sentences",
+      "description": "Understanding basic sentence structure",
+      "prerequisites": ["read-phonics", "read-sight-words"],
+      "level": 2
+    },
+    {
+      "id": "read-fluency",
+      "name": "Reading Fluency",
+      "description": "Reading smoothly and with expression",
+      "prerequisites": ["read-simple-sentences"],
+      "level": 3
+    },
+    {
+      "id": "read-comprehension-basic",
+      "name": "Basic Comprehension",
+      "description": "Understanding what you read",
+      "prerequisites": ["read-fluency"],
+      "level": 3
+    },
+    {
+      "id": "read-vocabulary",
+      "name": "Vocabulary Building",
+      "description": "Learning new words and their meanings",
+      "prerequisites": ["read-comprehension-basic"],
+      "level": 4
+    },
+    {
+      "id": "read-main-idea",
+      "name": "Finding Main Ideas",
+      "description": "Identifying the central message of a text",
+      "prerequisites": ["read-comprehension-basic"],
+      "level": 5
+    },
+    {
+      "id": "read-inference",
+      "name": "Making Inferences",
+      "description": "Reading between the lines",
+      "prerequisites": ["read-main-idea"],
+      "level": 6
+    },
+    {
+      "id": "read-text-structure",
+      "name": "Text Structure",
+      "description": "Understanding how texts are organized",
+      "prerequisites": ["read-main-idea"],
+      "level": 6
+    },
+    {
+      "id": "read-literary-elements",
+      "name": "Literary Elements",
+      "description": "Plot, character, setting, and theme",
+      "prerequisites": ["read-inference"],
+      "level": 7
+    },
+    {
+      "id": "read-analysis",
+      "name": "Text Analysis",
+      "description": "Analyzing author's purpose and techniques",
+      "prerequisites": ["read-literary-elements"],
+      "level": 8
+    },
+    {
+      "id": "read-rhetoric",
+      "name": "Rhetorical Analysis",
+      "description": "Understanding persuasion techniques",
+      "prerequisites": ["read-analysis"],
+      "level": 9
+    },
+    {
+      "id": "read-critical-reading",
+      "name": "Critical Reading",
+      "description": "Evaluating arguments and sources",
+      "prerequisites": ["read-rhetoric"],
+      "level": 10
+    },
+    {
+      "id": "read-literary-criticism",
+      "name": "Literary Criticism",
+      "description": "Different approaches to interpreting literature",
+      "prerequisites": ["read-critical-reading"],
+      "level": 11
+    },
+    {
+      "id": "read-synthesis",
+      "name": "Synthesis and Research",
+      "description": "Combining multiple sources to form conclusions",
+      "prerequisites": ["read-literary-criticism"],
+      "level": 12
+    }
+  ]
+}

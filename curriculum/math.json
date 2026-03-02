@@ -1,0 +1,126 @@
+{
+  "id": "math",
+  "name": "Mathematics",
+  "description": "Build strong mathematical foundations from counting to calculus and beyond",
+  "concepts": [
+    {
+      "id": "math-counting",
+      "name": "Counting Numbers",
+      "description": "Learn to count from 1 to 100",
+      "prerequisites": [],
+      "level": 0
+    },
+    {
+      "id": "math-addition-basic",
+      "name": "Basic Addition",
+      "description": "Adding single-digit numbers",
+      "prerequisites": ["math-counting"],
+      "level": 1
+    },
+    {
+      "id": "math-subtraction-basic",
+      "name": "Basic Subtraction",
+      "description": "Subtracting single-digit numbers",
+      "prerequisites": ["math-counting"],
+      "level": 1
+    },
+    {
+      "id": "math-place-value",
+      "name": "Place Value",
+      "description": "Understanding ones, tens, and hundreds",
+      "prerequisites": ["math-counting"],
+      "level": 2
+    },
+    {
+      "id": "math-multiplication",
+      "name": "Multiplication",
+      "description": "Multiplying numbers and times tables",
+      "prerequisites": ["math-addition-basic"],
+      "level": 3
+    },
+    {
+      "id": "math-division",
+      "name": "Division",
+      "description": "Dividing numbers and understanding remainders",
+      "prerequisites": ["math-multiplication"],
+      "level": 3
+    },
+    {
+      "id": "math-fractions-intro",
+      "name": "Introduction to Fractions",
+      "description": "Understanding parts of a whole",
+      "prerequisites": ["math-division"],
+      "level": 4
+    },
+    {
+      "id": "math-decimals",
+      "name": "Decimals",
+      "description": "Understanding decimal numbers and place value",
+      "prerequisites": ["math-fractions-intro"],
+      "level": 5
+    },
+    {
+      "id": "math-ratios",
+      "name": "Ratios and Proportions",
+      "description": "Understanding relationships between numbers",
+      "prerequisites": ["math-fractions-intro"],
+      "level": 6
+    },
+    {
+      "id": "math-integers",
+      "name": "Integers and Operations",
+      "description": "Working with positive and negative numbers",
+      "prerequisites": ["math-decimals"],
+      "level": 6
+    },
+    {
+      "id": "math-expressions",
+      "name": "Algebraic Expressions",
+      "description": "Using variables and simplifying expressions",
+      "prerequisites": ["math-integers"],
+      "level": 7
+    },
+    {
+      "id": "math-equations",
+      "name": "Solving Equations",
+      "description": "Finding unknown values in equations",
+      "prerequisites": ["math-expressions"],
+      "level": 7
+    },
+    {
+      "id": "math-linear-functions",
+      "name": "Linear Functions",
+      "description": "Understanding and graphing linear relationships",
+      "prerequisites": ["math-equations"],
+      "level": 8
+    },
+    {
+      "id": "math-quadratics",
+      "name": "Quadratic Equations",
+      "description": "Solving and graphing quadratic functions",
+      "prerequisites": ["math-linear-functions"],
+      "level": 9
+    },
+    {
+      "id": "math-geometry",
+      "name": "Geometry Fundamentals",
+      "description": "Shapes, angles, and proofs",
+      "prerequisites": ["math-equations"],
+      "level": 10
+    },
+    {
+      "id": "math-trigonometry",
+      "name": "Trigonometry",
+      "description": "Sine, cosine, tangent and their applications",
+      "prerequisites": ["math-geometry"],
+      "level": 11
+    },
+    {
+      "id": "math-precalculus",
+      "name": "Pre-Calculus",
+      "description": "Functions, limits, and preparation for calculus",
+      "prerequisites": ["math-trigonometry", "math-quadratics"],
+      "level": 12
+    }
+  ]
+}
