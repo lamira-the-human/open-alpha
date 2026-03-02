@@ -1,18 +1,16 @@
 # How I Built This
 
-A journal of building Open Alpha - an AI-powered K-12 learning platform.
+A running journal of building Open Alpha. Read it like a book -- start at the top, each entry picks up where the last one left off.
 
 ---
 
-## The Starting Point
+## January 2026 — Starting from Scratch
 
 We started with a repo that was documentation-only. Good architecture docs, a roadmap with Q1-Q4 2026 dates (which we removed to keep things date-agnostic), and placeholder package.json files. No actual code.
 
 The plan was clear: build an MVP that's 100% powered by ATXP services so there's zero infrastructure cost. Users pay from their own ATXP wallet, and they get $10 free on signup - enough for many hours of learning.
 
----
-
-## Why ATXP Everything?
+### Why ATXP Everything?
 
 This was the key architectural decision. Instead of spinning up our own Postgres, managing API keys for OpenAI/Anthropic, setting up file storage... we just use ATXP's MCP services for everything:
 
@@ -22,9 +20,7 @@ This was the key architectural decision. Instead of spinning up our own Postgres
 
 Single billing, single connection string, proven MCP patterns. The user's ATXP wallet covers all costs. We don't touch infrastructure.
 
----
-
-## The Backend: Express + TypeScript
+### The Backend: Express + TypeScript
 
 Went with Express because it's simple and the `@atxp/express` patterns are well-established. TypeScript for sanity.
 
@@ -40,9 +36,7 @@ Went with Express because it's simple and the `@atxp/express` patterns are well-
 - `progress.ts` - CRUD for mastery scores. Simple but important.
 - `parent.ts` - The linking flow (invite codes) and read-only child progress viewing.
 
----
-
-## The Curriculum Structure
+### The Curriculum Structure
 
 This took some thought. We needed to support K-12 across Math, Reading, and Science without overcomplicating things.
 
@@ -57,9 +51,7 @@ The curriculum service has helpers like `getNextConcept()` that finds what a stu
 
 We kept it simple - about 15-18 concepts per subject spanning K-12. Enough to demonstrate the system without being overwhelming.
 
----
-
-## Mastery Model: 80% to Advance
+### Mastery Model: 80% to Advance
 
 Students don't just "complete" lessons - they demonstrate mastery. The flow:
 
@@ -70,9 +62,7 @@ Students don't just "complete" lessons - they demonstrate mastery. The flow:
 
 We track highest score per concept (no regression). Attempts are counted so we can see if someone is struggling.
 
----
-
-## Two AI Personas: Tutor vs Coach
+### Two AI Personas: Tutor vs Coach
 
 This was important to get right.
 
@@ -82,9 +72,7 @@ This was important to get right.
 
 Both use the same LLM Gateway under the hood, just different system prompts.
 
----
-
-## Parent-Child Linking
+### Parent-Child Linking
 
 Parents and students have separate accounts. We link them via invite codes:
 
@@ -94,9 +82,7 @@ Parents and students have separate accounts. We link them via invite codes:
 
 Parents can see what concepts are mastered, what's in progress, and session history (metadata only, not full chat logs - privacy matters).
 
----
-
-## The Frontend: React + Vite
+### The Frontend: React + Vite
 
 Standard modern React setup. Vite for fast dev experience. No component library - just custom CSS with CSS variables for theming.
 
@@ -113,9 +99,7 @@ Shared components:
 - `Quiz.tsx` - The mastery checkpoint experience
 - `Progress.tsx` - Various progress visualization components
 
----
-
-## Auth: Keep It Simple
+### Auth: Keep It Simple
 
 JWT tokens with 7-day expiry. Passwords hashed with bcrypt (10 rounds). Token stored in localStorage, sent via Authorization header.
 
@@ -123,9 +107,7 @@ The auth context in React handles loading the user on page load, provides `login
 
 No OAuth, no magic links, no complexity. Email + password works fine for MVP.
 
----
-
-## What We Deferred
+### What We Deferred
 
 The plan explicitly listed things to skip for MVP:
 - Multi-provider AI configuration UI
@@ -139,65 +121,7 @@ These live in ROADMAP.md as future phases. The MVP is intentionally focused.
 
 ---
 
-## File Structure
-
-```
-open-alpha/
-├── backend/
-│   ├── src/
-│   │   ├── server.ts           # Express entry point
-│   │   ├── routes/             # API endpoints
-│   │   ├── services/           # ATXP integrations + curriculum
-│   │   └── scripts/            # setup-db.ts
-│   └── package.json
-├── frontend/
-│   ├── src/
-│   │   ├── App.tsx             # Routing + auth context
-│   │   ├── pages/              # Route components
-│   │   └── components/         # Shared UI
-│   └── package.json
-├── docs/
-│   └── ARCHITECTURE.md         # Technical deep-dive
-├── README.md                   # Setup + overview
-├── ROADMAP.md                  # Development phases
-└── package.json                # Monorepo root
-```
-
----
-
-## Running It
-
-```bash
-npm install                     # Install all dependencies
-cp backend/.env.example backend/.env  # Add your ATXP connection string
-npm run db:setup                # Create database + schema
-npm run dev                     # Start both frontend and backend
-```
-
-Frontend runs on :3000, backend on :3001. Vite proxies `/api` to the backend.
-
----
-
-## What's Next
-
-The MVP is complete. A student can:
-1. Sign up, pick their grade
-2. Choose Math, Reading, or Science
-3. Chat with an AI tutor
-4. Take quizzes to prove mastery
-5. See their progress
-
-A parent can:
-1. Sign up as parent
-2. Link to their child via invite code
-3. View child's progress (read-only)
-4. Chat with an AI coach for support
-
-Everything runs on ATXP services with zero infrastructure cost.
-
----
-
-## Session 2: Making It Actually Work
+## January 2026 — Making It Actually Work
 
 The original plan was ATXP everything. Reality had other ideas.
 
@@ -227,7 +151,7 @@ The LLM returns JSON wrapped in markdown code blocks (` ```json...``` `). Added 
 
 Found a scoring bug where the last correct answer was counted twice, giving scores like 120% (6/5 correct). The issue was in `handleAnswer` incrementing `correctCount`, then `handleNext` adding 1 again for the last question. Fixed by removing the double-count.
 
-### Current Status
+### Status After This Session
 
 Everything in Phases 1-3 of the roadmap is now complete and tested:
 - Student signup → subject selection → AI tutor chat → quiz → mastery tracking
@@ -237,9 +161,7 @@ The app runs locally with `npm run dev`. SQLite for data, ATXP LLM Gateway for A
 
 ---
 
----
-
-## Session 3: Deploying to Production
+## January 2026 — Deploying to Production
 
 Time to get this thing live. Local dev is great, but we need a real URL.
 
@@ -314,7 +236,7 @@ curl -X POST https://open-alpha-eta.vercel.app/api/db/init \
 
 Tables created: users, parent_links, progress, sessions.
 
-### Current Status
+### Status After This Session
 
 **Live at: https://open-alpha-eta.vercel.app**
 
@@ -328,4 +250,40 @@ Zero monthly infrastructure cost on free tiers.
 
 ---
 
-*Built with Claude Code, January 2026*
+## March 2, 2026 — Stepping Back to See the Bigger Picture
+
+Up to this point, Open Alpha was a K-12 tutoring app. It worked. But we sat down and asked: what is this *really* trying to be?
+
+The answer: **the Wikipedia of learning.**
+
+### The Realization
+
+The most important thing in the repo isn't the React frontend or the Vercel deployment -- it's the curriculum graph. ~50 concepts across 3 subjects, each with prerequisites and grade levels, forming a directed acyclic graph that AI can traverse to teach anyone anything.
+
+That graph is the product. Everything else is a surface that renders it.
+
+### What Changed in Our Thinking
+
+1. **Content is never written, always generated.** There are no static lessons in the codebase -- and there shouldn't be. The AI tutor generates explanations on the fly from concept metadata. That's the right model for a world where learners might be on a laptop, phone, headphones, or VR headset. You can't pre-write content for surfaces that don't exist yet.
+
+2. **The frontend is a reference implementation.** It's useful for bootstrapping and demonstrating, but the real value comes from the API and data layer. Third-party agents will bring learning experiences to humans on whatever surface makes sense. Probably not on our platform.
+
+3. **Open source is the growth engine.** Humans contribute teaching expertise (curriculum structure, prerequisite chains, grade-level calibration). AI agents help build features and expand content. Together they move faster than any traditional ed-tech company.
+
+4. **ATXP ecosystem.** The platform is already built on ATXP's LLM Gateway. As the knowledge graph grows, it becomes a natural place for people and companies to add tools, skills, and services.
+
+### What We Shipped
+
+- **VISION.md** - Design principles, architecture layers, and how contributing works. The north star document.
+- **CONTRIBUTING.md** - Practical guide for adding concepts, improving prompts, and building features. Lowers the barrier for first-time contributors.
+- **ROADMAP.md** (rewritten) - Added two new phases before "Polish":
+  - *Phase 4: Open the Knowledge Graph* - Extract curriculum from hardcoded TypeScript to contributor-friendly files. Build validation tooling. Get the first community-contributed subject.
+  - *Phase 5: API-First* - Document and stabilize the API so agents and third parties can build on it.
+
+### What's Next
+
+The immediate priority is making the curriculum contributable. Right now it's a TypeScript array in `api/_lib/curriculum.ts`. That needs to become something anyone can submit a PR against -- probably JSON or YAML files, one per subject, with CI validation for prerequisite consistency.
+
+We're also reconsidering the hosting. Vercel works but might be more infrastructure than we need. GitHub Pages or something simpler could be enough for now while the real value is in the data and API layers.
+
+---
