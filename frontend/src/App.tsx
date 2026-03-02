@@ -5,6 +5,8 @@ import Spinner from './components/Spinner';
 import Header from './components/Header';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
+import Signup from './pages/Signup';
+import AuthCallback from './pages/AuthCallback';
 import StudentDashboard from './pages/StudentDashboard';
 import Learn from './pages/Learn';
 import ParentDashboard from './pages/ParentDashboard';
@@ -113,6 +115,8 @@ function App() {
           <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/auth/callback" element={<AuthCallback />} />
           <Route
             path="/dashboard"
             element={

@@ -34,10 +34,10 @@ export default function Landing() {
             Personalized tutoring that adapts to every student. Math, Reading, and Science - from kindergarten through high school.
           </p>
           <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link to="/login?role=student" className="btn btn-primary" style={{ fontSize: '1.125rem', padding: '1rem 2rem' }}>
+            <Link to="/signup?role=student" className="btn btn-primary" style={{ fontSize: '1.125rem', padding: '1rem 2rem' }}>
               Start Learning
             </Link>
-            <Link to="/login?role=parent" className="btn btn-outline" style={{ fontSize: '1.125rem', padding: '1rem 2rem' }}>
+            <Link to="/signup?role=parent" className="btn btn-outline" style={{ fontSize: '1.125rem', padding: '1rem 2rem' }}>
               Parent Portal
             </Link>
           </div>
@@ -106,7 +106,7 @@ export default function Landing() {
               <p style={{ marginBottom: '1rem', opacity: 0.9 }}>
                 Get personalized guidance on supporting your child's education journey. Our AI coach helps you understand what your child is learning and how to help at home.
               </p>
-              <Link to="/login?role=parent" style={{ color: 'white', fontWeight: 600 }}>
+              <Link to="/signup?role=parent" style={{ color: 'white', fontWeight: 600 }}>
                 Try Parent Coach →
               </Link>
             </div>
