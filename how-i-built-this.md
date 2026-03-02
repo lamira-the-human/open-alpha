@@ -280,10 +280,53 @@ That graph is the product. Everything else is a surface that renders it.
   - *Phase 4: Open the Knowledge Graph* - Extract curriculum from hardcoded TypeScript to contributor-friendly files. Build validation tooling. Get the first community-contributed subject.
   - *Phase 5: API-First* - Document and stabilize the API so agents and third parties can build on it.
 
+---
+
+## March 2, 2026 — The Graph Is the Product
+
+Got some feedback from an LLM that pushed the thinking further. The core insight: treat knowledge as a graph, not a list. The curriculum isn't "a set of subjects with concepts" -- it's a directed acyclic graph where prerequisites form edges and any node can connect to any other node, even across subjects.
+
+Some of the feedback was over-engineered (pre-written lesson templates, hierarchical directory structures, 1-99 level systems) but the lightbulb moments were clear:
+
+1. **The graph doesn't stop at K-12.** `gradeLevel: 12` was an arbitrary ceiling. A physics node could require `math-trigonometry`. A philosophy node could require `read-critical-reading`. The graph grows in every direction.
+2. **Contributors submit nodes, not documents.** The mental model is "add a node to the graph with defined parents," not "write a lesson."
+3. **The graph needs validation tooling.** One broken prerequisite chain breaks everything downstream. Crowdsourcing without validation = chaos.
+
+### What We Did
+
+**Extracted curriculum to JSON files.** The hardcoded TypeScript arrays in `api/_lib/curriculum.ts` are now loaded from `curriculum/*.json` -- one file per subject. Anyone can open `curriculum/math.json`, add a concept, and submit a PR. No TypeScript knowledge required.
+
+**Renamed `gradeLevel` to `level`.** In the JSON files, the field is called `level` -- signaling that the scale is open-ended. Level 0-12 still maps roughly to K-12, but level 15 could be undergraduate, level 20 graduate, and beyond. The API still uses `gradeLevel` internally (to avoid breaking existing routes), mapping from `level` on load.
+
+**Created `curriculum/schema.json`.** A JSON Schema that defines what a valid subject file looks like. This is the contract for contributors.
+
+**Built `curriculum/validate.js`.** A validation script that checks:
+- All prerequisite references point to concepts that exist (no orphans)
+- No circular dependencies (the graph is acyclic)
+- Level consistency (prerequisites have lower levels than dependents)
+- No duplicate concept IDs across subjects
+
+Run it with `node curriculum/validate.js`. It currently reports: 3 subjects, 50 concepts, 6 root nodes, all checks passing.
+
+**Rewrote CONTRIBUTING.md** around the graph model. Contributors don't "add docs" -- they "add nodes with defined parents." The validation script is the gatekeeper.
+
+### The File Structure Now
+
+```
+curriculum/
+  math.json         # Math concept graph (17 nodes)
+  reading.json      # Reading concept graph (16 nodes)
+  science.json      # Science concept graph (17 nodes)
+  schema.json       # JSON Schema for subject files
+  validate.js       # Graph validation script
+```
+
+The `api/_lib/curriculum.ts` and `backend/src/services/curriculum.ts` files now load from these JSON files at startup instead of containing hardcoded arrays.
+
 ### What's Next
 
-The immediate priority is making the curriculum contributable. Right now it's a TypeScript array in `api/_lib/curriculum.ts`. That needs to become something anyone can submit a PR against -- probably JSON or YAML files, one per subject, with CI validation for prerequisite consistency.
+The curriculum is now contributable. Someone can fork the repo, edit a JSON file, run `node curriculum/validate.js`, and submit a PR. That's Phase 4 of the roadmap, mostly done.
 
-We're also reconsidering the hosting. Vercel works but might be more infrastructure than we need. GitHub Pages or something simpler could be enough for now while the real value is in the data and API layers.
+The hosting is also being reconsidered. Vercel might be more than we need right now. GitHub Pages or something simpler could work while the real value grows in the data layer.
 
 ---

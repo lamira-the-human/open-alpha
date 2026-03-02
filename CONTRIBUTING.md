@@ -1,84 +1,93 @@
 # Contributing to Open Alpha
 
-Open Alpha grows through many small contributions. Here's how to help.
+Open Alpha is a knowledge graph. Contributing means adding nodes to that graph.
 
-## Ways to Contribute
+## The Graph
 
-### Add or Improve Concepts (No Code Required)
+The curriculum lives in `curriculum/*.json` -- one file per subject. Each concept is a node:
 
-The curriculum is currently in `api/_lib/curriculum.ts`. Each concept is a simple object:
-
-```typescript
+```json
 {
-  id: 'math-fractions-intro',
-  name: 'Introduction to Fractions',
-  description: 'Understanding parts of a whole',
-  prerequisites: ['math-division'],
-  gradeLevel: 4
+  "id": "math-fractions-intro",
+  "name": "Introduction to Fractions",
+  "description": "Understanding parts of a whole",
+  "prerequisites": ["math-division"],
+  "level": 4
 }
 ```
 
-You can:
-- **Add a concept** to an existing subject
-- **Fix a prerequisite chain** (e.g., "this concept should require X first")
-- **Adjust grade levels** based on teaching experience
-- **Improve descriptions** to give the AI tutor better context
-- **Add a new subject** (start small -- even 5 concepts with a clear chain is valuable)
+Prerequisites form edges. Together they create a directed acyclic graph that any AI can traverse to teach anyone anything.
 
-### Improve the AI Tutoring
+**Don't write lessons.** Write metadata that lets AI generate the right lesson for each learner. The `description` field is what the AI tutor uses as context -- make it clear and specific enough to teach from, but the actual content is always rendered just-in-time.
 
-The tutor and coach system prompts are in `api/_lib/llm.ts`. If you have teaching experience, your improvements to these prompts directly improve every student's learning experience.
+## Ways to Contribute
+
+### Add a Concept
+
+Add a node to an existing subject's JSON file. Define its parents (prerequisites) and level.
+
+### Add a Subject
+
+Create a new `curriculum/{subject}.json` file. Start small -- even 5 concepts with a clear prerequisite chain is useful. You can reference prerequisites from other subjects (e.g., a physics concept can require `math-trigonometry`).
+
+### Fix the Graph
+
+- Adjust prerequisites (this concept should require X first)
+- Fix levels based on real teaching experience
+- Improve descriptions to give the AI tutor better context
+- Fill gaps where a concept exists but its path from the roots is missing
+
+### Improve AI Prompts
+
+The tutor and coach system prompts are in `api/_lib/llm.ts`. Teaching experience directly improves every learner's experience.
 
 ### Build Features
 
-Check the [ROADMAP.md](./ROADMAP.md) for planned work, or open an issue with your idea.
+Check [ROADMAP.md](./ROADMAP.md) for planned work, or open an issue.
 
-### Report Issues
+## Validating Your Changes
 
-Found a bug? Concept in the wrong grade level? Quiz generating bad questions? Open an issue.
-
-## Getting Started
+Before submitting, run the graph validator:
 
 ```bash
-# Fork and clone
-git clone https://github.com/YOUR-USERNAME/open-alpha.git
-cd open-alpha
-
-# Install dependencies
-npm install
-
-# Set up environment
-# You'll need ATXP credentials for the LLM Gateway
-# and optionally Turso credentials for the database
-# See README.md for details
-
-# Run locally
-npm run dev
+node curriculum/validate.js
 ```
+
+This checks for:
+- Missing prerequisites (referencing a concept that doesn't exist)
+- Circular dependencies
+- Level inconsistencies (a prerequisite at a higher level than its dependent)
+- Duplicate concept IDs across subjects
+
+All checks must pass.
+
+## Concept Schema
+
+See `curriculum/schema.json` for the full spec. The key fields:
+
+| Field | Description |
+|-------|-------------|
+| `id` | Unique. Convention: `{subject}-{topic}` |
+| `name` | Human-readable name |
+| `description` | What the AI tutor uses to teach. Be specific, not lengthy. |
+| `prerequisites` | Concept IDs that must be mastered first. Can cross subjects. |
+| `level` | Difficulty. 0-12 maps roughly to K-12 grades, but the scale is open-ended. What matters is that prerequisites have lower levels than dependents. |
 
 ## Pull Request Guidelines
 
-1. **Keep PRs small.** One concept, one feature, one fix. Small PRs get reviewed faster.
-2. **Explain your reasoning.** Especially for curriculum changes -- why is this the right grade level? Why does this prerequisite make sense?
-3. **Test what you can.** If you changed API code, make sure the endpoint works. If you changed curriculum data, verify the prerequisite chain makes sense.
-4. **Don't over-engineer.** Simple and working beats clever and complex.
+1. **Keep PRs small.** One concept, one feature, one fix.
+2. **Explain your reasoning.** Why this level? Why these prerequisites?
+3. **Run the validator.** `node curriculum/validate.js` must pass.
+4. **Don't write lesson content.** Write metadata. The AI handles the rest.
 
-## Curriculum Contribution Checklist
+## Getting Started (for code contributions)
 
-When adding or modifying concepts:
-
-- [ ] Concept ID follows the pattern: `{subject}-{topic}` (e.g., `math-fractions-intro`)
-- [ ] Grade level is reasonable (check what's taught in real curricula)
-- [ ] Prerequisites exist and form a valid chain (no cycles)
-- [ ] Description gives enough context for the AI tutor to teach well
-- [ ] Concept fits naturally in the existing graph
-
-## Code Style
-
-- TypeScript throughout
-- Keep files small and focused
-- No unnecessary abstractions
-- Prefer clarity over cleverness
+```bash
+git clone https://github.com/YOUR-USERNAME/open-alpha.git
+cd open-alpha
+npm install
+npm run dev
+```
 
 ## Questions?
 

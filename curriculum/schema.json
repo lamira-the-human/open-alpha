@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Open Alpha Subject",
+  "description": "A subject containing a graph of concept nodes",
+  "type": "object",
+  "required": ["id", "name", "description", "concepts"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique subject identifier (e.g., 'math', 'reading', 'philosophy')"
+    },
+    "name": {
+      "type": "string",
+      "description": "Human-readable subject name"
+    },
+    "description": {
+      "type": "string",
+      "description": "Brief description of the subject"
+    },
+    "concepts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "description", "prerequisites", "level"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique concept identifier. Convention: {subject}-{topic} (e.g., 'math-fractions-intro')"
+          },
+          "name": {
+            "type": "string",
+            "description": "Human-readable concept name"
+          },
+          "description": {
+            "type": "string",
+            "description": "Brief description. This is what the AI tutor uses as context -- make it clear and specific enough to teach from, but don't write the lesson. The AI generates content from this."
+          },
+          "prerequisites": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Concept IDs that must be mastered before this one. Can reference concepts in other subjects."
+          },
+          "level": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Difficulty level. 0-12 maps roughly to K-12 grade levels, but the scale is open-ended. Level 15 might be undergraduate, 20 might be graduate, etc. The number is relative -- what matters is that prerequisites have lower levels than their dependents."
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,126 @@
+{
+  "id": "science",
+  "name": "Science",
+  "description": "Explore the natural world through scientific inquiry",
+  "concepts": [
+    {
+      "id": "sci-senses",
+      "name": "Five Senses",
+      "description": "Exploring the world through our senses",
+      "prerequisites": [],
+      "level": 0
+    },
+    {
+      "id": "sci-living-nonliving",
+      "name": "Living vs Non-Living",
+      "description": "What makes something alive?",
+      "prerequisites": [],
+      "level": 1
+    },
+    {
+      "id": "sci-weather",
+      "name": "Weather Basics",
+      "description": "Understanding rain, sun, wind, and seasons",
+      "prerequisites": [],
+      "level": 1
+    },
+    {
+      "id": "sci-habitats",
+      "name": "Animal Habitats",
+      "description": "Where animals live and why",
+      "prerequisites": ["sci-living-nonliving"],
+      "level": 2
+    },
+    {
+      "id": "sci-life-cycles",
+      "name": "Life Cycles",
+      "description": "How living things grow and change",
+      "prerequisites": ["sci-habitats"],
+      "level": 3
+    },
+    {
+      "id": "sci-ecosystems",
+      "name": "Ecosystems",
+      "description": "How living things interact with their environment",
+      "prerequisites": ["sci-life-cycles"],
+      "level": 4
+    },
+    {
+      "id": "sci-matter",
+      "name": "States of Matter",
+      "description": "Solids, liquids, and gases",
+      "prerequisites": [],
+      "level": 4
+    },
+    {
+      "id": "sci-energy",
+      "name": "Forms of Energy",
+      "description": "Light, heat, sound, and electricity",
+      "prerequisites": ["sci-matter"],
+      "level": 5
+    },
+    {
+      "id": "sci-cells",
+      "name": "Cell Biology",
+      "description": "The building blocks of life",
+      "prerequisites": ["sci-life-cycles"],
+      "level": 6
+    },
+    {
+      "id": "sci-atoms",
+      "name": "Atoms and Molecules",
+      "description": "The building blocks of matter",
+      "prerequisites": ["sci-matter"],
+      "level": 6
+    },
+    {
+      "id": "sci-forces",
+      "name": "Forces and Motion",
+      "description": "How things move and why",
+      "prerequisites": ["sci-energy"],
+      "level": 7
+    },
+    {
+      "id": "sci-genetics",
+      "name": "Basic Genetics",
+      "description": "How traits are inherited",
+      "prerequisites": ["sci-cells"],
+      "level": 8
+    },
+    {
+      "id": "sci-chemical-reactions",
+      "name": "Chemical Reactions",
+      "description": "How substances change and interact",
+      "prerequisites": ["sci-atoms"],
+      "level": 8
+    },
+    {
+      "id": "sci-biology",
+      "name": "Biology Foundations",
+      "description": "Comprehensive study of living systems",
+      "prerequisites": ["sci-genetics", "sci-cells"],
+      "level": 9
+    },
+    {
+      "id": "sci-chemistry",
+      "name": "Chemistry Foundations",
+      "description": "Comprehensive study of matter and reactions",
+      "prerequisites": ["sci-chemical-reactions"],
+      "level": 10
+    },
+    {
+      "id": "sci-physics",
+      "name": "Physics Foundations",
+      "description": "Comprehensive study of energy and forces",
+      "prerequisites": ["sci-forces"],
+      "level": 11
+    },
+    {
+      "id": "sci-earth-science",
+      "name": "Earth and Space Science",
+      "description": "Geology, astronomy, and environmental science",
+      "prerequisites": ["sci-chemistry", "sci-physics"],
+      "level": 12
+    }
+  ]
+}
