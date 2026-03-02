@@ -7,6 +7,7 @@ import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import AuthCallback from './pages/AuthCallback';
+import ConceptMap from './pages/ConceptMap';
 import StudentDashboard from './pages/StudentDashboard';
 import Learn from './pages/Learn';
 import ParentDashboard from './pages/ParentDashboard';
@@ -117,6 +118,14 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
+          <Route
+            path="/map/:subject"
+            element={
+              <ProtectedRoute role="student">
+                <ConceptMap />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/dashboard"
             element={

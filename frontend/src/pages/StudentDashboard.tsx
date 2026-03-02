@@ -21,11 +21,20 @@ interface Activity {
   last_attempt_at: string;
 }
 
+interface ReviewItem {
+  subject: string;
+  conceptId: string;
+  conceptName: string;
+  masteryScore: number;
+  daysSince: number;
+}
+
 export default function StudentDashboard() {
   const { user, token } = useAuth();
   const navigate = useNavigate();
   const [summary, setSummary] = useState<SubjectSummary[]>([]);
   const [recentActivity, setRecentActivity] = useState<Activity[]>([]);
+  const [reviewQueue, setReviewQueue] = useState<ReviewItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const [inviteCode, setInviteCode] = useState<string | null>(null);
@@ -35,11 +44,14 @@ export default function StudentDashboard() {
     setError(null);
     setLoading(true);
     try {
-      const [summaryRes, activityRes] = await Promise.all([
+      const [summaryRes, activityRes, reviewRes] = await Promise.all([
         fetch('/api/progress/summary', {
           headers: { Authorization: `Bearer ${token}` },
         }),
         fetch('/api/progress/activity/recent', {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        fetch('/api/progress/review', {
           headers: { Authorization: `Bearer ${token}` },
         }),
       ]);
@@ -50,9 +62,11 @@ export default function StudentDashboard() {
 
       const summaryData = await summaryRes.json();
       const activityData = await activityRes.json();
+      const reviewData = reviewRes.ok ? await reviewRes.json() : { review: [] };
 
       setSummary(summaryData.summary);
       setRecentActivity(activityData.recentProgress || []);
+      setReviewQueue(reviewData.review || []);
     } catch (err) {
       console.error('Failed to fetch dashboard data:', err);
       setError(err instanceof Error ? err : new Error('Failed to load dashboard'));
@@ -137,6 +151,47 @@ export default function StudentDashboard() {
           Welcome back{user?.displayName ? `, ${user.displayName}` : ''}!
         </h2>
 
+        {/* Spaced Repetition: Due for Review */}
+        {reviewQueue.length > 0 && (
+          <section style={{ marginBottom: '2rem' }}>
+            <h3 style={{ fontSize: '1.125rem', fontWeight: 600, marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <span>Due for Review</span>
+              <span style={{ fontSize: '0.75rem', fontWeight: 500, padding: '0.125rem 0.5rem', background: 'rgba(79,70,229,0.1)', color: 'var(--primary)', borderRadius: '9999px' }}>
+                {reviewQueue.length}
+              </span>
+            </h3>
+            <div className="card" style={{ padding: '0.25rem 0' }}>
+              {reviewQueue.map((item, i) => (
+                <div
+                  key={item.conceptId}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '0.625rem 1rem',
+                    borderBottom: i < reviewQueue.length - 1 ? '1px solid var(--border)' : 'none',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <span>{subjectEmojis[item.subject]}</span>
+                    <span style={{ fontWeight: 500, fontSize: '0.9375rem' }}>{item.conceptName}</span>
+                    <span style={{ fontSize: '0.8125rem', color: 'var(--text-light)' }}>
+                      · {item.daysSince}d ago
+                    </span>
+                  </div>
+                  <Link
+                    to={`/learn/${item.subject}/${item.conceptId}`}
+                    className="btn btn-outline"
+                    style={{ padding: '0.25rem 0.75rem', fontSize: '0.8125rem' }}
+                  >
+                    Review
+                  </Link>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
         {/* Subject Cards */}
         <section style={{ marginBottom: '3rem' }}>
           <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '1rem' }}>Choose a Subject</h3>
@@ -180,9 +235,18 @@ export default function StudentDashboard() {
                   </div>
                 </div>
 
-                <p style={{ fontSize: '0.875rem', color: 'var(--text-light)' }}>
-                  {subject.completed} completed · {subject.inProgress} in progress · {subject.notStarted} to go
-                </p>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <p style={{ fontSize: '0.875rem', color: 'var(--text-light)' }}>
+                    {subject.completed} completed · {subject.inProgress} in progress · {subject.notStarted} to go
+                  </p>
+                  <Link
+                    to={`/map/${subject.subjectId}`}
+                    onClick={(e) => e.stopPropagation()}
+                    style={{ fontSize: '0.8125rem', color: 'var(--primary)', whiteSpace: 'nowrap', marginLeft: '0.75rem' }}
+                  >
+                    View map →
+                  </Link>
+                </div>
               </div>
             ))}
           </div>
