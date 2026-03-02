@@ -95,6 +95,7 @@ export async function initializeSchema(): Promise<void> {
   // Migrations: add new columns to existing installs (errors ignored if already present)
   const migrations = [
     'ALTER TABLE users ADD COLUMN atxp_account_id TEXT',
+    'ALTER TABLE users ADD COLUMN atxp_connection_token TEXT',
   ];
   for (const sql of migrations) {
     try {

@@ -1,12 +1,34 @@
 import { executeSql } from '../_lib/db.js';
 import { signToken } from '../_lib/auth.js';
 
-// TODO: Set these env vars once ATXP eng team provides the registered OAuth app.
-// ATXP_TOKEN_ENDPOINT: e.g. 'https://accounts.atxp.ai/oauth/token'
-// ATXP_USERINFO_ENDPOINT: e.g. 'https://accounts.atxp.ai/oauth/userinfo'
-const ATXP_TOKEN_ENDPOINT = process.env.ATXP_TOKEN_ENDPOINT;
-const ATXP_USERINFO_ENDPOINT = process.env.ATXP_USERINFO_ENDPOINT;
+const ATXP_ISSUER = process.env.ATXP_ISSUER ?? 'https://auth.atxp.ai';
 const ATXP_CLIENT_ID = process.env.ATXP_CLIENT_ID;
+const ATXP_CLIENT_SECRET = process.env.ATXP_CLIENT_SECRET;
+
+interface OIDCConfig {
+  token_endpoint: string;
+}
+
+let oidcConfig: OIDCConfig | null = null;
+
+async function getOIDCConfig(): Promise<OIDCConfig> {
+  if (oidcConfig) return oidcConfig;
+  const res = await fetch(`${ATXP_ISSUER}/.well-known/openid-configuration`);
+  if (!res.ok) throw new Error(`OIDC discovery failed: ${res.status}`);
+  oidcConfig = await res.json() as OIDCConfig;
+  return oidcConfig;
+}
+
+function parseIdTokenClaims(idToken: string): Record<string, unknown> {
+  const parts = idToken.split('.');
+  if (parts.length < 2) return {};
+  try {
+    const payload = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+    return JSON.parse(atob(payload));
+  } catch {
+    return {};
+  }
+}
 
 interface UserRow {
   id: number;
@@ -23,17 +45,11 @@ interface PKCERow {
   grade_level: number | null;
 }
 
-interface ATXPUserInfo {
-  sub: string;          // stable account ID
-  name?: string;        // display name
-  email?: string;       // email (may not always be present)
-}
-
 export async function GET(request: Request) {
   try {
-    if (!ATXP_TOKEN_ENDPOINT || !ATXP_USERINFO_ENDPOINT || !ATXP_CLIENT_ID) {
+    if (!ATXP_CLIENT_ID || !ATXP_CLIENT_SECRET) {
       return Response.json(
-        { error: 'ATXP OAuth not yet configured.' },
+        { error: 'ATXP OAuth not configured. Set ATXP_CLIENT_ID and ATXP_CLIENT_SECRET env vars.' },
         { status: 503 }
       );
     }
@@ -51,7 +67,6 @@ export async function GET(request: Request) {
       return Response.json({ error: 'Missing code or state' }, { status: 400 });
     }
 
-    // Look up PKCE state
     const pkceResult = await executeSql<PKCERow>(
       'SELECT code_verifier, role, grade_level FROM oauth_pkce WHERE state = $1',
       [state]
@@ -62,16 +77,14 @@ export async function GET(request: Request) {
     }
 
     const { code_verifier, role, grade_level } = pkceResult.rows[0];
-
-    // Clean up used PKCE record
     await executeSql('DELETE FROM oauth_pkce WHERE state = $1', [state]);
 
-    // Determine redirect_uri (must match what was sent to initiate)
     const callbackUrl = new URL('/auth/callback', request.url).toString()
       .replace(/^http:\/\/localhost/, 'http://localhost');
 
-    // Exchange code for access token
-    const tokenRes = await fetch(ATXP_TOKEN_ENDPOINT, {
+    const { token_endpoint } = await getOIDCConfig();
+
+    const tokenRes = await fetch(token_endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({
@@ -79,6 +92,7 @@ export async function GET(request: Request) {
         code,
         redirect_uri: callbackUrl,
         client_id: ATXP_CLIENT_ID,
+        client_secret: ATXP_CLIENT_SECRET,
         code_verifier,
       }),
     });
@@ -89,21 +103,19 @@ export async function GET(request: Request) {
       return Response.json({ error: 'Token exchange failed' }, { status: 401 });
     }
 
-    const { access_token } = await tokenRes.json() as { access_token: string };
+    const tokenData = await tokenRes.json() as { access_token: string; id_token?: string };
 
-    // Fetch user info
-    const userInfoRes = await fetch(ATXP_USERINFO_ENDPOINT, {
-      headers: { Authorization: `Bearer ${access_token}` },
-    });
+    // Extract claims from id_token (avoids a separate userinfo round-trip)
+    const claims = tokenData.id_token ? parseIdTokenClaims(tokenData.id_token) : {};
+    const atxpAccountId = claims.sub as string | undefined;
+    const connectionToken = claims.atxp_connection_token as string | undefined;
+    const displayName = (claims.name ?? null) as string | null;
+    const email = (claims.email as string | undefined) ?? (atxpAccountId ? `atxp:${atxpAccountId}` : null);
 
-    if (!userInfoRes.ok) {
-      return Response.json({ error: 'Failed to fetch user info' }, { status: 401 });
+    if (!atxpAccountId) {
+      return Response.json({ error: 'No account identifier in token response' }, { status: 401 });
     }
 
-    const atxpUser = await userInfoRes.json() as ATXPUserInfo;
-    const atxpAccountId = atxpUser.sub;
-
-    // Find existing user by ATXP account ID
     const existingUser = await executeSql<UserRow>(
       'SELECT id, email, display_name, role, grade_level, atxp_account_id FROM users WHERE atxp_account_id = $1',
       [atxpAccountId]
@@ -112,24 +124,24 @@ export async function GET(request: Request) {
     let user: UserRow;
 
     if (existingUser.rows.length > 0) {
-      // Returning user — log them in
       user = existingUser.rows[0];
+      if (connectionToken) {
+        await executeSql(
+          'UPDATE users SET atxp_connection_token = $1 WHERE id = $2',
+          [connectionToken, user.id]
+        );
+      }
     } else {
-      // New user — requires role from the signup flow
       if (!role) {
         return Response.json(
-          { error: 'no_account', message: 'No Open Alpha account found for this ATXP account. Please sign up first.' },
+          { error: 'no_account', message: 'No Open Alpha account found. Please sign up first.' },
           { status: 404 }
         );
       }
 
-      // Create new user
-      const email = atxpUser.email ?? `atxp:${atxpAccountId}`;
-      const displayName = atxpUser.name ?? null;
-
       await executeSql(
-        'INSERT INTO users (email, atxp_account_id, display_name, role, grade_level) VALUES ($1, $2, $3, $4, $5)',
-        [email, atxpAccountId, displayName, role, grade_level ?? null]
+        'INSERT INTO users (email, atxp_account_id, display_name, role, grade_level, atxp_connection_token) VALUES ($1, $2, $3, $4, $5, $6)',
+        [email, atxpAccountId, displayName, role, grade_level ?? null, connectionToken ?? null]
       );
 
       const newUser = await executeSql<UserRow>(
