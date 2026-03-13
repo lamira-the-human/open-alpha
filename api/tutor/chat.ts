@@ -88,12 +88,21 @@ export async function POST(request: Request) {
       .map(p => `${p.concept_id}: ${p.mastery_score}%`)
       .join(', ') || 'No prior progress';
 
+    const workedExamplesText = concept.workedExamples
+      ?.map((ex, i) =>
+        `Example ${i + 1}: ${ex.problem}\n${ex.steps.map((s, j) => `  Step ${j + 1}: ${s}`).join('\n')}\nAnswer: ${ex.answer}`
+      )
+      .join('\n\n');
+
     const context: TutorContext = {
       gradeLevel,
       subject,
       conceptName: concept.name,
       conceptDescription: concept.description,
       progressContext,
+      storedExplanation: concept.explanation?.text,
+      workedExamplesText,
+      whyItMatters: concept.whyItMatters,
     };
 
     const aiResponse = await chatWithTutor(messages, context);

@@ -33,6 +33,13 @@ export async function POST(request: Request) {
       return Response.json({ error: 'Concept not found' }, { status: 400 });
     }
 
+    // If the concept has stored mastery check questions, use them directly.
+    // This avoids LLM generation costs and ensures curriculum alignment.
+    if (concept.masteryCheck?.questions?.length === 5) {
+      const questions = concept.masteryCheck.questions.map(({ id: _id, ...q }) => q);
+      return Response.json({ questions });
+    }
+
     const quizJson = await generateQuizQuestions(
       subject,
       concept.name,

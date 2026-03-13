@@ -1,12 +1,80 @@
 import { readFileSync, readdirSync } from 'fs';
 import { join } from 'path';
 
+// ── Enriched content types ────────────────────────────────────────────────────
+
+export interface ConceptExplanation {
+  text: string;
+  childVersion?: string;
+  adultVersion?: string;
+}
+
+export interface AlternateExplanation {
+  type: 'visual' | 'analogy' | 'realWorld' | 'stepByStep' | 'formal';
+  text: string;
+}
+
+export interface WorkedExample {
+  problem: string;
+  steps: string[];
+  answer: string;
+}
+
+export interface GuidedPracticeItem {
+  id: string;
+  prompt: string;
+  answer: string;
+  hint: string;
+  feedback: {
+    correct: string;
+    incorrect: string;
+  };
+}
+
+export interface MasteryQuestion {
+  id: string;
+  question: string;
+  options: string[];
+  correctAnswer: string;
+  explanation: string;
+}
+
+export interface MasteryCheck {
+  passingScore: number;
+  questions: MasteryQuestion[];
+}
+
+export interface RemediationPath {
+  action: 'review_prerequisites' | 'simpler_explanation' | 'sub_skill' | 'extra_practice';
+  conceptId?: string;
+  message: string;
+}
+
+export interface ConceptMetadata {
+  tags?: string[];
+  estimatedMinutes?: number;
+  gradeBand?: string;
+  difficulty?: 'foundational' | 'standard' | 'advanced';
+}
+
+// ── Core types ────────────────────────────────────────────────────────────────
+
 export interface Concept {
   id: string;
   name: string;
   description: string;
   prerequisites: string[];
   gradeLevel: number;
+  // Enriched fields — present only on fully-built concept bundles
+  objective?: string;
+  explanation?: ConceptExplanation;
+  alternateExplanations?: AlternateExplanation[];
+  workedExamples?: WorkedExample[];
+  guidedPractice?: GuidedPracticeItem[];
+  masteryCheck?: MasteryCheck;
+  remediationPath?: RemediationPath;
+  whyItMatters?: string;
+  metadata?: ConceptMetadata;
 }
 
 export interface Subject {
@@ -16,20 +84,7 @@ export interface Subject {
   concepts: Concept[];
 }
 
-interface JsonConcept {
-  id: string;
-  name: string;
-  description: string;
-  prerequisites: string[];
-  level: number;
-}
-
-interface JsonSubject {
-  id: string;
-  name: string;
-  description: string;
-  concepts: JsonConcept[];
-}
+// ── Loader ────────────────────────────────────────────────────────────────────
 
 function loadSubjects(): Subject[] {
   const curriculumDir = join(process.cwd(), 'curriculum');
@@ -37,17 +92,27 @@ function loadSubjects(): Subject[] {
 
   return files.map(file => {
     const raw = readFileSync(join(curriculumDir, file), 'utf-8');
-    const data: JsonSubject = JSON.parse(raw);
+    const data = JSON.parse(raw);
     return {
       id: data.id,
       name: data.name,
       description: data.description,
-      concepts: data.concepts.map(c => ({
+      concepts: data.concepts.map((c: Record<string, unknown>) => ({
         id: c.id,
         name: c.name,
         description: c.description,
         prerequisites: c.prerequisites,
         gradeLevel: c.level,
+        // Pass enriched fields through when present
+        ...(c.objective !== undefined && { objective: c.objective }),
+        ...(c.explanation !== undefined && { explanation: c.explanation }),
+        ...(c.alternateExplanations !== undefined && { alternateExplanations: c.alternateExplanations }),
+        ...(c.workedExamples !== undefined && { workedExamples: c.workedExamples }),
+        ...(c.guidedPractice !== undefined && { guidedPractice: c.guidedPractice }),
+        ...(c.masteryCheck !== undefined && { masteryCheck: c.masteryCheck }),
+        ...(c.remediationPath !== undefined && { remediationPath: c.remediationPath }),
+        ...(c.whyItMatters !== undefined && { whyItMatters: c.whyItMatters }),
+        ...(c.metadata !== undefined && { metadata: c.metadata }),
       })),
     };
   });
@@ -79,8 +144,6 @@ export function getNextConcept(
   const availableConcepts = getConceptsForGrade(subjectId, gradeLevel);
 
   // If student has no progress, start them at their grade level (not kindergarten)
-  // Find concepts at or just below their grade level that have no prerequisites
-  // or whose prerequisites are below their grade level (assumed competent)
   if (completedConceptIds.length === 0) {
     // First, try to find a concept AT their grade level
     const gradeAppropriate = availableConcepts.find(concept => {
