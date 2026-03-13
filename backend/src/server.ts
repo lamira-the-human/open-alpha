@@ -1,14 +1,17 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+dotenv.config({ path: join(__dirname, '..', '.env') });
 
 import authRoutes from './routes/auth.js';
 import tutorRoutes from './routes/tutor.js';
 import coachRoutes from './routes/coach.js';
 import progressRoutes from './routes/progress.js';
 import parentRoutes from './routes/parent.js';
-
-dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;

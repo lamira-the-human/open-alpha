@@ -1,5 +1,9 @@
 import { readFileSync, readdirSync } from 'fs';
-import { join } from 'path';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 export interface Concept {
   id: string;
@@ -32,7 +36,7 @@ interface JsonSubject {
 }
 
 function loadSubjects(): Subject[] {
-  const curriculumDir = join(process.cwd(), 'curriculum');
+  const curriculumDir = join(__dirname, '..', '..', '..', 'curriculum');
   const files = readdirSync(curriculumDir).filter(f => f.endsWith('.json') && f !== 'schema.json');
 
   return files.map(file => {

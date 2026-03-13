@@ -84,7 +84,9 @@ export async function initializeSchema(): Promise<void> {
     CREATE TABLE IF NOT EXISTS users (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       email TEXT UNIQUE NOT NULL,
-      password_hash TEXT NOT NULL,
+      password_hash TEXT,
+      atxp_account_id TEXT UNIQUE,
+      atxp_connection_token TEXT,
       display_name TEXT,
       role TEXT NOT NULL CHECK (role IN ('student', 'parent')),
       grade_level INTEGER,
@@ -125,7 +127,29 @@ export async function initializeSchema(): Promise<void> {
       created_at TEXT DEFAULT (datetime('now')),
       updated_at TEXT DEFAULT (datetime('now'))
     );
+
+    -- PKCE state for OAuth flows
+    CREATE TABLE IF NOT EXISTS oauth_pkce (
+      state TEXT PRIMARY KEY,
+      code_verifier TEXT NOT NULL,
+      role TEXT,
+      grade_level INTEGER,
+      created_at TEXT DEFAULT (datetime('now'))
+    );
   `);
+
+  // Migrations: add new columns to existing installs
+  const migrations = [
+    'ALTER TABLE users ADD COLUMN atxp_account_id TEXT UNIQUE',
+    'ALTER TABLE users ADD COLUMN atxp_connection_token TEXT',
+  ];
+  for (const sql of migrations) {
+    try {
+      database.exec(sql);
+    } catch {
+      // Column already exists — safe to ignore
+    }
+  }
 }
 
 export default {
