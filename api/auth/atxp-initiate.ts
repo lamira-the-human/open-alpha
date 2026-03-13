@@ -79,6 +79,7 @@ export async function POST(request: Request) {
     return Response.json({ authorizationUrl: authUrl.toString() });
   } catch (error) {
     console.error('ATXP initiate error:', error);
-    return Response.json({ error: 'Failed to initiate authentication' }, { status: 500 });
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return Response.json({ error: 'Failed to initiate authentication', detail: message }, { status: 500 });
   }
 }
