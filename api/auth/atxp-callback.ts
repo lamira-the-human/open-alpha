@@ -165,6 +165,7 @@ export async function GET(request: Request) {
     });
   } catch (error) {
     console.error('ATXP callback error:', error);
-    return Response.json({ error: 'Authentication failed' }, { status: 500 });
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return Response.json({ error: 'Authentication failed', detail: message }, { status: 500 });
   }
 }
