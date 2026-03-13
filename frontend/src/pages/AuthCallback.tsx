@@ -41,7 +41,7 @@ export default function AuthCallback() {
           return;
         }
         if (!res.ok) {
-          throw new Error(data.error || 'Authentication failed');
+          throw new Error(data.detail || data.error || 'Authentication failed');
         }
         login(data.token, data.user);
         navigate(data.user.role === 'student' ? '/dashboard' : '/parent', { replace: true });

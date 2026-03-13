@@ -100,7 +100,7 @@ export async function GET(request: Request) {
     if (!tokenRes.ok) {
       const err = await tokenRes.text();
       console.error('Token exchange failed:', err);
-      return Response.json({ error: 'Token exchange failed' }, { status: 401 });
+      return Response.json({ error: 'Token exchange failed', detail: err }, { status: 401 });
     }
 
     const tokenData = await tokenRes.json() as { access_token: string; id_token?: string };
