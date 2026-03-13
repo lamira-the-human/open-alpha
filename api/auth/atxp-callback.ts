@@ -116,21 +116,28 @@ export async function GET(request: Request) {
       return Response.json({ error: 'No account identifier in token response' }, { status: 401 });
     }
 
-    const existingUser = await executeSql<UserRow>(
+    // Look up by atxp_account_id first, then fall back to email (for legacy accounts)
+    let existingUser = await executeSql<UserRow>(
       'SELECT id, email, display_name, role, grade_level, atxp_account_id FROM users WHERE atxp_account_id = $1',
       [atxpAccountId]
     );
+
+    if (existingUser.rows.length === 0 && email) {
+      existingUser = await executeSql<UserRow>(
+        'SELECT id, email, display_name, role, grade_level, atxp_account_id FROM users WHERE email = $1',
+        [email]
+      );
+    }
 
     let user: UserRow;
 
     if (existingUser.rows.length > 0) {
       user = existingUser.rows[0];
-      if (connectionToken) {
-        await executeSql(
-          'UPDATE users SET atxp_connection_token = $1 WHERE id = $2',
-          [connectionToken, user.id]
-        );
-      }
+      // Link ATXP account to existing user and update connection token
+      await executeSql(
+        'UPDATE users SET atxp_account_id = $1, atxp_connection_token = $2 WHERE id = $3',
+        [atxpAccountId, connectionToken ?? null, user.id]
+      );
     } else {
       if (!role) {
         return Response.json(
