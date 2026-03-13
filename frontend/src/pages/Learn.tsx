@@ -3,8 +3,26 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../App';
 import Chat from '../components/Chat';
 import Quiz from '../components/Quiz';
+import LessonIntro from '../components/LessonIntro';
 import Spinner from '../components/Spinner';
 import ErrorAlert from '../components/ErrorAlert';
+
+interface ConceptExplanation {
+  text: string;
+  childVersion?: string;
+  adultVersion?: string;
+}
+
+interface AlternateExplanation {
+  type: string;
+  text: string;
+}
+
+interface WorkedExample {
+  problem: string;
+  steps: string[];
+  answer: string;
+}
 
 interface Concept {
   id: string;
@@ -13,6 +31,12 @@ interface Concept {
   gradeLevel: number;
   masteryScore: number;
   completed: boolean;
+  // Enriched fields — present on fully-built concept bundles
+  objective?: string;
+  explanation?: ConceptExplanation;
+  alternateExplanations?: AlternateExplanation[];
+  workedExamples?: WorkedExample[];
+  whyItMatters?: string;
 }
 
 export default function Learn() {
@@ -23,6 +47,7 @@ export default function Learn() {
   const [concepts, setConcepts] = useState<Concept[]>([]);
   const [selectedConcept, setSelectedConcept] = useState<Concept | null>(null);
   const [showQuiz, setShowQuiz] = useState(false);
+  const [showIntro, setShowIntro] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -43,14 +68,10 @@ export default function Learn() {
       const data = await res.json();
       setConcepts(data.concepts);
 
-      // If conceptId is provided, select that concept
       if (conceptId) {
         const concept = data.concepts.find((c: Concept) => c.id === conceptId);
-        if (concept) {
-          setSelectedConcept(concept);
-        }
+        if (concept) setSelectedConcept(concept);
       } else if (data.concepts.length > 0) {
-        // Otherwise find the next recommended concept
         const nextRes = await fetch(`/api/tutor/next/${subject}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -59,7 +80,6 @@ export default function Learn() {
           if (nextData.concept) {
             setSelectedConcept(nextData.concept);
           } else {
-            // All done - select first uncompleted or first
             const uncompleted = data.concepts.find((c: Concept) => !c.completed);
             setSelectedConcept(uncompleted || data.concepts[0]);
           }
@@ -77,6 +97,12 @@ export default function Learn() {
     fetchConcepts();
   }, [subject, conceptId, token]);
 
+  // When the selected concept changes, show the intro if it has enriched content
+  useEffect(() => {
+    setShowIntro(!!selectedConcept?.explanation);
+    setShowQuiz(false);
+  }, [selectedConcept?.id]);
+
   const subjectNames: Record<string, string> = {
     math: 'Mathematics',
     reading: 'Reading & Language Arts',
@@ -86,7 +112,6 @@ export default function Learn() {
   const handleQuizComplete = (score: number, passed: boolean) => {
     setShowQuiz(false);
 
-    // Update local state
     if (selectedConcept) {
       setSelectedConcept({ ...selectedConcept, masteryScore: score, completed: passed });
       setConcepts(
@@ -96,7 +121,6 @@ export default function Learn() {
       );
     }
 
-    // If passed, auto-advance to next concept after a short delay
     if (passed) {
       const currentIndex = concepts.findIndex((c) => c.id === selectedConcept?.id);
       const nextUncompleted = concepts.slice(currentIndex + 1).find((c) => !c.completed);
@@ -128,13 +152,15 @@ export default function Learn() {
     );
   }
 
+  const hasIntro = !!selectedConcept?.explanation;
+
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       {/* Subject bar with quiz button */}
       <div style={{ padding: '0.75rem 1rem', borderBottom: '1px solid var(--border)', background: 'var(--surface)' }}>
         <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <h2 style={{ fontSize: '1.125rem', fontWeight: 600 }}>{subjectNames[subject || '']}</h2>
-          {selectedConcept && (
+          {selectedConcept && !showQuiz && (
             <button
               onClick={() => setShowQuiz(true)}
               className="btn btn-secondary"
@@ -155,7 +181,7 @@ export default function Learn() {
           aria-hidden="true"
         />
 
-        {/* Sidebar - Concept List */}
+        {/* Sidebar */}
         <aside
           className={`learn-sidebar ${sidebarOpen ? 'open' : ''}`}
           style={{
@@ -176,7 +202,6 @@ export default function Learn() {
                   <button
                     onClick={() => {
                       setSelectedConcept(concept);
-                      setShowQuiz(false);
                       setSidebarOpen(false);
                       navigate(`/learn/${subject}/${concept.id}`);
                     }}
@@ -238,31 +263,75 @@ export default function Learn() {
               />
             ) : (
               <>
-                {/* Concept Header */}
+                {/* Concept header */}
                 <div style={{ padding: '1rem 1.5rem', borderBottom: '1px solid var(--border)', background: 'var(--surface)' }}>
                   <h2 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '0.25rem' }}>{selectedConcept.name}</h2>
                   <p style={{ color: 'var(--text-light)', fontSize: '0.875rem' }}>{selectedConcept.description}</p>
                   {selectedConcept.masteryScore > 0 && (
                     <div style={{ marginTop: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                       <span style={{ fontSize: '0.875rem', color: 'var(--text-light)' }}>Mastery:</span>
-                      <span
-                        style={{
-                          padding: '0.125rem 0.5rem',
-                          borderRadius: '9999px',
-                          fontSize: '0.75rem',
-                          fontWeight: 600,
-                          background: selectedConcept.completed ? 'var(--success)' : 'var(--primary)',
-                          color: 'white',
-                        }}
-                      >
+                      <span style={{
+                        padding: '0.125rem 0.5rem',
+                        borderRadius: '9999px',
+                        fontSize: '0.75rem',
+                        fontWeight: 600,
+                        background: selectedConcept.completed ? 'var(--success)' : 'var(--primary)',
+                        color: 'white',
+                      }}>
                         {selectedConcept.masteryScore}%
                       </span>
                     </div>
                   )}
                 </div>
 
-                {/* Chat Interface */}
-                <Chat subject={subject || ''} conceptId={selectedConcept.id} />
+                {/* Lesson / Tutor tabs — only shown when intro content exists */}
+                {hasIntro && (
+                  <div style={{
+                    display: 'flex',
+                    borderBottom: '1px solid var(--border)',
+                    background: 'var(--surface)',
+                    padding: '0 1.5rem',
+                  }}>
+                    {(['lesson', 'tutor'] as const).map((tab) => (
+                      <button
+                        key={tab}
+                        onClick={() => setShowIntro(tab === 'lesson')}
+                        style={{
+                          padding: '0.625rem 0.25rem',
+                          marginRight: '1.5rem',
+                          border: 'none',
+                          borderBottom: (tab === 'lesson') === showIntro
+                            ? '2px solid var(--primary)'
+                            : '2px solid transparent',
+                          background: 'transparent',
+                          color: (tab === 'lesson') === showIntro ? 'var(--primary)' : 'var(--text-light)',
+                          fontWeight: (tab === 'lesson') === showIntro ? 600 : 400,
+                          fontSize: '0.9rem',
+                          cursor: 'pointer',
+                          textTransform: 'capitalize',
+                        }}
+                      >
+                        {tab === 'lesson' ? 'Lesson' : 'Tutor'}
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {/* Content */}
+                <div style={{ flex: 1, overflowY: 'auto' }}>
+                  {showIntro && hasIntro ? (
+                    <LessonIntro
+                      objective={selectedConcept.objective}
+                      explanation={selectedConcept.explanation!}
+                      alternateExplanations={selectedConcept.alternateExplanations}
+                      workedExamples={selectedConcept.workedExamples}
+                      whyItMatters={selectedConcept.whyItMatters}
+                      onStartChat={() => setShowIntro(false)}
+                    />
+                  ) : (
+                    <Chat subject={subject || ''} conceptId={selectedConcept.id} />
+                  )}
+                </div>
               </>
             )
           ) : (
@@ -273,7 +342,7 @@ export default function Learn() {
         </main>
       </div>
 
-      {/* Mobile sidebar toggle button */}
+      {/* Mobile sidebar toggle */}
       <button
         className="sidebar-toggle"
         onClick={() => setSidebarOpen(!sidebarOpen)}
