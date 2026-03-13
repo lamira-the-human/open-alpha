@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { useAuth } from '../App';
 import Spinner from '../components/Spinner';
 import ErrorAlert from '../components/ErrorAlert';
@@ -53,7 +52,7 @@ interface Analytics {
 }
 
 export default function ParentDashboard() {
-  const { user, token } = useAuth();
+  const { token } = useAuth();
   const [children, setChildren] = useState<Child[]>([]);
   const [selectedChild, setSelectedChild] = useState<Child | null>(null);
   const [childProgress, setChildProgress] = useState<SubjectSummary[]>([]);
