@@ -26,6 +26,7 @@ export default function Learn() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [nextConceptBanner, setNextConceptBanner] = useState<Concept | null>(null);
 
   async function fetchConcepts() {
     setError(null);
@@ -95,17 +96,17 @@ export default function Learn() {
       );
     }
 
-    // If passed, suggest moving to next concept
+    // If passed, auto-advance to next concept after a short delay
     if (passed) {
       const currentIndex = concepts.findIndex((c) => c.id === selectedConcept?.id);
       const nextUncompleted = concepts.slice(currentIndex + 1).find((c) => !c.completed);
       if (nextUncompleted) {
+        setNextConceptBanner(nextUncompleted);
         setTimeout(() => {
-          if (window.confirm(`Great job! Ready to move on to "${nextUncompleted.name}"?`)) {
-            setSelectedConcept(nextUncompleted);
-            navigate(`/learn/${subject}/${nextUncompleted.id}`);
-          }
-        }, 1000);
+          setNextConceptBanner(null);
+          setSelectedConcept(nextUncompleted);
+          navigate(`/learn/${subject}/${nextUncompleted.id}`);
+        }, 3000);
       }
     }
   };
@@ -280,6 +281,31 @@ export default function Learn() {
       >
         {sidebarOpen ? '\u2715' : '\u2630'}
       </button>
+
+      {/* Auto-advance banner */}
+      {nextConceptBanner && (
+        <div style={{
+          position: 'fixed',
+          bottom: '2rem',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          background: 'var(--success)',
+          color: 'white',
+          padding: '0.875rem 1.5rem',
+          borderRadius: '0.75rem',
+          boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.75rem',
+          fontSize: '0.9375rem',
+          fontWeight: 500,
+          zIndex: 1000,
+          animation: 'slideUp 0.25s ease-out',
+        }}>
+          <span>&#10003;</span>
+          <span>Nice work! Moving on to <strong>{nextConceptBanner.name}</strong>...</span>
+        </div>
+      )}
     </div>
   );
 }
