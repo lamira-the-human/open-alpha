@@ -6,7 +6,7 @@ import { chatWithCoach, ChatMessage, CoachContext } from '../services/atxp-llm.j
 
 const router = Router();
 
-const JWT_SECRET = process.env.JWT_SECRET || 'development-secret-change-in-production';
+const getJwtSecret = () => process.env.JWT_SECRET || 'development-secret-change-in-production';
 
 interface User {
   id: number;
@@ -39,7 +39,7 @@ function getUser(req: Request): { userId: number; role: string } | null {
 
   try {
     const token = authHeader.substring(7);
-    return jwt.verify(token, JWT_SECRET) as { userId: number; role: string };
+    return jwt.verify(token, getJwtSecret()) as { userId: number; role: string };
   } catch {
     return null;
   }
