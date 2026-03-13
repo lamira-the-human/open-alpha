@@ -31,6 +31,10 @@ export interface TutorContext {
   conceptName: string;
   conceptDescription: string;
   progressContext: string;
+  // Enriched content — present when the concept has a full bundle
+  storedExplanation?: string;
+  workedExamplesText?: string;
+  whyItMatters?: string;
 }
 
 export interface CoachContext {
@@ -39,26 +43,44 @@ export interface CoachContext {
 }
 
 function getTutorSystemPrompt(context: TutorContext): string {
-  return `You are an encouraging AI tutor for a grade ${context.gradeLevel} student learning ${context.subject}.
+  const hasStoredContent = context.storedExplanation || context.workedExamplesText;
+
+  let prompt = `You are an encouraging AI tutor for a grade ${context.gradeLevel} student learning ${context.subject}.
 
 Current concept: ${context.conceptName}
-${context.conceptDescription}
+${context.conceptDescription}`;
 
-Student's learning history: ${context.progressContext}
+  if (context.storedExplanation) {
+    prompt += `\n\nCore explanation (use this as your source of truth — do not contradict it):\n${context.storedExplanation}`;
+  }
+
+  if (context.workedExamplesText) {
+    prompt += `\n\nWorked examples for this concept:\n${context.workedExamplesText}`;
+  }
+
+  if (context.whyItMatters) {
+    prompt += `\n\nWhy this concept matters: ${context.whyItMatters}`;
+  }
+
+  prompt += `\n\nStudent's learning history: ${context.progressContext}
 
 Guidelines:
 - Use age-appropriate language for grade ${context.gradeLevel}
 - Celebrate small wins and progress
 - If the student is struggling, break concepts into smaller steps
 - Keep responses concise and engaging
-- Use examples relevant to their age group
 - Ask questions to check understanding
-- Be patient and supportive
+- Be patient and supportive${hasStoredContent ? `
+- Use the provided explanation and examples as your source of truth for this concept
+- Do not introduce definitions or examples that contradict the stored content` : `
+- Use examples relevant to their age group`}
 
 When generating practice problems:
 - Match the difficulty to grade ${context.gradeLevel}
 - Provide hints if asked
 - Explain why answers are correct or incorrect`;
+
+  return prompt;
 }
 
 function getCoachSystemPrompt(context: CoachContext): string {

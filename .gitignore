@@ -33,3 +33,4 @@ coverage/
 
 # SQLite database
 backend/data/
+.vercel

@@ -48,9 +48,175 @@
     {
       "id": "math-fractions-intro",
       "name": "Introduction to Fractions",
-      "description": "Understanding parts of a whole",
+      "description": "Understanding fractions as equal parts of a whole: reading fraction notation, identifying the numerator and denominator, and representing fractions with visual models and real-world situations.",
       "prerequisites": ["math-division"],
-      "level": 4
+      "level": 4,
+
+      "objective": "Read and write fractions in standard notation, identify the numerator and denominator, and determine the fraction that represents a described or shaded part of a whole.",
+
+      "explanation": {
+        "text": "A fraction describes a part of a whole. When something is divided into equal parts, a fraction tells you how many of those parts you're talking about.\n\nA fraction is written as two numbers separated by a line:\n\n  3/4\n\nThe bottom number is called the denominator. It tells you how many equal parts the whole was divided into.\nThe top number is called the numerator. It tells you how many of those parts you have.\n\nSo 3/4 means: the whole was split into 4 equal parts, and you have 3 of them.\n\nOne important rule: the parts must be equal. If a pizza is cut into uneven slices, the fractions don't describe it accurately.",
+        "childVersion": "Imagine you have a chocolate bar with 8 equal pieces. If you eat 3 pieces, you ate 3 out of 8 pieces. We write that as 3/8.\n\nThe bottom number tells you how many pieces the bar was broken into. The top number tells you how many pieces you have.\n\nBottom = total equal pieces. Top = how many you have.",
+        "adultVersion": "A fraction is a ratio of part to whole. The denominator defines the unit — it sets the scale. The numerator counts how many of those units apply.\n\nPractical examples: 1/2 cup of flour in a recipe, a 3/4-inch bolt, 2/5 of survey respondents, one quarter (1/4 of a dollar). In each case, the denominator names the unit and the numerator counts instances of it."
+      },
+
+      "alternateExplanations": [
+        {
+          "type": "visual",
+          "text": "Draw a rectangle. Divide it into equal parts by drawing vertical lines. Shade some of the parts. The fraction you've drawn is: (shaded parts) / (total parts).\n\nExample: Divide the rectangle into 5 equal columns. Shade 2 of them. The shaded fraction is 2/5.\n\nThe key constraint: all parts must be the same size. If they're unequal, this method doesn't apply."
+        },
+        {
+          "type": "realWorld",
+          "text": "You and three friends split a sandwich equally — that's 4 people total. Each person gets 1/4 of the sandwich.\n\nIf two people have eaten their share, 2/4 of the sandwich is gone.\n\nThe total number of people (4) becomes the denominator. The number of people who've eaten (2) becomes the numerator. This logic works for anything divided equally among a group."
+        }
+      ],
+
+      "workedExamples": [
+        {
+          "problem": "A pie is cut into 6 equal slices. Maria eats 2 slices. What fraction of the pie did she eat?",
+          "steps": [
+            "Count the total number of equal slices: 6. This is the denominator — it goes on the bottom.",
+            "Count the slices Maria ate: 2. This is the numerator — it goes on top.",
+            "Write the fraction as numerator over denominator: 2/6."
+          ],
+          "answer": "2/6"
+        },
+        {
+          "problem": "A rectangle is divided into 5 equal parts. 3 parts are shaded. Write the fraction for the shaded area.",
+          "steps": [
+            "Count the total equal parts: 5. This is the denominator.",
+            "Count the shaded parts: 3. This is the numerator.",
+            "Write as numerator/denominator: 3/5."
+          ],
+          "answer": "3/5"
+        },
+        {
+          "problem": "Write a fraction for 'seven out of ten'.",
+          "steps": [
+            "The phrase 'out of' signals the total. The number after 'out of' is the denominator: 10.",
+            "The number before 'out of' is the part. This is the numerator: 7.",
+            "Write as 7/10."
+          ],
+          "answer": "7/10"
+        },
+        {
+          "problem": "A class of 20 students voted on a field trip. 13 students voted yes. What fraction voted yes?",
+          "steps": [
+            "The total number of students is the whole group — this is the denominator: 20.",
+            "The number who voted yes is the part being counted — this is the numerator: 13.",
+            "Write as 13/20."
+          ],
+          "answer": "13/20"
+        }
+      ],
+
+      "guidedPractice": [
+        {
+          "id": "gp-1",
+          "prompt": "A garden has 8 equal sections. 3 sections have flowers. What fraction of the garden has flowers?",
+          "answer": "3/8",
+          "hint": "The total number of sections goes on the bottom (denominator). The number with flowers goes on top (numerator).",
+          "feedback": {
+            "correct": "Right. 3 sections with flowers out of 8 total sections = 3/8.",
+            "incorrect": "Look at the two numbers: total sections (8) and flower sections (3). Write them as (flower sections) / (total sections)."
+          }
+        },
+        {
+          "id": "gp-2",
+          "prompt": "What is the denominator in the fraction 5/9?",
+          "answer": "9",
+          "hint": "The denominator is always the bottom number in a fraction.",
+          "feedback": {
+            "correct": "Correct. 9 is on the bottom — it tells us the whole was divided into 9 equal parts.",
+            "incorrect": "In a fraction, the denominator is always the bottom number. In 5/9, the bottom number is 9."
+          }
+        },
+        {
+          "id": "gp-3",
+          "prompt": "What is the numerator in the fraction 7/12?",
+          "answer": "7",
+          "hint": "The numerator is the top number — it tells you how many parts you have.",
+          "feedback": {
+            "correct": "Correct. 7 is on top — it's the number of parts being counted.",
+            "incorrect": "In a fraction, the numerator is always the top number. In 7/12, the top number is 7."
+          }
+        },
+        {
+          "id": "gp-4",
+          "prompt": "A shape is divided into 4 equal parts. All 4 parts are shaded. Write this as a fraction.",
+          "answer": "4/4",
+          "hint": "How many parts are shaded? That's the numerator. How many total parts? That's the denominator.",
+          "feedback": {
+            "correct": "Correct. 4/4 means all parts are shaded. This is equal to one whole.",
+            "incorrect": "Count the shaded parts (4) for the top, and the total parts (4) for the bottom: 4/4."
+          }
+        },
+        {
+          "id": "gp-5",
+          "prompt": "A bag has 10 marbles: 4 are red and 6 are blue. What fraction of the marbles are blue?",
+          "answer": "6/10",
+          "hint": "The total number of marbles is the denominator. The number of blue marbles is the numerator.",
+          "feedback": {
+            "correct": "Right. 6 blue out of 10 total = 6/10.",
+            "incorrect": "Add the marbles together for the total (4 + 6 = 10) — that's the denominator. The blue marbles (6) are the numerator: 6/10."
+          }
+        }
+      ],
+
+      "masteryCheck": {
+        "passingScore": 80,
+        "questions": [
+          {
+            "id": "mc-1",
+            "question": "A pizza is cut into 8 equal slices. You eat 3 slices. What fraction of the pizza did you eat?",
+            "options": ["A) 8/3", "B) 5/8", "C) 3/8", "D) 3/5"],
+            "correctAnswer": "C",
+            "explanation": "The denominator (8) is the total number of equal slices. The numerator (3) is how many you ate. So the fraction is 3/8."
+          },
+          {
+            "id": "mc-2",
+            "question": "In the fraction 7/12, what does the 12 represent?",
+            "options": ["A) The number of parts you have", "B) The total number of equal parts in the whole", "C) The number of parts left over", "D) The number of times you divided"],
+            "correctAnswer": "B",
+            "explanation": "The denominator (bottom number) always tells you how many equal parts the whole was divided into. Here, 12 means the whole was split into 12 equal parts."
+          },
+          {
+            "id": "mc-3",
+            "question": "A rectangle is divided into 5 equal parts and 2 parts are shaded. Which fraction represents the shaded area?",
+            "options": ["A) 5/2", "B) 3/5", "C) 2/3", "D) 2/5"],
+            "correctAnswer": "D",
+            "explanation": "2 parts are shaded (numerator) out of 5 total equal parts (denominator) = 2/5."
+          },
+          {
+            "id": "mc-4",
+            "question": "Which fraction means 'nine out of ten'?",
+            "options": ["A) 10/9", "B) 1/9", "C) 9/1", "D) 9/10"],
+            "correctAnswer": "D",
+            "explanation": "The phrase 'out of' tells you the total (denominator). The first number (9) is the part (numerator). Nine out of ten = 9/10."
+          },
+          {
+            "id": "mc-5",
+            "question": "A jar contains 6 red marbles and 4 blue marbles. What fraction of all the marbles are red?",
+            "options": ["A) 6/4", "B) 4/6", "C) 4/10", "D) 6/10"],
+            "correctAnswer": "D",
+            "explanation": "Total marbles = 6 + 4 = 10 (denominator). Red marbles = 6 (numerator). The fraction of red marbles is 6/10."
+          }
+        ]
+      },
+
+      "remediationPath": {
+        "action": "simpler_explanation",
+        "message": "Let's slow down and look at fractions using pictures. Focus on identifying the total number of equal parts first, then count how many parts are highlighted or described. Try the practice problems again."
+      },
+
+      "whyItMatters": "Fractions show up constantly in everyday life: recipes (1/2 cup of sugar), measurements (3/4-inch screw), time (a quarter hour), and money (a quarter is 1/4 of a dollar). Understanding fractions also unlocks decimals, percents, ratios, and algebra — nearly every math topic from middle school onward builds on fraction reasoning.",
+
+      "metadata": {
+        "tags": ["fractions", "number-sense", "parts-of-a-whole", "numerator", "denominator"],
+        "estimatedMinutes": 20,
+        "gradeBand": "3-5",
+        "difficulty": "foundational"
+      }
     },
     {
       "id": "math-decimals",

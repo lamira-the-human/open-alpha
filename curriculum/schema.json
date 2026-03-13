@@ -33,7 +33,7 @@
           },
           "description": {
             "type": "string",
-            "description": "Brief description. This is what the AI tutor uses as context -- make it clear and specific enough to teach from, but don't write the lesson. The AI generates content from this."
+            "description": "Brief scope description used as AI fallback context. When explanation is present, description is a summary; when absent, it's the primary teaching context for the AI."
           },
           "prerequisites": {
             "type": "array",
@@ -44,6 +44,197 @@
             "type": "integer",
             "minimum": 0,
             "description": "Difficulty level. 0-12 maps roughly to K-12 grade levels, but the scale is open-ended. Level 15 might be undergraduate, 20 might be graduate, etc. The number is relative -- what matters is that prerequisites have lower levels than their dependents."
+          },
+
+          "objective": {
+            "type": "string",
+            "description": "One sentence: exactly what the learner should be able to do after completing this concept."
+          },
+
+          "explanation": {
+            "type": "object",
+            "description": "Primary explanation of the concept. Used as source of truth for the AI tutor.",
+            "required": ["text"],
+            "properties": {
+              "text": {
+                "type": "string",
+                "description": "The primary explanation. Clear, concise, age-appropriate."
+              },
+              "childVersion": {
+                "type": "string",
+                "description": "Simplified version for younger learners (roughly K-5). Same concept, more concrete framing."
+              },
+              "adultVersion": {
+                "type": "string",
+                "description": "Practical version for older or adult learners. Can assume more life experience and context."
+              }
+            }
+          },
+
+          "alternateExplanations": {
+            "type": "array",
+            "description": "Two alternate explanations using different mental models or framings. One should use a different mental model; one should use a more practical or real-world framing.",
+            "items": {
+              "type": "object",
+              "required": ["type", "text"],
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": ["visual", "analogy", "realWorld", "stepByStep", "formal"],
+                  "description": "The framing style of this explanation."
+                },
+                "text": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+
+          "workedExamples": {
+            "type": "array",
+            "description": "At least 3 worked examples with step-by-step reasoning. Each step should explain the reasoning, not just the arithmetic.",
+            "minItems": 3,
+            "items": {
+              "type": "object",
+              "required": ["problem", "steps", "answer"],
+              "properties": {
+                "problem": { "type": "string" },
+                "steps": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "Each step explains one part of the reasoning."
+                },
+                "answer": { "type": "string" }
+              }
+            }
+          },
+
+          "guidedPractice": {
+            "type": "array",
+            "description": "At least 5 practice items with hints and targeted feedback. The hint should help without giving away the answer.",
+            "minItems": 5,
+            "items": {
+              "type": "object",
+              "required": ["id", "prompt", "answer", "hint", "feedback"],
+              "properties": {
+                "id": { "type": "string" },
+                "prompt": { "type": "string" },
+                "answer": { "type": "string" },
+                "hint": {
+                  "type": "string",
+                  "description": "A hint that narrows the approach without revealing the answer."
+                },
+                "feedback": {
+                  "type": "object",
+                  "required": ["correct", "incorrect"],
+                  "properties": {
+                    "correct": {
+                      "type": "string",
+                      "description": "Reinforcing message shown when the learner answers correctly."
+                    },
+                    "incorrect": {
+                      "type": "string",
+                      "description": "Diagnostic message shown when wrong. Explain what to look for, not just the right answer."
+                    }
+                  }
+                }
+              }
+            }
+          },
+
+          "masteryCheck": {
+            "type": "object",
+            "description": "5-question mastery checkpoint. Learner must reach passingScore (default 80%) to mark concept as mastered.",
+            "required": ["questions"],
+            "properties": {
+              "passingScore": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100,
+                "default": 80,
+                "description": "Percent correct required to pass. Default is 80."
+              },
+              "questions": {
+                "type": "array",
+                "minItems": 5,
+                "maxItems": 5,
+                "items": {
+                  "type": "object",
+                  "required": ["id", "question", "options", "correctAnswer", "explanation"],
+                  "properties": {
+                    "id": { "type": "string" },
+                    "question": { "type": "string" },
+                    "options": {
+                      "type": "array",
+                      "minItems": 3,
+                      "maxItems": 4,
+                      "items": { "type": "string" },
+                      "description": "Options formatted as 'A) text', 'B) text', etc."
+                    },
+                    "correctAnswer": {
+                      "type": "string",
+                      "description": "The letter of the correct option (e.g., 'A', 'B', 'C', 'D')."
+                    },
+                    "explanation": {
+                      "type": "string",
+                      "description": "Why this answer is correct. Shown to learner after submitting."
+                    }
+                  }
+                }
+              }
+            }
+          },
+
+          "remediationPath": {
+            "type": "object",
+            "description": "What to do when the learner fails the mastery check. Must point somewhere useful.",
+            "required": ["action", "message"],
+            "properties": {
+              "action": {
+                "type": "string",
+                "enum": ["review_prerequisites", "simpler_explanation", "sub_skill", "extra_practice"],
+                "description": "The type of remediation to offer."
+              },
+              "conceptId": {
+                "type": "string",
+                "description": "If action is 'sub_skill', the ID of the simpler concept to review first."
+              },
+              "message": {
+                "type": "string",
+                "description": "Learner-facing message explaining what to do next. Should be encouraging, not discouraging."
+              }
+            }
+          },
+
+          "whyItMatters": {
+            "type": "string",
+            "description": "Short explanation of why this concept matters in school, daily life, or future learning. Shown to learner as motivation context."
+          },
+
+          "metadata": {
+            "type": "object",
+            "description": "Metadata used for personalization, filtering, and cost tracking.",
+            "properties": {
+              "tags": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "Topic tags for search and related-concept linking."
+              },
+              "estimatedMinutes": {
+                "type": "integer",
+                "minimum": 1,
+                "description": "Typical time to complete one session on this concept, in minutes."
+              },
+              "gradeBand": {
+                "type": "string",
+                "description": "Target grade band (e.g., 'K-2', '3-5', '6-8', '9-12', 'adult')."
+              },
+              "difficulty": {
+                "type": "string",
+                "enum": ["foundational", "standard", "advanced"],
+                "description": "Difficulty tier within the grade band."
+              }
+            }
           }
         }
       }

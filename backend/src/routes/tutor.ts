@@ -219,13 +219,22 @@ router.post('/chat', async (req: Request, res: Response) => {
       .map(p => `${p.concept_id}: ${p.mastery_score}%`)
       .join(', ') || 'No prior progress';
 
-    // Get AI response
+    // Get AI response — include stored explanation and examples when available
+    const workedExamplesText = concept.workedExamples
+      ?.map((ex, i) =>
+        `Example ${i + 1}: ${ex.problem}\n${ex.steps.map((s, j) => `  Step ${j + 1}: ${s}`).join('\n')}\nAnswer: ${ex.answer}`
+      )
+      .join('\n\n');
+
     const context: TutorContext = {
       gradeLevel,
       subject: data.subject,
       conceptName: concept.name,
       conceptDescription: concept.description,
       progressContext,
+      storedExplanation: concept.explanation?.text,
+      workedExamplesText,
+      whyItMatters: concept.whyItMatters,
     };
 
     const aiResponse = await chatWithTutor(messages, context);
@@ -279,6 +288,14 @@ router.post('/quiz', async (req: Request, res: Response) => {
     const concept = getConcept(data.subject, data.conceptId);
     if (!concept) {
       res.status(400).json({ error: 'Concept not found' });
+      return;
+    }
+
+    // If the concept has stored mastery check questions, use them directly
+    // This avoids LLM generation costs and ensures curriculum alignment
+    if (concept.masteryCheck?.questions?.length === 5) {
+      const questions = concept.masteryCheck.questions.map(({ id: _id, ...q }) => q);
+      res.json({ questions });
       return;
     }
 
