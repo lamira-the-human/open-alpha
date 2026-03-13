@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../App';
 import Chat from '../components/Chat';
 import Quiz from '../components/Quiz';
@@ -31,7 +31,6 @@ interface Concept {
   gradeLevel: number;
   masteryScore: number;
   completed: boolean;
-  // Enriched fields — present on fully-built concept bundles
   objective?: string;
   explanation?: ConceptExplanation;
   alternateExplanations?: AlternateExplanation[];
@@ -61,9 +60,7 @@ export default function Learn() {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      if (!res.ok) {
-        throw new Error('Failed to load concepts');
-      }
+      if (!res.ok) throw new Error('Failed to load concepts');
 
       const data = await res.json();
       setConcepts(data.concepts);
@@ -97,7 +94,6 @@ export default function Learn() {
     fetchConcepts();
   }, [subject, conceptId, token]);
 
-  // When the selected concept changes, show the intro if it has enriched content
   useEffect(() => {
     setShowIntro(!!selectedConcept?.explanation);
     setShowQuiz(false);
@@ -109,16 +105,20 @@ export default function Learn() {
     science: 'Science',
   };
 
+  const subjectEmojis: Record<string, string> = {
+    math: '📐',
+    reading: '📖',
+    science: '🔬',
+  };
+
   const handleQuizComplete = (score: number, passed: boolean) => {
     setShowQuiz(false);
 
     if (selectedConcept) {
       setSelectedConcept({ ...selectedConcept, masteryScore: score, completed: passed });
-      setConcepts(
-        concepts.map((c) =>
-          c.id === selectedConcept.id ? { ...c, masteryScore: score, completed: passed } : c
-        )
-      );
+      setConcepts(concepts.map((c) =>
+        c.id === selectedConcept.id ? { ...c, masteryScore: score, completed: passed } : c
+      ));
     }
 
     if (passed) {
@@ -135,9 +135,7 @@ export default function Learn() {
     }
   };
 
-  if (loading) {
-    return <Spinner size="large" text="Loading concepts..." />;
-  }
+  if (loading) return <Spinner size="large" text="Loading concepts..." />;
 
   if (error) {
     return (
@@ -153,27 +151,83 @@ export default function Learn() {
   }
 
   const hasIntro = !!selectedConcept?.explanation;
+  const subjectName = subjectNames[subject || ''] || subject || '';
+  const subjectEmoji = subjectEmojis[subject || ''] || '';
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      {/* Subject bar with quiz button */}
-      <div style={{ padding: '0.75rem 1rem', borderBottom: '1px solid var(--border)', background: 'var(--surface)' }}>
-        <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h2 style={{ fontSize: '1.125rem', fontWeight: 600 }}>{subjectNames[subject || '']}</h2>
-          {selectedConcept && !showQuiz && (
-            <button
-              onClick={() => setShowQuiz(true)}
-              className="btn btn-secondary"
-              style={{ padding: '0.5rem 1rem' }}
+
+      {/* Breadcrumb bar */}
+      <div style={{
+        padding: '0.5rem 1.25rem',
+        borderBottom: '1px solid var(--border)',
+        background: 'var(--surface)',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        gap: '0.75rem',
+        flexShrink: 0,
+      }}>
+        {/* Left: mobile lessons button + breadcrumb */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', minWidth: 0, overflow: 'hidden' }}>
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="lessons-toggle"
+          >
+            ☰ Lessons
+          </button>
+
+          <nav style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', fontSize: '0.875rem', minWidth: 0, overflow: 'hidden' }}>
+            <Link
+              to="/dashboard"
+              style={{ color: 'var(--text-light)', whiteSpace: 'nowrap', flexShrink: 0 }}
             >
-              Take Quiz
-            </button>
-          )}
+              Subjects
+            </Link>
+            <span style={{ color: 'var(--border)', flexShrink: 0 }}>›</span>
+            <Link
+              to={`/learn/${subject}`}
+              style={{
+                color: selectedConcept ? 'var(--text-light)' : 'var(--text)',
+                fontWeight: selectedConcept ? 400 : 600,
+                whiteSpace: 'nowrap',
+                flexShrink: 0,
+              }}
+            >
+              {subjectName}
+            </Link>
+            {selectedConcept && (
+              <>
+                <span style={{ color: 'var(--border)', flexShrink: 0 }}>›</span>
+                <span style={{
+                  color: 'var(--text)',
+                  fontWeight: 500,
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                }}>
+                  {selectedConcept.name}
+                </span>
+              </>
+            )}
+          </nav>
         </div>
+
+        {/* Right: Take Quiz */}
+        {selectedConcept && !showQuiz && (
+          <button
+            onClick={() => setShowQuiz(true)}
+            className="btn btn-secondary"
+            style={{ padding: '0.4rem 0.875rem', fontSize: '0.875rem', flexShrink: 0 }}
+          >
+            Take Quiz
+          </button>
+        )}
       </div>
 
       {/* Main Content */}
       <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
+
         {/* Mobile sidebar overlay */}
         <div
           className={`sidebar-overlay ${sidebarOpen ? 'open' : ''}`}
@@ -185,17 +239,42 @@ export default function Learn() {
         <aside
           className={`learn-sidebar ${sidebarOpen ? 'open' : ''}`}
           style={{
-            width: '280px',
+            width: '260px',
             borderRight: '1px solid var(--border)',
             background: 'var(--surface)',
-            overflowY: 'auto',
+            display: 'flex',
+            flexDirection: 'column',
             flexShrink: 0,
+            overflow: 'hidden',
           }}
         >
-          <div style={{ padding: '1rem' }}>
-            <h3 style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-light)', marginBottom: '0.75rem' }}>
-              CONCEPTS
-            </h3>
+          {/* Subject header */}
+          <div style={{
+            padding: '0.875rem 1rem',
+            borderBottom: '1px solid var(--border)',
+            flexShrink: 0,
+          }}>
+            <Link
+              to="/dashboard"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.25rem',
+                fontSize: '0.8rem',
+                color: 'var(--text-light)',
+                marginBottom: '0.375rem',
+              }}
+            >
+              ← All Subjects
+            </Link>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontWeight: 600, fontSize: '1rem' }}>
+              <span>{subjectEmoji}</span>
+              <span>{subjectName}</span>
+            </div>
+          </div>
+
+          {/* Concept list */}
+          <div style={{ overflowY: 'auto', flex: 1, padding: '0.5rem' }}>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
               {concepts.map((concept) => (
                 <li key={concept.id}>
@@ -208,7 +287,7 @@ export default function Learn() {
                     style={{
                       width: '100%',
                       textAlign: 'left',
-                      padding: '0.75rem',
+                      padding: '0.625rem 0.75rem',
                       border: 'none',
                       borderRadius: '0.5rem',
                       background: selectedConcept?.id === concept.id ? 'var(--primary)' : 'transparent',
@@ -217,28 +296,26 @@ export default function Learn() {
                       display: 'flex',
                       alignItems: 'center',
                       gap: '0.5rem',
-                      marginBottom: '0.25rem',
+                      marginBottom: '0.125rem',
                     }}
                   >
-                    <span
-                      style={{
-                        width: '20px',
-                        height: '20px',
-                        borderRadius: '50%',
-                        background: concept.completed
-                          ? 'var(--success)'
-                          : concept.masteryScore > 0
-                          ? 'var(--primary)'
-                          : 'var(--border)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontSize: '0.75rem',
-                        color: 'white',
-                        flexShrink: 0,
-                      }}
-                    >
-                      {concept.completed ? '✓' : concept.masteryScore > 0 ? Math.round(concept.masteryScore / 20) : ''}
+                    <span style={{
+                      width: '18px',
+                      height: '18px',
+                      borderRadius: '50%',
+                      background: concept.completed
+                        ? 'var(--success)'
+                        : concept.masteryScore > 0
+                        ? 'var(--primary)'
+                        : selectedConcept?.id === concept.id ? 'rgba(255,255,255,0.3)' : 'var(--border)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '0.65rem',
+                      color: 'white',
+                      flexShrink: 0,
+                    }}>
+                      {concept.completed ? '✓' : concept.masteryScore > 0 ? '·' : ''}
                     </span>
                     <span style={{ fontSize: '0.875rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                       {concept.name}
@@ -264,7 +341,7 @@ export default function Learn() {
             ) : (
               <>
                 {/* Concept header */}
-                <div style={{ padding: '1rem 1.5rem', borderBottom: '1px solid var(--border)', background: 'var(--surface)' }}>
+                <div style={{ padding: '1rem 1.5rem', borderBottom: '1px solid var(--border)', background: 'var(--surface)', flexShrink: 0 }}>
                   <h2 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '0.25rem' }}>{selectedConcept.name}</h2>
                   <p style={{ color: 'var(--text-light)', fontSize: '0.875rem' }}>{selectedConcept.description}</p>
                   {selectedConcept.masteryScore > 0 && (
@@ -284,36 +361,38 @@ export default function Learn() {
                   )}
                 </div>
 
-                {/* Lesson / Tutor tabs — only shown when intro content exists */}
+                {/* Lesson / Tutor tabs */}
                 {hasIntro && (
                   <div style={{
                     display: 'flex',
                     borderBottom: '1px solid var(--border)',
                     background: 'var(--surface)',
                     padding: '0 1.5rem',
+                    flexShrink: 0,
                   }}>
-                    {(['lesson', 'tutor'] as const).map((tab) => (
-                      <button
-                        key={tab}
-                        onClick={() => setShowIntro(tab === 'lesson')}
-                        style={{
-                          padding: '0.625rem 0.25rem',
-                          marginRight: '1.5rem',
-                          border: 'none',
-                          borderBottom: (tab === 'lesson') === showIntro
-                            ? '2px solid var(--primary)'
-                            : '2px solid transparent',
-                          background: 'transparent',
-                          color: (tab === 'lesson') === showIntro ? 'var(--primary)' : 'var(--text-light)',
-                          fontWeight: (tab === 'lesson') === showIntro ? 600 : 400,
-                          fontSize: '0.9rem',
-                          cursor: 'pointer',
-                          textTransform: 'capitalize',
-                        }}
-                      >
-                        {tab === 'lesson' ? 'Lesson' : 'Tutor'}
-                      </button>
-                    ))}
+                    {(['lesson', 'tutor'] as const).map((tab) => {
+                      const active = (tab === 'lesson') === showIntro;
+                      return (
+                        <button
+                          key={tab}
+                          onClick={() => setShowIntro(tab === 'lesson')}
+                          style={{
+                            padding: '0.625rem 0.25rem',
+                            marginRight: '1.5rem',
+                            border: 'none',
+                            borderBottom: active ? '2px solid var(--primary)' : '2px solid transparent',
+                            background: 'transparent',
+                            color: active ? 'var(--primary)' : 'var(--text-light)',
+                            fontWeight: active ? 600 : 400,
+                            fontSize: '0.9rem',
+                            cursor: 'pointer',
+                            textTransform: 'capitalize',
+                          }}
+                        >
+                          {tab === 'lesson' ? 'Lesson' : 'Tutor'}
+                        </button>
+                      );
+                    })}
                   </div>
                 )}
 
@@ -336,20 +415,11 @@ export default function Learn() {
             )
           ) : (
             <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <p style={{ color: 'var(--text-light)' }}>Select a concept to start learning</p>
+              <p style={{ color: 'var(--text-light)' }}>Select a lesson from the left to start learning</p>
             </div>
           )}
         </main>
       </div>
-
-      {/* Mobile sidebar toggle */}
-      <button
-        className="sidebar-toggle"
-        onClick={() => setSidebarOpen(!sidebarOpen)}
-        aria-label={sidebarOpen ? 'Close concept list' : 'Open concept list'}
-      >
-        {sidebarOpen ? '\u2715' : '\u2630'}
-      </button>
 
       {/* Auto-advance banner */}
       {nextConceptBanner && (
@@ -370,6 +440,7 @@ export default function Learn() {
           fontWeight: 500,
           zIndex: 1000,
           animation: 'slideUp 0.25s ease-out',
+          whiteSpace: 'nowrap',
         }}>
           <span>&#10003;</span>
           <span>Nice work! Moving on to <strong>{nextConceptBanner.name}</strong>...</span>

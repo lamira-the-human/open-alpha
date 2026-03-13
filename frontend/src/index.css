@@ -271,22 +271,20 @@ input:focus-visible {
   justify-content: center;
 }
 
-/* Mobile sidebar toggle */
-.sidebar-toggle {
+/* Mobile lessons toggle — hidden on desktop, shown on mobile */
+.lessons-toggle {
   display: none;
-  position: fixed;
-  bottom: 1rem;
-  right: 1rem;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: var(--primary);
-  color: white;
-  border: none;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  font-size: 1.25rem;
-  z-index: 100;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.625rem;
+  border: 1px solid var(--border);
+  border-radius: 0.375rem;
+  background: transparent;
+  color: var(--text);
+  font-size: 0.8125rem;
   cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .sidebar-overlay {
@@ -376,10 +374,8 @@ input:focus-visible {
     padding: 1rem;
   }
 
-  .sidebar-toggle {
+  .lessons-toggle {
     display: flex;
-    align-items: center;
-    justify-content: center;
   }
 
   .sidebar-overlay.open {
