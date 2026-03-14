@@ -27,23 +27,520 @@
     {
       "id": "math-place-value",
       "name": "Place Value",
-      "description": "Understanding ones, tens, and hundreds",
+      "description": "Understanding the value of each digit by its position: ones, tens, hundreds, and thousands. Using place value to build, decompose, and compare numbers.",
       "prerequisites": ["math-counting"],
-      "level": 2
+      "level": 2,
+
+      "objective": "Identify the place value of each digit in numbers up to 1,000, write numbers in expanded form, and compare numbers using place value.",
+
+      "explanation": {
+        "text": "The value of a digit in a number depends on its position. That position is called its place value.\n\nIn the number 347:\n- The 7 is in the ones place. Its value is 7.\n- The 4 is in the tens place. Its value is 40.\n- The 3 is in the hundreds place. Its value is 300.\n\nSo 347 = 300 + 40 + 7. Writing it this way is called expanded form.\n\nThis is why 347 and 473 are different numbers even though they use the same digits. Position determines value.",
+        "childVersion": "Think about money. A $1 bill is worth 1. A $10 bill is worth ten $1 bills — it goes in the tens place. A $100 bill is worth ten $10 bills — it goes in the hundreds place.\n\nThe number 234 is like having 2 hundred-dollar bills, 3 ten-dollar bills, and 4 one-dollar bills.",
+        "adultVersion": "Place value is the positional notation system that makes our base-10 number system work. Each position to the left is worth ten times more than the position to its right. This system lets us represent any whole number using just 10 symbols (0–9), and it directly extends to decimals on the right side of the decimal point."
+      },
+
+      "alternateExplanations": [
+        {
+          "type": "visual",
+          "text": "Draw three columns labeled H (hundreds), T (tens), O (ones). Write a digit in each column. The number 524 has 5 in H, 2 in T, 4 in O.\n\nTo find the value, multiply each digit by its column's value and add them up: (5 × 100) + (2 × 10) + (4 × 1) = 500 + 20 + 4 = 524.\n\nMoving a digit one column to the left makes it worth 10 times as much."
+        },
+        {
+          "type": "realWorld",
+          "text": "Your house address uses place value. Address 523 is different from 352 — same digits, different meaning because the positions change.\n\nZip codes, phone numbers, and prices all depend on place value. $4.75 and $7.45 use the same digits but mean very different amounts."
+        }
+      ],
+
+      "workedExamples": [
+        {
+          "problem": "What is the value of the digit 6 in 263?",
+          "steps": [
+            "Find which place the 6 is in. From right to left: 3 is ones, 6 is tens, 2 is hundreds.",
+            "The 6 is in the tens place.",
+            "Value = 6 × 10 = 60."
+          ],
+          "answer": "60"
+        },
+        {
+          "problem": "Write 408 in expanded form.",
+          "steps": [
+            "Identify each digit's place: 4 is hundreds, 0 is tens, 8 is ones.",
+            "Write the value of each digit: 400 + 0 + 8.",
+            "Simplify by dropping the zero term: 400 + 8."
+          ],
+          "answer": "400 + 8"
+        },
+        {
+          "problem": "Which is greater: 472 or 427?",
+          "steps": [
+            "Compare hundreds digits: 4 vs 4 — equal. Move to tens.",
+            "Compare tens digits: 7 tens (70) vs 2 tens (20). 70 > 20.",
+            "Since the tens digit is larger in 472, we have 472 > 427."
+          ],
+          "answer": "472"
+        },
+        {
+          "problem": "In 1,503, what place is the digit 5 in, and what is its value?",
+          "steps": [
+            "Count positions from the right: 3 is ones, 0 is tens, 5 is hundreds, 1 is thousands.",
+            "The 5 is in the hundreds place.",
+            "Value = 5 × 100 = 500."
+          ],
+          "answer": "Hundreds place, value = 500"
+        }
+      ],
+
+      "guidedPractice": [
+        {
+          "id": "gp-1",
+          "prompt": "What is the value of the digit 8 in 385?",
+          "answer": "80",
+          "hint": "Find the position of 8 first — count from the right: ones, tens, hundreds.",
+          "feedback": {
+            "correct": "Right. 8 is in the tens place, so 8 × 10 = 80.",
+            "incorrect": "Count from the right: 5 is ones, 8 is tens, 3 is hundreds. The 8 is in the tens place: 8 × 10 = 80."
+          }
+        },
+        {
+          "id": "gp-2",
+          "prompt": "Write 524 in expanded form.",
+          "answer": "500 + 20 + 4",
+          "hint": "Write the value of each digit separately, then add them.",
+          "feedback": {
+            "correct": "Correct. 500 + 20 + 4 shows the value of each position.",
+            "incorrect": "Break it down: 5 hundreds = 500, 2 tens = 20, 4 ones = 4. So 524 = 500 + 20 + 4."
+          }
+        },
+        {
+          "id": "gp-3",
+          "prompt": "Which digit is in the hundreds place in 731?",
+          "answer": "7",
+          "hint": "The hundreds place is the third position from the right.",
+          "feedback": {
+            "correct": "Right. 7 is in the hundreds place, representing 700.",
+            "incorrect": "Count from the right: 1 (ones), 3 (tens), 7 (hundreds). The hundreds digit is 7."
+          }
+        },
+        {
+          "id": "gp-4",
+          "prompt": "Which number is greater: 364 or 346?",
+          "answer": "364",
+          "hint": "Compare digit by digit, starting from the leftmost place.",
+          "feedback": {
+            "correct": "Correct. Both have 3 hundreds, but 364 has 6 tens vs 346's 4 tens. 60 > 40, so 364 > 346.",
+            "incorrect": "Both have 3 in the hundreds place — equal. Compare tens: 6 tens vs 4 tens. 6 > 4, so 364 is greater."
+          }
+        },
+        {
+          "id": "gp-5",
+          "prompt": "What is the expanded form of 605?",
+          "answer": "600 + 5",
+          "hint": "There are no tens — what does a 0 in the tens place mean for the expanded form?",
+          "feedback": {
+            "correct": "Correct. 6 hundreds + 0 tens + 5 ones = 600 + 0 + 5 = 600 + 5.",
+            "incorrect": "6 is hundreds (600), 0 is tens (0, which we drop), 5 is ones (5). Expanded: 600 + 5."
+          }
+        }
+      ],
+
+      "masteryCheck": {
+        "passingScore": 80,
+        "questions": [
+          {
+            "id": "mc-1",
+            "question": "What is the value of the digit 4 in 349?",
+            "options": ["A) 4", "B) 40", "C) 400", "D) 4,000"],
+            "correctAnswer": "B",
+            "explanation": "4 is in the tens place. Tens means × 10, so 4 × 10 = 40."
+          },
+          {
+            "id": "mc-2",
+            "question": "What is 700 + 30 + 6 written as a standard number?",
+            "options": ["A) 7,306", "B) 736", "C) 7,036", "D) 730,006"],
+            "correctAnswer": "B",
+            "explanation": "700 is 7 hundreds, 30 is 3 tens, 6 is 6 ones. Combine: 736."
+          },
+          {
+            "id": "mc-3",
+            "question": "Which number is greatest?",
+            "options": ["A) 519", "B) 591", "C) 915", "D) 195"],
+            "correctAnswer": "C",
+            "explanation": "Compare hundreds digits: 5, 5, 9, 1. The greatest hundreds digit is 9, so 915 is greatest."
+          },
+          {
+            "id": "mc-4",
+            "question": "In 1,248, which digit is in the hundreds place?",
+            "options": ["A) 1", "B) 2", "C) 4", "D) 8"],
+            "correctAnswer": "B",
+            "explanation": "In 1,248: 8 is ones, 4 is tens, 2 is hundreds, 1 is thousands. The hundreds digit is 2."
+          },
+          {
+            "id": "mc-5",
+            "question": "The number 462 in expanded form is:",
+            "options": ["A) 4 + 6 + 2", "B) 400 + 60 + 2", "C) 46 + 2", "D) 400 + 6 + 2"],
+            "correctAnswer": "B",
+            "explanation": "4 hundreds = 400, 6 tens = 60, 2 ones = 2. Expanded: 400 + 60 + 2."
+          }
+        ]
+      },
+
+      "remediationPath": {
+        "action": "simpler_explanation",
+        "message": "Let's work with just tens and ones first — two-digit numbers. Once you can identify tens and ones confidently, hundreds will follow naturally."
+      },
+
+      "whyItMatters": "Place value is the foundation of our entire number system. Without it, you couldn't add large numbers, read prices, understand the difference between thousands and millions, or do any calculation beyond single digits. Every number you'll ever work with depends on place value.",
+
+      "metadata": {
+        "tags": ["place-value", "number-sense", "expanded-form", "comparing-numbers", "digits"],
+        "estimatedMinutes": 15,
+        "gradeBand": "1-3",
+        "difficulty": "foundational"
+      }
     },
     {
       "id": "math-multiplication",
       "name": "Multiplication",
-      "description": "Multiplying numbers and times tables",
+      "description": "Understanding multiplication as equal groups and arrays, building fluency with times tables through 12×12, and applying multiplication to solve real-world problems.",
       "prerequisites": ["math-addition-basic"],
-      "level": 3
+      "level": 3,
+
+      "objective": "Multiply single-digit and small two-digit numbers fluently and interpret multiplication as equal groups, repeated addition, or arrays.",
+
+      "explanation": {
+        "text": "Multiplication is a faster way to add the same number repeatedly.\n\n4 × 3 means 'four groups of 3' — the same as 3 + 3 + 3 + 3 = 12.\n\nWe write: 4 × 3 = 12\n\nThe two numbers being multiplied are factors. The result is the product.\n\nOrder doesn't change the answer: 4 × 3 = 3 × 4 = 12. This is the commutative property.\n\nAn array shows multiplication visually: 4 rows of 3 dots = 12 dots total. The same dots rearranged as 3 rows of 4 also give 12.",
+        "childVersion": "Imagine you have 5 bags, and each bag has 6 apples. You could count: 6, 12, 18, 24, 30. Or you could multiply: 5 × 6 = 30. Multiplication is just a shortcut for adding equal groups.\n\nThe key question is always: how many groups? how many in each group? Multiply those two numbers.",
+        "adultVersion": "Multiplication is repeated addition over equal sets. Fluency with times tables (1×1 through 12×12) is a prerequisite for fractions, algebra, mental arithmetic, and virtually all applied mathematics. The commutative property (a×b = b×a) and the distributive property (a×(b+c) = a×b + a×c) are the algebraic foundations that multiplication fluency makes intuitive."
+      },
+
+      "alternateExplanations": [
+        {
+          "type": "visual",
+          "text": "Draw dots in rows and columns — this is called an array. A 3-by-4 array has 3 rows and 4 columns: 12 dots total.\n\nRotate the array 90° and you get a 4-by-3 array — still 12 dots. This is why 3 × 4 = 4 × 3.\n\nArrays make it easy to see multiplication as area: a rectangle 3 units wide and 4 units tall has an area of 12 square units."
+        },
+        {
+          "type": "realWorld",
+          "text": "You're setting up 6 tables for a party, and each table needs 4 chairs. Instead of counting 4, 8, 12, 16, 20, 24, just multiply: 6 × 4 = 24 chairs.\n\nAny time you have equal groups — rows of seats, boxes of items, days in weeks — multiplication gives you the total faster than repeated counting."
+        }
+      ],
+
+      "workedExamples": [
+        {
+          "problem": "What is 7 × 8?",
+          "steps": [
+            "Think of it as 7 groups of 8, or use a break-apart strategy.",
+            "7 × 8 = 7 × (4 + 4) = (7 × 4) + (7 × 4) = 28 + 28 = 56.",
+            "Or use the known fact directly: 7 × 8 = 56."
+          ],
+          "answer": "56"
+        },
+        {
+          "problem": "A classroom has 6 rows of desks with 5 desks in each row. How many desks are there?",
+          "steps": [
+            "Identify the structure: equal groups. 6 rows, 5 per row.",
+            "Multiply: 6 × 5 = 30.",
+            "Check: 5 + 5 + 5 + 5 + 5 + 5 = 30."
+          ],
+          "answer": "30 desks"
+        },
+        {
+          "problem": "Find the missing factor: 9 × ? = 36.",
+          "steps": [
+            "Ask: what number times 9 equals 36?",
+            "Go through multiples of 9: 9, 18, 27, 36. That is 4 steps.",
+            "9 × 4 = 36. Check: 4 × 9 = 36."
+          ],
+          "answer": "4"
+        },
+        {
+          "problem": "What is 12 × 3?",
+          "steps": [
+            "Break 12 into 10 + 2.",
+            "(10 × 3) + (2 × 3) = 30 + 6 = 36."
+          ],
+          "answer": "36"
+        }
+      ],
+
+      "guidedPractice": [
+        {
+          "id": "gp-1",
+          "prompt": "What is 6 × 7?",
+          "answer": "42",
+          "hint": "Try breaking it up: (6 × 5) + (6 × 2).",
+          "feedback": {
+            "correct": "Right, 6 × 7 = 42.",
+            "incorrect": "Break it apart: 6 × 7 = 6 × 5 + 6 × 2 = 30 + 12 = 42."
+          }
+        },
+        {
+          "id": "gp-2",
+          "prompt": "A box holds 8 crayons. There are 4 boxes. How many crayons in total?",
+          "answer": "32",
+          "hint": "How many groups? How many in each group? Multiply.",
+          "feedback": {
+            "correct": "Correct. 4 groups of 8 = 4 × 8 = 32.",
+            "incorrect": "You have 4 equal groups of 8. Multiply: 4 × 8 = 32."
+          }
+        },
+        {
+          "id": "gp-3",
+          "prompt": "What is 9 × 9?",
+          "answer": "81",
+          "hint": "Try: 10 × 9 = 90, then subtract one group of 9.",
+          "feedback": {
+            "correct": "9 × 9 = 81. Good.",
+            "incorrect": "10 × 9 = 90. Subtract one group of 9: 90 − 9 = 81."
+          }
+        },
+        {
+          "id": "gp-4",
+          "prompt": "What does 5 × 0 equal?",
+          "answer": "0",
+          "hint": "Think: 5 groups of 0. How many items are in those groups total?",
+          "feedback": {
+            "correct": "Correct. Any number times zero is zero — there are no items in any group.",
+            "incorrect": "5 × 0 means 5 groups of 0 items. No matter how many groups, if each has 0, the total is 0."
+          }
+        },
+        {
+          "id": "gp-5",
+          "prompt": "Find the missing factor: ? × 6 = 48.",
+          "answer": "8",
+          "hint": "List multiples of 6 until you reach 48, then count how many steps it took.",
+          "feedback": {
+            "correct": "Right. 8 × 6 = 48.",
+            "incorrect": "Multiples of 6: 6, 12, 18, 24, 30, 36, 42, 48. You reach 48 on the 8th step, so 8 × 6 = 48."
+          }
+        }
+      ],
+
+      "masteryCheck": {
+        "passingScore": 80,
+        "questions": [
+          {
+            "id": "mc-1",
+            "question": "What is 8 × 7?",
+            "options": ["A) 48", "B) 54", "C) 56", "D) 63"],
+            "correctAnswer": "C",
+            "explanation": "8 × 7 = 56. You can verify with the break-apart strategy: 8 × 7 = 8 × (5+2) = 40 + 16 = 56."
+          },
+          {
+            "id": "mc-2",
+            "question": "A garden has 9 rows of plants with 6 plants in each row. How many plants are there?",
+            "options": ["A) 15", "B) 36", "C) 48", "D) 54"],
+            "correctAnswer": "D",
+            "explanation": "9 rows × 6 plants per row = 9 × 6 = 54."
+          },
+          {
+            "id": "mc-3",
+            "question": "Which expression has the same value as 4 × 9?",
+            "options": ["A) 4 + 9", "B) 9 × 4", "C) 4 × 4", "D) 9 + 9"],
+            "correctAnswer": "B",
+            "explanation": "Multiplication is commutative: 4 × 9 = 9 × 4 = 36."
+          },
+          {
+            "id": "mc-4",
+            "question": "What is the missing factor? 7 × ? = 42",
+            "options": ["A) 5", "B) 6", "C) 7", "D) 8"],
+            "correctAnswer": "B",
+            "explanation": "7 × 6 = 42. Check: 6 × 7 = 42."
+          },
+          {
+            "id": "mc-5",
+            "question": "What is 12 × 4?",
+            "options": ["A) 36", "B) 42", "C) 46", "D) 48"],
+            "correctAnswer": "D",
+            "explanation": "Break it apart: (10 × 4) + (2 × 4) = 40 + 8 = 48."
+          }
+        ]
+      },
+
+      "remediationPath": {
+        "action": "simpler_explanation",
+        "message": "Let's go back to thinking about multiplication as equal groups. Try drawing rows of dots for small numbers like 2 × 3 and 3 × 4 before working with larger facts."
+      },
+
+      "whyItMatters": "Multiplication is the gateway to almost every math topic ahead — division, fractions, percentages, area, algebra, and statistics all depend on it. In everyday life, it's how you calculate totals, scale recipes, figure out costs, and understand rates. Building fluency with multiplication facts now pays dividends for years.",
+
+      "metadata": {
+        "tags": ["multiplication", "equal-groups", "arrays", "times-tables", "factors", "products"],
+        "estimatedMinutes": 20,
+        "gradeBand": "3-4",
+        "difficulty": "foundational"
+      }
     },
     {
       "id": "math-division",
       "name": "Division",
-      "description": "Dividing numbers and understanding remainders",
+      "description": "Understanding division as equal sharing and equal grouping, computing quotients with single-digit divisors, interpreting remainders, and connecting division to its inverse relationship with multiplication.",
       "prerequisites": ["math-multiplication"],
-      "level": 3
+      "level": 3,
+
+      "objective": "Divide whole numbers by single-digit divisors using equal sharing or equal grouping, interpret remainders correctly, and use the relationship between multiplication and division to check answers.",
+
+      "explanation": {
+        "text": "Division splits a number into equal parts. There are two ways to think about it:\n\nEqual sharing: 12 ÷ 4 = ? → Share 12 items equally among 4 people. Each person gets 3.\n\nEqual grouping: 12 ÷ 4 = ? → How many groups of 4 can you make from 12? You can make 3 groups.\n\nBoth give the same answer: 12 ÷ 4 = 3.\n\nThe parts of a division problem:\n- Dividend: the number being divided (12)\n- Divisor: the number you divide by (4)\n- Quotient: the result (3)\n\nDivision is the inverse of multiplication. If 4 × 3 = 12, then 12 ÷ 4 = 3 and 12 ÷ 3 = 4.\n\nSometimes division doesn't come out evenly. The leftover is called the remainder. 13 ÷ 4 = 3 R1, because 4 × 3 = 12 and 13 − 12 = 1.",
+        "childVersion": "Imagine you have 15 cookies to share equally among 5 people. 15 ÷ 5 = 3 — each person gets exactly 3 cookies.\n\nBut if you have 16 cookies among 5 people: 16 ÷ 5 = 3 R1 — each person gets 3, and there is 1 left over.",
+        "adultVersion": "Division is the inverse of multiplication, and this relationship (a × b = c ↔ c ÷ a = b) is the basis of fact families and the foundation of fraction arithmetic (since a/b literally means a ÷ b). Remainders are contextually meaningful: in discrete settings (distributing items), a remainder means some are leftover; in measurement contexts, remainders become fractions or decimals."
+      },
+
+      "alternateExplanations": [
+        {
+          "type": "visual",
+          "text": "Draw 20 dots. Circle groups of 4. Count the circles: 5 circles means 5 equal groups. So 20 ÷ 4 = 5.\n\nNow draw 22 dots and circle groups of 4. You get 5 circles and 2 dots left over. So 22 ÷ 4 = 5 R2.\n\nThe remainder is the dots that didn't fit into a complete circle."
+        },
+        {
+          "type": "realWorld",
+          "text": "You're arranging 30 chairs into rows of 6. 30 ÷ 6 = 5 rows — perfect fit.\n\nBut if you want rows of 7: 30 ÷ 7 = 4 R2. You can fill 4 complete rows of 7 (28 chairs), with 2 chairs left over for a partial fifth row.\n\nDivision answers the practical question: how many complete groups can I make, and what's left over?"
+        }
+      ],
+
+      "workedExamples": [
+        {
+          "problem": "What is 28 ÷ 7?",
+          "steps": [
+            "Ask: what times 7 equals 28?",
+            "7 × 4 = 28.",
+            "So 28 ÷ 7 = 4."
+          ],
+          "answer": "4"
+        },
+        {
+          "problem": "35 students are split into groups of 5. How many groups?",
+          "steps": [
+            "This is equal grouping: how many groups of 5 fit in 35?",
+            "35 ÷ 5 = ?",
+            "5 × 7 = 35, so 35 ÷ 5 = 7."
+          ],
+          "answer": "7 groups"
+        },
+        {
+          "problem": "What is 17 ÷ 3?",
+          "steps": [
+            "Find the largest multiple of 3 that fits in 17: 3 × 5 = 15.",
+            "Remainder: 17 − 15 = 2.",
+            "17 ÷ 3 = 5 remainder 2, written 5 R2."
+          ],
+          "answer": "5 R2"
+        },
+        {
+          "problem": "If 6 × 8 = 48, what is 48 ÷ 8?",
+          "steps": [
+            "Division is the inverse of multiplication.",
+            "If 6 × 8 = 48, then dividing 48 by 8 gives back 6.",
+            "48 ÷ 8 = 6."
+          ],
+          "answer": "6"
+        }
+      ],
+
+      "guidedPractice": [
+        {
+          "id": "gp-1",
+          "prompt": "What is 42 ÷ 6?",
+          "answer": "7",
+          "hint": "Think of the related multiplication fact: 6 × ? = 42.",
+          "feedback": {
+            "correct": "Correct. 6 × 7 = 42, so 42 ÷ 6 = 7.",
+            "incorrect": "Use your times table: 6 × 7 = 42. Division undoes multiplication, so 42 ÷ 6 = 7."
+          }
+        },
+        {
+          "id": "gp-2",
+          "prompt": "24 apples are packed equally into 4 bags. How many apples per bag?",
+          "answer": "6",
+          "hint": "Divide the total by the number of bags.",
+          "feedback": {
+            "correct": "Right. 24 ÷ 4 = 6. Each bag gets 6 apples.",
+            "incorrect": "Divide the total (24) by the number of bags (4): 24 ÷ 4 = 6."
+          }
+        },
+        {
+          "id": "gp-3",
+          "prompt": "What is 19 ÷ 4?",
+          "answer": "4 R3",
+          "hint": "Find the largest multiple of 4 that fits in 19, then find the leftover.",
+          "feedback": {
+            "correct": "Right. 4 × 4 = 16. Remainder: 19 − 16 = 3. So 19 ÷ 4 = 4 R3.",
+            "incorrect": "4 × 4 = 16 fits in 19. Subtract: 19 − 16 = 3. Answer: 4 R3."
+          }
+        },
+        {
+          "id": "gp-4",
+          "prompt": "If 9 × 7 = 63, what is 63 ÷ 9?",
+          "answer": "7",
+          "hint": "Division and multiplication are inverses. If you know the multiplication fact, the division fact is automatic.",
+          "feedback": {
+            "correct": "Correct. 63 ÷ 9 = 7 because 9 × 7 = 63.",
+            "incorrect": "Because 9 × 7 = 63, dividing 63 by 9 gives back 7."
+          }
+        },
+        {
+          "id": "gp-5",
+          "prompt": "What is 0 ÷ 5?",
+          "answer": "0",
+          "hint": "If you have zero items to share among 5 people, how many does each person get?",
+          "feedback": {
+            "correct": "Right. Zero divided by any non-zero number is always 0.",
+            "incorrect": "0 items shared among 5 people means each person gets 0. So 0 ÷ 5 = 0."
+          }
+        }
+      ],
+
+      "masteryCheck": {
+        "passingScore": 80,
+        "questions": [
+          {
+            "id": "mc-1",
+            "question": "What is 54 ÷ 9?",
+            "options": ["A) 5", "B) 6", "C) 7", "D) 8"],
+            "correctAnswer": "B",
+            "explanation": "9 × 6 = 54, so 54 ÷ 9 = 6."
+          },
+          {
+            "id": "mc-2",
+            "question": "32 students are split into equal teams of 8. How many teams?",
+            "options": ["A) 3", "B) 4", "C) 5", "D) 6"],
+            "correctAnswer": "B",
+            "explanation": "32 ÷ 8 = 4. Check: 8 × 4 = 32."
+          },
+          {
+            "id": "mc-3",
+            "question": "What is 23 ÷ 5?",
+            "options": ["A) 4 R2", "B) 4 R3", "C) 5 R2", "D) 5 R3"],
+            "correctAnswer": "B",
+            "explanation": "5 × 4 = 20. Remainder: 23 − 20 = 3. So 23 ÷ 5 = 4 R3."
+          },
+          {
+            "id": "mc-4",
+            "question": "If 7 × 8 = 56, what is 56 ÷ 7?",
+            "options": ["A) 6", "B) 7", "C) 8", "D) 9"],
+            "correctAnswer": "C",
+            "explanation": "Division reverses multiplication. Since 7 × 8 = 56, then 56 ÷ 7 = 8."
+          },
+          {
+            "id": "mc-5",
+            "question": "What does 45 ÷ 9 = 5 tell you?",
+            "options": ["A) 9 added to 5 equals 45", "B) 9 equal groups of 5 make 45", "C) 5 groups of 45 make 9", "D) 45 minus 9 equals 5"],
+            "correctAnswer": "B",
+            "explanation": "45 ÷ 9 = 5 means 45 split into 9 equal groups gives 5 per group — the same as saying 9 groups of 5 equal 45."
+          }
+        ]
+      },
+
+      "remediationPath": {
+        "action": "review_prerequisites",
+        "message": "Division builds directly on multiplication. Let's review your times tables first — once those are solid, division will click much faster."
+      },
+
+      "whyItMatters": "Division is everywhere: splitting a bill, calculating averages, finding out how many packages you need, and understanding rates. A fraction is literally a division problem written differently — 3/4 means 3 ÷ 4. That connection makes division one of the most important foundations in all of mathematics.",
+
+      "metadata": {
+        "tags": ["division", "equal-sharing", "equal-grouping", "remainders", "inverse-operations", "fact-families"],
+        "estimatedMinutes": 20,
+        "gradeBand": "3-4",
+        "difficulty": "foundational"
+      }
     },
     {
       "id": "math-fractions-intro",
@@ -221,16 +718,347 @@
     {
       "id": "math-decimals",
       "name": "Decimals",
-      "description": "Understanding decimal numbers and place value",
+      "description": "Reading, writing, and comparing decimal numbers to the hundredths place, and connecting decimals to fractions with denominators of 10 and 100.",
       "prerequisites": ["math-fractions-intro"],
-      "level": 5
+      "level": 5,
+
+      "objective": "Read and write decimals to the hundredths place, identify the value of each decimal digit, compare decimal numbers, and convert between decimals and fractions with denominators of 10 or 100.",
+
+      "explanation": {
+        "text": "A decimal is another way to write a fraction whose denominator is 10, 100, or another power of 10.\n\nThe decimal point separates the whole number part from the fractional part:\n\n  3.47\n\n- 3 is the whole number (3 ones)\n- 4 is in the tenths place: it means 4/10 = 0.4\n- 7 is in the hundredths place: it means 7/100 = 0.07\n\nSo 3.47 = 3 + 4/10 + 7/100.\n\nReading decimals: say 'and' for the decimal point. 3.47 is 'three and forty-seven hundredths.'\n\nComparing decimals: line up the decimal points and compare digit by digit from left to right. 0.6 vs 0.47 — tenths place: 6 > 4, so 0.6 > 0.47, even though 47 looks larger than 6.",
+        "childVersion": "Think of a dollar. $1.00 is one whole dollar. $0.50 is 50 cents — that is 50 out of 100 parts of a dollar. $0.07 is 7 cents, or 7 out of 100 parts.\n\nThe digits after the decimal point work just like cents in a dollar — they are parts of a whole, getting smaller as you move right.",
+        "adultVersion": "Decimals are base-10 fractions expressed in positional notation — the same system as whole numbers, extended rightward past the decimal point. Each position to the right is one-tenth the value of the position to its left. Two decimal places correspond to hundredths, three to thousandths, and so on. This is the notation used for currency, measurements, and scientific data."
+      },
+
+      "alternateExplanations": [
+        {
+          "type": "visual",
+          "text": "Draw a 10×10 grid (100 equal squares). Shade 47 squares. The shaded area is 47/100 = 0.47.\n\nNow shade 60 squares on a second grid: that is 60/100 = 0.60 = 0.6.\n\nComparing the two grids makes it clear that 0.6 (60 squares) is more than 0.47 (47 squares), even though 47 > 6 as whole numbers."
+        },
+        {
+          "type": "realWorld",
+          "text": "Prices always use decimals. $4.75 means 4 whole dollars and 75 cents (75 hundredths of a dollar).\n\nWhen you compare $4.75 and $4.89 in a store, you first check the dollars (same), then the cents: 75 < 89, so $4.75 < $4.89.\n\nWeather readings (23.4°F), race times (12.07 seconds), and gas prices all use decimal notation the same way."
+        }
+      ],
+
+      "workedExamples": [
+        {
+          "problem": "Write 0.6 as a fraction.",
+          "steps": [
+            "0.6 has one decimal place, which means the denominator is 10.",
+            "0.6 = 6/10."
+          ],
+          "answer": "6/10"
+        },
+        {
+          "problem": "Which is greater: 0.4 or 0.38?",
+          "steps": [
+            "Line up the decimal points: 0.40 and 0.38.",
+            "Compare tenths digits: 4 vs 3. Since 4 > 3, we stop here.",
+            "0.4 > 0.38 (the same as comparing 0.40 > 0.38)."
+          ],
+          "answer": "0.4 is greater"
+        },
+        {
+          "problem": "Write 9/100 as a decimal.",
+          "steps": [
+            "The denominator is 100, so we need 2 decimal places.",
+            "9/100 = 0.09. The 9 goes in the hundredths place (second decimal place).",
+            "The tenths place is 0 because there are no tenths."
+          ],
+          "answer": "0.09"
+        },
+        {
+          "problem": "A runner finishes in 12.45 seconds. What is the value of the digit 4?",
+          "steps": [
+            "Identify the position of 4 in 12.45: 12 is whole seconds, 4 is the first decimal digit (tenths), 5 is the second (hundredths).",
+            "The 4 is in the tenths place.",
+            "Value = 4/10 = 0.4 seconds."
+          ],
+          "answer": "4 tenths of a second (0.4 seconds)"
+        }
+      ],
+
+      "guidedPractice": [
+        {
+          "id": "gp-1",
+          "prompt": "Write 0.7 as a fraction.",
+          "answer": "7/10",
+          "hint": "Count the decimal places — one decimal place means the denominator is 10.",
+          "feedback": {
+            "correct": "Correct. One decimal place = tenths, so 0.7 = 7/10.",
+            "incorrect": "One decimal place means the denominator is 10. So 0.7 = 7/10."
+          }
+        },
+        {
+          "id": "gp-2",
+          "prompt": "Which is larger: 0.52 or 0.5?",
+          "answer": "0.52",
+          "hint": "Rewrite 0.5 as 0.50, then compare digit by digit.",
+          "feedback": {
+            "correct": "Right. 0.50 vs 0.52 — tenths are equal (5 = 5), hundredths: 2 > 0. So 0.52 > 0.50.",
+            "incorrect": "Write 0.5 as 0.50. Compare: tenths equal (5 = 5), hundredths: 2 > 0. So 0.52 > 0.50."
+          }
+        },
+        {
+          "id": "gp-3",
+          "prompt": "Write 3/10 as a decimal.",
+          "answer": "0.3",
+          "hint": "A denominator of 10 means one decimal place (tenths).",
+          "feedback": {
+            "correct": "Correct. 3/10 = 0.3.",
+            "incorrect": "Denominator 10 → one decimal place. 3/10 = 0.3."
+          }
+        },
+        {
+          "id": "gp-4",
+          "prompt": "What is the value of the 3 in 2.35?",
+          "answer": "3 tenths (or 0.3)",
+          "hint": "The first place after the decimal point is always tenths.",
+          "feedback": {
+            "correct": "Right. The 3 is in the tenths place: value = 3/10 = 0.3.",
+            "incorrect": "After the decimal: first is tenths, second is hundredths. The 3 is in the tenths place: value = 0.3."
+          }
+        },
+        {
+          "id": "gp-5",
+          "prompt": "Write 47/100 as a decimal.",
+          "answer": "0.47",
+          "hint": "A denominator of 100 means you need two decimal places.",
+          "feedback": {
+            "correct": "Correct. 47/100 = 0.47.",
+            "incorrect": "Denominator 100 → two decimal places. 47 written with two decimal places is 0.47."
+          }
+        }
+      ],
+
+      "masteryCheck": {
+        "passingScore": 80,
+        "questions": [
+          {
+            "id": "mc-1",
+            "question": "What is 0.09 written as a fraction?",
+            "options": ["A) 9/10", "B) 9/100", "C) 1/9", "D) 9/1,000"],
+            "correctAnswer": "B",
+            "explanation": "0.09 has two decimal places (hundredths), so the denominator is 100. 0.09 = 9/100."
+          },
+          {
+            "id": "mc-2",
+            "question": "Which decimal is greatest?",
+            "options": ["A) 0.8", "B) 0.72", "C) 0.08", "D) 0.799"],
+            "correctAnswer": "A",
+            "explanation": "Compare tenths digits: 8, 7, 0, 7. The greatest tenths digit is 8, so 0.8 is greatest."
+          },
+          {
+            "id": "mc-3",
+            "question": "What does the digit 5 represent in 3.54?",
+            "options": ["A) 5 ones", "B) 5 tenths", "C) 5 hundredths", "D) 50"],
+            "correctAnswer": "B",
+            "explanation": "In 3.54, the first digit after the decimal is in the tenths place. The 5 represents 5 tenths = 0.5."
+          },
+          {
+            "id": "mc-4",
+            "question": "Which fraction equals 0.3?",
+            "options": ["A) 3/100", "B) 1/3", "C) 3/10", "D) 30/100"],
+            "correctAnswer": "C",
+            "explanation": "0.3 has one decimal place (tenths). 0.3 = 3/10."
+          },
+          {
+            "id": "mc-5",
+            "question": "A store sells juice for $2.49 and water for $2.94. Which costs more?",
+            "options": ["A) The juice ($2.49)", "B) The water ($2.94)", "C) They cost the same", "D) Cannot be determined"],
+            "correctAnswer": "B",
+            "explanation": "Both have $2 (equal). Compare tenths (cents): 4 vs 9. Since 9 > 4, $2.94 > $2.49. The water costs more."
+          }
+        ]
+      },
+
+      "remediationPath": {
+        "action": "review_prerequisites",
+        "conceptId": "math-fractions-intro",
+        "message": "Decimals are closely connected to fractions — especially fractions with 10 or 100 as the denominator. Let's revisit fractions first, then connect them to decimal notation."
+      },
+
+      "whyItMatters": "Decimals are unavoidable: every price, measurement, scientific reading, and statistic uses them. They are also the bridge between fractions and percent/ratio thinking used in finance, data analysis, and science. Comfort with decimals makes virtually every quantitative task in daily life easier.",
+
+      "metadata": {
+        "tags": ["decimals", "place-value", "fractions", "comparing-decimals", "tenths", "hundredths"],
+        "estimatedMinutes": 20,
+        "gradeBand": "4-6",
+        "difficulty": "standard"
+      }
     },
     {
       "id": "math-ratios",
       "name": "Ratios and Proportions",
-      "description": "Understanding relationships between numbers",
+      "description": "Writing and interpreting ratios comparing two quantities, finding equivalent ratios, computing unit rates, and solving proportion problems.",
       "prerequisites": ["math-fractions-intro"],
-      "level": 6
+      "level": 6,
+
+      "objective": "Write ratios in multiple forms, identify equivalent ratios, calculate unit rates, and use proportional reasoning to solve real-world problems.",
+
+      "explanation": {
+        "text": "A ratio compares two quantities. We can write it three ways:\n- 3 to 4\n- 3:4\n- 3/4\n\nIf a recipe calls for 3 cups of flour and 4 cups of sugar, the ratio of flour to sugar is 3:4.\n\nRatios describe relative amounts — not just how many, but how one quantity compares to another.\n\nEquivalent ratios express the same relationship:\n3:4 = 6:8 = 9:12 (multiply both parts by the same number)\n\nUnit rate is a ratio with a denominator of 1. It answers 'how much per one unit.'\nIf you drive 150 miles in 3 hours: 150 ÷ 3 = 50 miles per hour.\n\nA proportion is an equation stating that two ratios are equal:\n3/4 = 6/8\nTo check: cross-multiply: 3 × 8 = 24 and 4 × 6 = 24. Equal, so it is a proportion.",
+        "childVersion": "If you mix 2 cups of juice concentrate with 5 cups of water, the ratio is 2:5. To make twice as much drink, you use 4 cups of concentrate and 10 cups of water (4:10). The drink tastes the same because the ratio is the same — the amounts just scaled up together.",
+        "adultVersion": "Ratios and proportions are the mathematical language of scaling and comparison. A unit rate standardizes a ratio to 'per one' and is used in speed, price, density, and efficiency calculations. Proportional reasoning — solving for an unknown in a/b = c/d — underlies percent problems, unit conversion, scale drawings, and statistical rates."
+      },
+
+      "alternateExplanations": [
+        {
+          "type": "visual",
+          "text": "Draw a tape diagram with 3 blue segments and 5 red segments side by side. Label it '3 blue : 5 red.' Now double every segment: 6 blue, 10 red — the visual proportions look identical. This is an equivalent ratio.\n\nTape diagrams make it easy to see why scaling both parts of a ratio keeps the relationship the same."
+        },
+        {
+          "type": "realWorld",
+          "text": "A map uses a scale: 1 inch = 50 miles. If two cities are 3 inches apart on the map, the real distance is 3 × 50 = 150 miles. This is proportion reasoning: 1/50 = 3/150.\n\nThe same logic applies to recipes, building blueprints, and currency exchange. Any time you scale a relationship up or down, you are working with equivalent ratios."
+        }
+      ],
+
+      "workedExamples": [
+        {
+          "problem": "A bag has 5 red marbles and 3 blue marbles. Write the ratio of red to blue in all three forms.",
+          "steps": [
+            "Identify the two quantities: 5 red, 3 blue.",
+            "Write in all three forms: '5 to 3', '5:3', and '5/3'."
+          ],
+          "answer": "5 to 3, or 5:3, or 5/3"
+        },
+        {
+          "problem": "Find an equivalent ratio to 2:3.",
+          "steps": [
+            "Choose a multiplier — for example, 4.",
+            "Multiply both parts by 4: 2 × 4 = 8, 3 × 4 = 12.",
+            "So 2:3 = 8:12."
+          ],
+          "answer": "8:12 (or any multiple such as 4:6)"
+        },
+        {
+          "problem": "A car travels 240 miles in 4 hours. What is the unit rate?",
+          "steps": [
+            "Unit rate = total quantity ÷ number of units.",
+            "240 miles ÷ 4 hours = 60 miles per hour.",
+            "The unit rate is 60 miles per hour."
+          ],
+          "answer": "60 miles per hour"
+        },
+        {
+          "problem": "If 4 notebooks cost $12, how much do 7 notebooks cost?",
+          "steps": [
+            "Find the unit rate: $12 ÷ 4 = $3 per notebook.",
+            "Multiply by the number needed: 7 × $3 = $21."
+          ],
+          "answer": "$21"
+        }
+      ],
+
+      "guidedPractice": [
+        {
+          "id": "gp-1",
+          "prompt": "A class has 12 boys and 8 girls. Write the ratio of boys to girls in simplest form.",
+          "answer": "3:2",
+          "hint": "Write the ratio, then check if both numbers share a common factor you can divide out.",
+          "feedback": {
+            "correct": "Correct. 12:8 simplifies to 3:2 (divide both by 4).",
+            "incorrect": "12 and 8 are both divisible by 4. 12÷4 = 3, 8÷4 = 2. Simplified ratio: 3:2."
+          }
+        },
+        {
+          "id": "gp-2",
+          "prompt": "Is 3:5 equivalent to 9:15?",
+          "answer": "Yes",
+          "hint": "Multiply both parts of 3:5 by 3 and compare to 9:15.",
+          "feedback": {
+            "correct": "Right. 3×3 = 9, 5×3 = 15. So 3:5 = 9:15.",
+            "incorrect": "Multiply 3:5 by 3: 3×3=9, 5×3=15. This gives 9:15, so yes, they are equivalent."
+          }
+        },
+        {
+          "id": "gp-3",
+          "prompt": "A runner completes 8 laps in 16 minutes. What is the unit rate in minutes per lap?",
+          "answer": "2 minutes per lap",
+          "hint": "Divide the total minutes by the number of laps.",
+          "feedback": {
+            "correct": "Correct. 16 ÷ 8 = 2 minutes per lap.",
+            "incorrect": "Unit rate = total ÷ number of units. 16 minutes ÷ 8 laps = 2 minutes per lap."
+          }
+        },
+        {
+          "id": "gp-4",
+          "prompt": "A recipe uses 3 cups of oats for every 2 cups of honey. How many cups of honey are needed for 9 cups of oats?",
+          "answer": "6 cups",
+          "hint": "How many times does 3 multiply to reach 9? Apply the same multiplier to the honey.",
+          "feedback": {
+            "correct": "Right. 3 × 3 = 9, so multiply the honey by 3 too: 2 × 3 = 6.",
+            "incorrect": "The ratio is 3:2. To get from 3 to 9, multiply by 3. Apply the same factor to honey: 2 × 3 = 6."
+          }
+        },
+        {
+          "id": "gp-5",
+          "prompt": "A car travels 300 miles on 10 gallons of gas. What is the fuel efficiency in miles per gallon?",
+          "answer": "30 miles per gallon",
+          "hint": "Divide total miles by total gallons.",
+          "feedback": {
+            "correct": "Correct. 300 ÷ 10 = 30 miles per gallon.",
+            "incorrect": "Miles per gallon = total miles ÷ total gallons = 300 ÷ 10 = 30 mpg."
+          }
+        }
+      ],
+
+      "masteryCheck": {
+        "passingScore": 80,
+        "questions": [
+          {
+            "id": "mc-1",
+            "question": "A box contains 4 red balls and 6 blue balls. What is the ratio of red balls to total balls?",
+            "options": ["A) 4:6", "B) 2:3", "C) 4:10", "D) 6:4"],
+            "correctAnswer": "C",
+            "explanation": "Total balls = 4 + 6 = 10. Ratio of red to total = 4:10."
+          },
+          {
+            "id": "mc-2",
+            "question": "Which ratio is equivalent to 3:7?",
+            "options": ["A) 6:21", "B) 9:21", "C) 6:14", "D) 3:14"],
+            "correctAnswer": "C",
+            "explanation": "Multiply 3:7 by 2: 3×2=6, 7×2=14. So 3:7 = 6:14."
+          },
+          {
+            "id": "mc-3",
+            "question": "A store sells 5 apples for $2.00. What is the unit price per apple?",
+            "options": ["A) $0.25", "B) $0.40", "C) $2.50", "D) $10.00"],
+            "correctAnswer": "B",
+            "explanation": "Unit price = $2.00 ÷ 5 = $0.40 per apple."
+          },
+          {
+            "id": "mc-4",
+            "question": "If 2 tickets cost $18, how much do 5 tickets cost?",
+            "options": ["A) $35", "B) $40", "C) $45", "D) $50"],
+            "correctAnswer": "C",
+            "explanation": "Unit rate: $18 ÷ 2 = $9 per ticket. 5 tickets: 5 × $9 = $45."
+          },
+          {
+            "id": "mc-5",
+            "question": "A recipe calls for 2 cups of milk for every 3 cups of flour. If you use 12 cups of flour, how many cups of milk do you need?",
+            "options": ["A) 6", "B) 8", "C) 9", "D) 18"],
+            "correctAnswer": "B",
+            "explanation": "The ratio is 2:3. To go from 3 to 12, multiply by 4. Apply the same factor to milk: 2 × 4 = 8."
+          }
+        ]
+      },
+
+      "remediationPath": {
+        "action": "review_prerequisites",
+        "conceptId": "math-fractions-intro",
+        "message": "Ratios are closely related to fractions. If the ratio concept feels unclear, let's revisit fractions first — specifically, thinking of a fraction as a comparison rather than just a part of a whole."
+      },
+
+      "whyItMatters": "Ratios and proportions appear in almost every domain: cooking, maps, finance, science, and statistics. Any time you compare quantities, scale a recipe, read a rate (speed, price, concentration), or work with percentages, you are doing proportional reasoning. It is one of the most universally useful mathematical skills.",
+
+      "metadata": {
+        "tags": ["ratios", "proportions", "unit-rate", "equivalent-ratios", "scaling", "comparison"],
+        "estimatedMinutes": 25,
+        "gradeBand": "6-7",
+        "difficulty": "standard"
+      }
     },
     {
       "id": "math-integers",
