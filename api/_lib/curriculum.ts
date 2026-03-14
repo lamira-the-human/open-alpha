@@ -142,7 +142,11 @@ export function getConcept(subjectId: string, conceptId: string): Concept | unde
 export function getConceptsForGrade(subjectId: string, gradeLevel: number): Concept[] {
   const subject = getSubject(subjectId);
   if (!subject) return [];
-  return subject.concepts.filter(c => c.gradeLevel <= gradeLevel);
+  const filtered = subject.concepts.filter(c => c.gradeLevel <= gradeLevel);
+  // If grade-based filtering returns nothing (e.g., a K-12 student browsing
+  // an adult subject), return all concepts so the subject isn't empty
+  if (filtered.length === 0) return subject.concepts;
+  return filtered;
 }
 
 export function getNextConcept(
