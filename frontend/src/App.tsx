@@ -4,6 +4,7 @@ import ErrorBoundary from './components/ErrorBoundary';
 import Spinner from './components/Spinner';
 import Header from './components/Header';
 import Landing from './pages/Landing';
+import Demo from './pages/Demo';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import AuthCallback from './pages/AuthCallback';
@@ -115,6 +116,7 @@ function App() {
           <Header />
           <Routes>
           <Route path="/" element={<Landing />} />
+          <Route path="/demo" element={<Demo />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/auth/callback" element={<AuthCallback />} />

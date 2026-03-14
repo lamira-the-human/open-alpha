@@ -1,0 +1,317 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Open Alpha Contribution Unit",
+  "description": "The atomic unit of contribution to the Open Alpha curriculum. Think of this as a Wikipedia edit — one contributor, one concept bundle. Agents and humans contribute in the same format.",
+  "version": "1.0.0",
+
+  "definitions": {
+
+    "lessonModule": {
+      "description": "A complete lesson bundle for one concept node in the curriculum graph. This is the primary contribution type — it fills or improves a concept node.",
+      "type": "object",
+      "required": ["type", "conceptId", "subjectId", "contributorId"],
+      "properties": {
+        "type": { "const": "lesson_module" },
+
+        "conceptId": {
+          "type": "string",
+          "description": "The concept node this lesson targets. Must match an ID in the curriculum graph. Use GET /api/curriculum/gaps to find nodes that need content."
+        },
+        "subjectId": {
+          "type": "string",
+          "description": "The subject this concept belongs to (e.g., 'math', 'algebra1', 'science')."
+        },
+        "contributorId": {
+          "type": "string",
+          "description": "Stable identifier for the contributor. For ATXP agents: use your ATXP account ID. For humans: use your email or GitHub username. This drives the reputation system."
+        },
+        "contributorType": {
+          "type": "string",
+          "enum": ["agent", "human", "institution"],
+          "description": "Whether this was contributed by an AI agent, a human, or an institution (school, org)."
+        },
+
+        "content": {
+          "type": "object",
+          "description": "The actual lesson content. All fields are optional — you can contribute a partial bundle (e.g., just better worked examples) and it will be merged with existing content after review.",
+          "properties": {
+            "objective": {
+              "type": "string",
+              "description": "One sentence: exactly what the learner should be able to do after completing this concept."
+            },
+            "explanation": {
+              "type": "object",
+              "required": ["text"],
+              "properties": {
+                "text": { "type": "string", "description": "Primary explanation. Clear, accurate, age-appropriate." },
+                "childVersion": { "type": "string", "description": "Simplified for K-5 learners. Concrete, relatable." },
+                "adultVersion": { "type": "string", "description": "Practical framing for adult learners." }
+              }
+            },
+            "alternateExplanations": {
+              "type": "array",
+              "maxItems": 2,
+              "items": {
+                "type": "object",
+                "required": ["type", "text"],
+                "properties": {
+                  "type": { "type": "string", "enum": ["visual", "analogy", "realWorld", "stepByStep", "formal"] },
+                  "text": { "type": "string" }
+                }
+              }
+            },
+            "workedExamples": {
+              "type": "array",
+              "minItems": 3,
+              "items": {
+                "type": "object",
+                "required": ["problem", "steps", "answer"],
+                "properties": {
+                  "problem": { "type": "string" },
+                  "steps": { "type": "array", "items": { "type": "string" } },
+                  "answer": { "type": "string" }
+                }
+              }
+            },
+            "guidedPractice": {
+              "type": "array",
+              "minItems": 5,
+              "items": {
+                "type": "object",
+                "required": ["id", "prompt", "answer", "hint", "feedback"],
+                "properties": {
+                  "id": { "type": "string" },
+                  "prompt": { "type": "string" },
+                  "answer": { "type": "string" },
+                  "hint": { "type": "string" },
+                  "feedback": {
+                    "type": "object",
+                    "required": ["correct", "incorrect"],
+                    "properties": {
+                      "correct": { "type": "string" },
+                      "incorrect": { "type": "string" }
+                    }
+                  }
+                }
+              }
+            },
+            "masteryCheck": {
+              "type": "object",
+              "required": ["questions"],
+              "properties": {
+                "passingScore": { "type": "integer", "minimum": 0, "maximum": 100, "default": 80 },
+                "questions": {
+                  "type": "array",
+                  "minItems": 5,
+                  "maxItems": 5,
+                  "items": {
+                    "type": "object",
+                    "required": ["id", "question", "options", "correctAnswer", "explanation"],
+                    "properties": {
+                      "id": { "type": "string" },
+                      "question": { "type": "string" },
+                      "options": { "type": "array", "minItems": 3, "maxItems": 4, "items": { "type": "string" } },
+                      "correctAnswer": { "type": "string", "enum": ["A", "B", "C", "D"] },
+                      "explanation": { "type": "string" }
+                    }
+                  }
+                }
+              }
+            },
+            "remediationPath": {
+              "type": "object",
+              "required": ["action", "message"],
+              "properties": {
+                "action": { "type": "string", "enum": ["review_prerequisites", "simpler_explanation", "sub_skill", "extra_practice"] },
+                "conceptId": { "type": "string" },
+                "message": { "type": "string" }
+              }
+            },
+            "whyItMatters": {
+              "type": "string",
+              "description": "Short motivational context — why this concept matters in real life or future learning."
+            },
+            "commonMisconceptions": {
+              "type": "array",
+              "description": "Frequent student errors or misunderstandings. This is an extension field not in the base schema — useful for training better tutors.",
+              "items": {
+                "type": "object",
+                "required": ["misconception", "correction"],
+                "properties": {
+                  "misconception": { "type": "string" },
+                  "correction": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+
+        "metadata": {
+          "type": "object",
+          "properties": {
+            "standardsAlignment": {
+              "type": "array",
+              "description": "Common Core, NGSS, or other standards codes this concept satisfies.",
+              "items": {
+                "type": "object",
+                "required": ["standard", "code"],
+                "properties": {
+                  "standard": { "type": "string", "description": "e.g., 'Common Core', 'NGSS', 'TEKS'" },
+                  "code": { "type": "string", "description": "e.g., 'HSA-REI.B.3', '8.EE.C.7'" }
+                }
+              }
+            },
+            "gradeBand": { "type": "string", "description": "e.g., 'K-2', '3-5', '6-8', '9-12'" },
+            "estimatedMinutes": { "type": "integer", "minimum": 1 },
+            "difficulty": { "type": "string", "enum": ["foundational", "standard", "advanced"] },
+            "tags": { "type": "array", "items": { "type": "string" } },
+            "sourceNotes": {
+              "type": "string",
+              "description": "Optional: cite sources, methodology, or context for this contribution."
+            }
+          }
+        }
+      }
+    },
+
+    "quizItem": {
+      "description": "A single quiz question contribution. Used to add or improve individual questions in a concept's mastery check.",
+      "type": "object",
+      "required": ["type", "conceptId", "subjectId", "contributorId", "question"],
+      "properties": {
+        "type": { "const": "quiz_item" },
+        "conceptId": { "type": "string" },
+        "subjectId": { "type": "string" },
+        "contributorId": { "type": "string" },
+        "contributorType": { "type": "string", "enum": ["agent", "human", "institution"] },
+        "question": {
+          "type": "object",
+          "required": ["question", "options", "correctAnswer", "explanation"],
+          "properties": {
+            "question": { "type": "string" },
+            "options": { "type": "array", "minItems": 3, "maxItems": 4, "items": { "type": "string" } },
+            "correctAnswer": { "type": "string", "enum": ["A", "B", "C", "D"] },
+            "explanation": { "type": "string", "description": "Why this is correct. Shown to student after answering." },
+            "distractorRationale": {
+              "type": "object",
+              "description": "Why each wrong answer is tempting — helps humans review quality and train remediation logic.",
+              "additionalProperties": { "type": "string" }
+            },
+            "difficultyTag": { "type": "string", "enum": ["easy", "medium", "hard"] },
+            "standardsCode": { "type": "string", "description": "Standards code this question assesses." }
+          }
+        }
+      }
+    },
+
+    "pedagogicalImprovement": {
+      "description": "An improvement to an existing explanation or example — not replacing the whole lesson, just improving one part. The Wikipedia 'edit a sentence' equivalent.",
+      "type": "object",
+      "required": ["type", "conceptId", "subjectId", "contributorId", "targetField", "improvedContent", "rationale"],
+      "properties": {
+        "type": { "const": "pedagogical_improvement" },
+        "conceptId": { "type": "string" },
+        "subjectId": { "type": "string" },
+        "contributorId": { "type": "string" },
+        "contributorType": { "type": "string", "enum": ["agent", "human", "institution"] },
+        "targetField": {
+          "type": "string",
+          "description": "Which field is being improved. e.g., 'explanation.text', 'alternateExplanations[0]', 'workedExamples[2]'."
+        },
+        "improvedContent": {
+          "description": "The replacement content for targetField. Must be the same type as the field being replaced."
+        },
+        "rationale": {
+          "type": "string",
+          "description": "Why this is better. For agents: cite comprehension metric improvement if available. For humans: explain the pedagogical reasoning."
+        },
+        "evidenceBasis": {
+          "type": "string",
+          "enum": ["student_data", "expert_review", "curriculum_alignment", "readability_score", "agent_generated"],
+          "description": "What backs this improvement."
+        }
+      }
+    },
+
+    "newConceptProposal": {
+      "description": "Propose a new concept node to add to the curriculum graph. Goes through a higher-scrutiny review than content contributions.",
+      "type": "object",
+      "required": ["type", "subjectId", "contributorId", "proposedConcept"],
+      "properties": {
+        "type": { "const": "new_concept" },
+        "subjectId": { "type": "string" },
+        "contributorId": { "type": "string" },
+        "contributorType": { "type": "string", "enum": ["agent", "human", "institution"] },
+        "proposedConcept": {
+          "type": "object",
+          "required": ["id", "name", "description", "prerequisites", "level"],
+          "properties": {
+            "id": { "type": "string" },
+            "name": { "type": "string" },
+            "description": { "type": "string" },
+            "prerequisites": { "type": "array", "items": { "type": "string" } },
+            "level": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "rationale": {
+          "type": "string",
+          "description": "Why this concept should be added. Reference standards alignment or student need."
+        }
+      }
+    }
+
+  },
+
+  "type": "object",
+  "description": "Submit one of the contribution types above. The 'type' field discriminates.",
+  "oneOf": [
+    { "$ref": "#/definitions/lessonModule" },
+    { "$ref": "#/definitions/quizItem" },
+    { "$ref": "#/definitions/pedagogicalImprovement" },
+    { "$ref": "#/definitions/newConceptProposal" }
+  ],
+
+  "examples": [
+    {
+      "type": "lesson_module",
+      "conceptId": "alg1-slope",
+      "subjectId": "algebra1",
+      "contributorId": "atxp_agent_abc123",
+      "contributorType": "agent",
+      "content": {
+        "objective": "Calculate the slope of a line given two points and interpret slope as a rate of change.",
+        "explanation": {
+          "text": "Slope measures how steep a line is — how much it rises or falls for every unit you move to the right.",
+          "childVersion": "Imagine walking up a hill. A steep hill means you go up a lot for each step forward. That's high slope!",
+          "adultVersion": "Slope is the rate of change: for every 1 unit increase in x, y changes by 'slope' units. In business this is the marginal rate."
+        },
+        "whyItMatters": "Slope is everywhere: the pitch of a roof, speed on a graph, interest rates, population growth rates.",
+        "metadata": {
+          "standardsAlignment": [{ "standard": "Common Core", "code": "HSF-IF.B.6" }],
+          "gradeBand": "9-12",
+          "estimatedMinutes": 25
+        }
+      }
+    },
+    {
+      "type": "quiz_item",
+      "conceptId": "alg1-slope",
+      "subjectId": "algebra1",
+      "contributorId": "teacher_rodriguez@school.edu",
+      "contributorType": "human",
+      "question": {
+        "question": "What is the slope of the line passing through (2, 3) and (6, 11)?",
+        "options": ["A) 1/2", "B) 2", "C) 4", "D) 8"],
+        "correctAnswer": "B",
+        "explanation": "Slope = (y2 - y1) / (x2 - x1) = (11 - 3) / (6 - 2) = 8 / 4 = 2.",
+        "distractorRationale": {
+          "A": "1/2 would result from inverting the formula (run/rise instead of rise/run).",
+          "C": "4 is the denominator alone (the run), forgetting to divide.",
+          "D": "8 is the numerator alone (the rise), forgetting to divide."
+        },
+        "difficultyTag": "medium",
+        "standardsCode": "HSF-IF.B.6"
+      }
+    }
+  ]
+}

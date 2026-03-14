@@ -1,0 +1,781 @@
+{
+  "id": "algebra1",
+  "name": "Algebra 1",
+  "description": "Common Core Algebra 1 — variables, equations, linear and quadratic functions, systems, and data analysis. The gateway to all of high school math.",
+  "concepts": [
+
+    {
+      "id": "alg1-real-numbers",
+      "name": "Real Numbers & Number Properties",
+      "description": "The real number system: natural numbers, integers, rationals, irrationals. Properties of operations (commutative, associative, distributive, identity, inverse) and why they justify every algebraic step.",
+      "prerequisites": ["math-integers"],
+      "level": 9,
+      "objective": "Classify numbers in the real number system and apply number properties to justify algebraic manipulations.",
+      "explanation": {
+        "text": "All the numbers you'll use in Algebra 1 belong to the real number system. Think of it as nested categories:\n\n  Natural numbers: 1, 2, 3, ... (counting numbers)\n  Whole numbers: 0, 1, 2, 3, ...\n  Integers: ..., -2, -1, 0, 1, 2, ...\n  Rational numbers: any number expressible as a fraction p/q where q ≠ 0 (includes all integers, terminating decimals, and repeating decimals)\n  Irrational numbers: non-terminating, non-repeating decimals like √2 or π\n  Real numbers: all of the above combined\n\nThree properties power most algebraic work:\n\n1. Commutative: a + b = b + a  and  ab = ba (order doesn't matter for + and ×)\n2. Associative: (a + b) + c = a + (b + c) (grouping doesn't matter for + and ×)\n3. Distributive: a(b + c) = ab + ac (multiplication distributes over addition)\n\nThese aren't rules to memorize — they're the reason algebra works. When you combine like terms or factor, you're applying these properties.",
+        "childVersion": "Numbers come in families. Counting numbers (1, 2, 3...) live inside whole numbers (add 0), which live inside integers (add negatives), which live inside fractions, which live inside ALL real numbers. The distributive property is the most powerful: 3(x + 4) means '3 times everything inside' = 3x + 12.",
+        "adultVersion": "The real number system is ordered and complete — between any two real numbers there's always another one. This density is what makes calculus possible. The number properties are technically axioms: the rules the system is built on. Every algebraic manipulation you do is secretly a sequence of these axioms applied in order."
+      },
+      "alternateExplanations": [
+        {
+          "type": "visual",
+          "text": "Draw four nested ovals, each containing the previous:\n  [Natural] ⊂ [Integers] ⊂ [Rational] ⊂ [Real]\nThen draw a separate oval for [Irrational] that sits inside [Real] but doesn't overlap [Rational].\n\nAny number you can place on a number line is real. Numbers like √2 land between 1.4 and 1.5 but can't be written as a fraction — that's irrational."
+        },
+        {
+          "type": "realWorld",
+          "text": "A store sells apples for $1.50 each. Buying 3 apples costs 3 × $1.50. If each apple came with a $0.25 discount coupon, you could calculate it two ways:\n  Method A: 3 × (1.50 - 0.25) = 3 × 1.25 = $3.75\n  Method B: 3 × 1.50 - 3 × 0.25 = 4.50 - 0.75 = $3.75\nBoth give the same answer because of the distributive property. Method B is often easier to compute in your head."
+        }
+      ],
+      "workedExamples": [
+        {
+          "problem": "Classify each number: -7, 0.333..., √5, 4/2",
+          "steps": [
+            "-7 is an integer (and also rational, since -7 = -7/1).",
+            "0.333... = 1/3 — it's a repeating decimal, so it's rational.",
+            "√5 ≈ 2.236... — non-terminating, non-repeating. It's irrational.",
+            "4/2 = 2, which is a natural number, whole number, integer, and rational."
+          ],
+          "answer": "-7: integer/rational | 0.333...: rational | √5: irrational | 4/2: natural"
+        },
+        {
+          "problem": "Use the distributive property to expand 5(2x - 3).",
+          "steps": [
+            "Apply a(b + c) = ab + ac with a = 5, b = 2x, c = -3.",
+            "5 × 2x = 10x",
+            "5 × (-3) = -15",
+            "Result: 10x - 15"
+          ],
+          "answer": "10x - 15"
+        },
+        {
+          "problem": "Is the statement true? (3 + x) + 7 = 3 + (x + 7). Which property justifies it?",
+          "steps": [
+            "Both sides rearrange the grouping of addition — the parentheses move.",
+            "Associative property of addition: (a + b) + c = a + (b + c).",
+            "Yes, the statement is true by the associative property."
+          ],
+          "answer": "True — associative property of addition"
+        }
+      ],
+      "guidedPractice": [
+        {
+          "id": "alg1-rn-gp1",
+          "prompt": "Which property is used here: 4(x + 9) = 4x + 36?",
+          "answer": "Distributive property",
+          "hint": "The 4 is multiplying everything inside the parentheses.",
+          "feedback": {
+            "correct": "Right. The distributive property says a(b + c) = ab + ac. Here a = 4, b = x, c = 9.",
+            "incorrect": "Look at what the 4 is doing to the parentheses — it multiplies each term inside separately."
+          }
+        },
+        {
+          "id": "alg1-rn-gp2",
+          "prompt": "True or false: √9 is irrational.",
+          "answer": "False",
+          "hint": "Try computing √9. Does it simplify to a whole number?",
+          "feedback": {
+            "correct": "Correct. √9 = 3, which is a rational integer. Irrational numbers cannot be simplified to a fraction.",
+            "incorrect": "√9 = 3. Since 3 can be written as 3/1, it's rational, not irrational."
+          }
+        },
+        {
+          "id": "alg1-rn-gp3",
+          "prompt": "Expand using the distributive property: -2(3y - 5)",
+          "answer": "-6y + 10",
+          "hint": "Multiply -2 by each term inside: -2 × 3y and -2 × (-5).",
+          "feedback": {
+            "correct": "Correct. -2 × 3y = -6y and -2 × (-5) = +10.",
+            "incorrect": "Be careful with signs: a negative times a negative is positive. -2 × (-5) = +10."
+          }
+        },
+        {
+          "id": "alg1-rn-gp4",
+          "prompt": "Name the property: 7 × 1 = 7",
+          "answer": "Identity property of multiplication",
+          "hint": "What number, when multiplied by any value, leaves that value unchanged?",
+          "feedback": {
+            "correct": "Right. The identity element for multiplication is 1. Multiplying by 1 doesn't change the value.",
+            "incorrect": "The number 1 is the multiplicative identity — multiplying by it does nothing. That's the identity property."
+          }
+        },
+        {
+          "id": "alg1-rn-gp5",
+          "prompt": "Classify π (pi): rational or irrational?",
+          "answer": "Irrational",
+          "hint": "Can π be written as a fraction of two integers? Does its decimal ever repeat?",
+          "feedback": {
+            "correct": "Correct. π = 3.14159... never terminates or repeats, so it cannot be expressed as p/q. It's irrational.",
+            "incorrect": "π's decimal expansion is infinite and non-repeating. It cannot be written as a fraction, making it irrational."
+          }
+        }
+      ],
+      "masteryCheck": {
+        "passingScore": 80,
+        "questions": [
+          {
+            "id": "alg1-rn-mc1",
+            "question": "Which set of numbers does -3/4 belong to?",
+            "options": ["A) Integers only", "B) Rational numbers only", "C) Irrational numbers", "D) Natural numbers"],
+            "correctAnswer": "B",
+            "explanation": "-3/4 is a fraction of two integers, so it is rational. It's not an integer (not a whole number) and not irrational."
+          },
+          {
+            "id": "alg1-rn-mc2",
+            "question": "Which property justifies: 3(x + 2) = 3x + 6?",
+            "options": ["A) Commutative", "B) Associative", "C) Distributive", "D) Identity"],
+            "correctAnswer": "C",
+            "explanation": "The distributive property states a(b + c) = ab + ac. Here 3 is distributed over (x + 2)."
+          },
+          {
+            "id": "alg1-rn-mc3",
+            "question": "Which number is irrational?",
+            "options": ["A) 0.75", "B) -11", "C) √16", "D) √7"],
+            "correctAnswer": "D",
+            "explanation": "√7 ≈ 2.6457... — non-terminating and non-repeating. √16 = 4 (rational), 0.75 = 3/4 (rational), -11 is an integer."
+          },
+          {
+            "id": "alg1-rn-mc4",
+            "question": "Expand: -3(4 - 2x)",
+            "options": ["A) -12 - 6x", "B) -12 + 6x", "C) 12 - 6x", "D) 12 + 6x"],
+            "correctAnswer": "B",
+            "explanation": "-3 × 4 = -12 and -3 × (-2x) = +6x. Result: -12 + 6x."
+          },
+          {
+            "id": "alg1-rn-mc5",
+            "question": "Which property is shown? (5 + 3) + 8 = 5 + (3 + 8)",
+            "options": ["A) Commutative property of addition", "B) Associative property of addition", "C) Distributive property", "D) Inverse property"],
+            "correctAnswer": "B",
+            "explanation": "The grouping (parentheses) changes but not the order of terms. That's the associative property: (a + b) + c = a + (b + c)."
+          }
+        ]
+      },
+      "remediationPath": {
+        "action": "review_prerequisites",
+        "message": "Let's review integers and how negative numbers work before tackling number properties. Head back to the Integers concept, then return here."
+      },
+      "whyItMatters": "Every algebra step you take is secretly an application of these properties. Understanding them lets you manipulate expressions with confidence — and they're the foundation that makes proofs and more advanced math possible.",
+      "metadata": {
+        "tags": ["number-system", "properties", "distributive", "rational", "irrational", "real-numbers"],
+        "estimatedMinutes": 25,
+        "gradeBand": "9-12",
+        "difficulty": "foundational",
+        "standardsAlignment": [
+          { "standard": "Common Core", "code": "N-RN.B.3" }
+        ]
+      }
+    },
+
+    {
+      "id": "alg1-expressions",
+      "name": "Algebraic Expressions & Simplifying",
+      "description": "Variables, terms, coefficients, and constants. Combining like terms and using the distributive property to simplify expressions.",
+      "prerequisites": ["alg1-real-numbers"],
+      "level": 9,
+      "objective": "Identify parts of an algebraic expression, combine like terms, and simplify using the distributive property.",
+      "explanation": {
+        "text": "An algebraic expression uses numbers, variables (like x or y), and operations (+, -, ×, ÷) to represent a quantity.\n\nKey vocabulary:\n- Term: a single number, variable, or product. In 3x² + 5x - 7, the terms are 3x², 5x, and -7.\n- Coefficient: the number multiplied by a variable. In 3x², the coefficient is 3.\n- Constant: a term with no variable. -7 is the constant.\n- Like terms: terms with the same variable and exponent. 3x and 7x are like terms; 3x and 3x² are not.\n\nSimplifying means combining like terms:\n  3x + 7x = 10x   (add the coefficients, keep the variable)\n  5y² - 2y² = 3y²\n\nDo NOT combine unlike terms:\n  3x + 4y ≠ 7xy   (different variables)\n  5x + 2x² ≠ 7x³  (different exponents)",
+        "childVersion": "x is just a mystery number we don't know yet. 3x means '3 groups of the mystery number'. If you have 3x + 5x, that's 8 groups of the mystery number: 8x. But you can't add 3x + 5y because x and y might be different numbers.",
+        "adultVersion": "Think of variables as unit labels in dimensional analysis. 3x + 7x = 10x because you're adding 3 'x-units' to 7 'x-units.' You can't add 3x + 4y for the same reason you can't add 3 miles + 4 hours — incompatible units."
+      },
+      "alternateExplanations": [
+        {
+          "type": "analogy",
+          "text": "Imagine fruit: 'x' is an apple and 'y' is a banana.\n3x + 5x = 8x means 3 apples + 5 apples = 8 apples.\n3x + 5y = 3x + 5y — you can't simplify further because apples ≠ bananas.\n3x² is apples in a bag of apples — a different thing from a single apple (x)."
+        },
+        {
+          "type": "stepByStep",
+          "text": "To simplify 4x + 3 - 2x + 7:\nStep 1: Identify like terms. Circle all 'x terms': 4x and -2x. Box all constants: 3 and 7.\nStep 2: Combine x terms: 4x + (-2x) = 2x\nStep 3: Combine constants: 3 + 7 = 10\nStep 4: Write result: 2x + 10"
+        }
+      ],
+      "workedExamples": [
+        {
+          "problem": "Simplify: 6x + 3 - 4x + 9",
+          "steps": [
+            "Group like terms: (6x - 4x) + (3 + 9)",
+            "Combine x terms: 6x - 4x = 2x",
+            "Combine constants: 3 + 9 = 12",
+            "Result: 2x + 12"
+          ],
+          "answer": "2x + 12"
+        },
+        {
+          "problem": "Simplify: 5(2x - 3) + 4x",
+          "steps": [
+            "Distribute 5 through the parentheses: 5 × 2x - 5 × 3 = 10x - 15",
+            "Expression becomes: 10x - 15 + 4x",
+            "Combine like terms: 10x + 4x = 14x",
+            "Result: 14x - 15"
+          ],
+          "answer": "14x - 15"
+        },
+        {
+          "problem": "Identify the coefficient of y in: -7y + 3x - 2",
+          "steps": [
+            "Find the term with y: -7y",
+            "The coefficient is the number multiplied by the variable.",
+            "Coefficient of y is -7."
+          ],
+          "answer": "-7"
+        }
+      ],
+      "guidedPractice": [
+        {
+          "id": "alg1-exp-gp1",
+          "prompt": "Simplify: 8m - 3m + 2",
+          "answer": "5m + 2",
+          "hint": "8m and -3m are like terms (both have the variable m). Combine those first.",
+          "feedback": {
+            "correct": "Right. 8m - 3m = 5m, and the +2 is a constant with nothing to combine with.",
+            "incorrect": "Only combine terms with the same variable. 8m - 3m = 5m. The constant 2 stays alone."
+          }
+        },
+        {
+          "id": "alg1-exp-gp2",
+          "prompt": "Simplify: 3(x + 4) - 2x",
+          "answer": "x + 12",
+          "hint": "First distribute the 3, then combine like terms.",
+          "feedback": {
+            "correct": "Correct. 3(x + 4) = 3x + 12, then 3x - 2x = x. Answer: x + 12.",
+            "incorrect": "Step 1: Distribute — 3(x + 4) = 3x + 12. Step 2: Combine x terms: 3x - 2x = x. Final: x + 12."
+          }
+        },
+        {
+          "id": "alg1-exp-gp3",
+          "prompt": "What is the coefficient of x² in 5x³ - 9x² + x?",
+          "answer": "-9",
+          "hint": "Find the term with x². The coefficient is the number in front.",
+          "feedback": {
+            "correct": "Correct. The x² term is -9x², so the coefficient is -9.",
+            "incorrect": "The x² term is -9x². The coefficient includes the sign: -9."
+          }
+        },
+        {
+          "id": "alg1-exp-gp4",
+          "prompt": "Can you simplify 4x + 7y? Why or why not?",
+          "answer": "No — unlike terms",
+          "hint": "Are x and y the same variable?",
+          "feedback": {
+            "correct": "Correct. x and y are different variables, so 4x and 7y are unlike terms. The expression cannot be simplified further.",
+            "incorrect": "Like terms must have the same variable(s) AND the same exponents. x ≠ y, so 4x + 7y is already fully simplified."
+          }
+        },
+        {
+          "id": "alg1-exp-gp5",
+          "prompt": "Simplify: 2(3x - 1) + 4(x + 5)",
+          "answer": "10x + 18",
+          "hint": "Distribute each factor first, then collect like terms.",
+          "feedback": {
+            "correct": "Nice work. 2(3x-1) = 6x - 2, and 4(x+5) = 4x + 20. Then 6x + 4x = 10x and -2 + 20 = 18.",
+            "incorrect": "Distribute first: 2(3x-1) = 6x - 2 and 4(x+5) = 4x + 20. Now combine: 6x + 4x = 10x, and -2 + 20 = 18."
+          }
+        }
+      ],
+      "masteryCheck": {
+        "passingScore": 80,
+        "questions": [
+          {
+            "id": "alg1-exp-mc1",
+            "question": "Simplify: 9k - 4 + 3k - 7",
+            "options": ["A) 12k - 11", "B) 12k + 3", "C) 6k - 11", "D) 12k - 3"],
+            "correctAnswer": "A",
+            "explanation": "Combine k terms: 9k + 3k = 12k. Combine constants: -4 + (-7) = -11. Result: 12k - 11."
+          },
+          {
+            "id": "alg1-exp-mc2",
+            "question": "Simplify: 4(2x + 3)",
+            "options": ["A) 6x + 3", "B) 8x + 3", "C) 8x + 12", "D) 2x + 12"],
+            "correctAnswer": "C",
+            "explanation": "Distribute: 4 × 2x = 8x and 4 × 3 = 12. Result: 8x + 12."
+          },
+          {
+            "id": "alg1-exp-mc3",
+            "question": "Which terms are like terms in: 3x² + 5x - 2x² + 7?",
+            "options": ["A) 3x² and 5x", "B) 3x² and -2x²", "C) 5x and 7", "D) All terms"],
+            "correctAnswer": "B",
+            "explanation": "Like terms have the same variable and exponent. 3x² and -2x² both have x² with exponent 2."
+          },
+          {
+            "id": "alg1-exp-mc4",
+            "question": "Simplify: 5(x - 2) - 3(x + 1)",
+            "options": ["A) 2x - 13", "B) 2x + 13", "C) 2x - 7", "D) 8x - 13"],
+            "correctAnswer": "A",
+            "explanation": "5(x-2) = 5x - 10 and -3(x+1) = -3x - 3. Combine: (5x - 3x) + (-10 - 3) = 2x - 13."
+          },
+          {
+            "id": "alg1-exp-mc5",
+            "question": "What is the constant term in 7x² - 3x + 8?",
+            "options": ["A) 7", "B) -3", "C) 8", "D) x"],
+            "correctAnswer": "C",
+            "explanation": "A constant is a term with no variable. In 7x² - 3x + 8, the constant is 8."
+          }
+        ]
+      },
+      "remediationPath": {
+        "action": "review_prerequisites",
+        "message": "Let's revisit real number properties and the distributive property before continuing. Make sure you can expand expressions like 3(x + 4) confidently."
+      },
+      "whyItMatters": "Simplifying expressions is the grammar of algebra. Every equation you solve, every function you graph, every problem you model — it all starts with being able to manipulate expressions cleanly.",
+      "metadata": {
+        "tags": ["expressions", "like-terms", "coefficients", "simplifying", "distributive"],
+        "estimatedMinutes": 25,
+        "gradeBand": "9-12",
+        "difficulty": "foundational",
+        "standardsAlignment": [
+          { "standard": "Common Core", "code": "A-SSE.A.1" },
+          { "standard": "Common Core", "code": "A-SSE.A.2" }
+        ]
+      }
+    },
+
+    {
+      "id": "alg1-one-step-equations",
+      "name": "One-Step Equations",
+      "description": "Solving equations with a single operation using inverse operations. The foundational skill of algebraic thinking.",
+      "prerequisites": ["alg1-expressions"],
+      "level": 9,
+      "objective": "Solve one-step equations involving addition, subtraction, multiplication, and division, and verify solutions.",
+      "explanation": {
+        "text": "An equation is a statement that two expressions are equal: 3x = 12.\nSolving means finding the value of x that makes the statement true.\n\nThe key idea: whatever you do to one side of an equation, you must do to the other side. This keeps the balance.\n\nTo isolate x, apply the inverse (opposite) operation:\n- If x has been added to a number, subtract.\n- If x has been subtracted from a number, add.\n- If x is multiplied by a number, divide.\n- If x is divided by a number, multiply.\n\nExample: x + 7 = 15\n  Subtract 7 from both sides: x + 7 - 7 = 15 - 7\n  Simplify: x = 8\n\nAlways check: 8 + 7 = 15 ✓",
+        "childVersion": "Imagine a balance scale. Both sides must weigh the same. If you add a weight to one side, you must add the same weight to the other side to keep it balanced. Solving an equation means getting x alone on one side while keeping the scale balanced.",
+        "adultVersion": "Equations model constraints — real-world situations where quantities must balance. The one-step equation is the unit cell of algebraic reasoning: isolate the unknown by applying its inverse operation. Every multi-step equation is just a sequence of one-step moves."
+      },
+      "alternateExplanations": [
+        {
+          "type": "visual",
+          "text": "Draw a balance scale:\n  Left side: x + 7\n  Right side: 15\nTo isolate x on the left, remove 7 weights from the left pan. Remove 7 from the right pan too to stay balanced:\n  Left: x   Right: 8\nThe scale shows x = 8."
+        },
+        {
+          "type": "realWorld",
+          "text": "You buy a coffee and your change is $7. Your bill was $15. How much did you pay with?\nLet p = what you paid. Then p - 8 = 7 means you paid $15.\nActually: if you gave a $15 bill, the change equation is: 15 - cost = 7, so cost = 15 - 7 = $8.\nThis is a one-step subtraction equation."
+        }
+      ],
+      "workedExamples": [
+        {
+          "problem": "Solve: x + 9 = 21",
+          "steps": [
+            "x has 9 added to it. Use the inverse operation: subtract 9 from both sides.",
+            "x + 9 - 9 = 21 - 9",
+            "x = 12",
+            "Check: 12 + 9 = 21 ✓"
+          ],
+          "answer": "x = 12"
+        },
+        {
+          "problem": "Solve: 4x = 36",
+          "steps": [
+            "x is multiplied by 4. Use the inverse: divide both sides by 4.",
+            "4x ÷ 4 = 36 ÷ 4",
+            "x = 9",
+            "Check: 4 × 9 = 36 ✓"
+          ],
+          "answer": "x = 9"
+        },
+        {
+          "problem": "Solve: x/5 = 7",
+          "steps": [
+            "x is divided by 5. Use the inverse: multiply both sides by 5.",
+            "(x/5) × 5 = 7 × 5",
+            "x = 35",
+            "Check: 35/5 = 7 ✓"
+          ],
+          "answer": "x = 35"
+        }
+      ],
+      "guidedPractice": [
+        {
+          "id": "alg1-1step-gp1",
+          "prompt": "Solve: y - 13 = 4",
+          "answer": "y = 17",
+          "hint": "y has 13 subtracted. Add 13 to both sides.",
+          "feedback": {
+            "correct": "Right. y - 13 + 13 = 4 + 13 → y = 17.",
+            "incorrect": "The inverse of subtracting 13 is adding 13. Add 13 to both sides: y - 13 + 13 = 4 + 13, so y = 17."
+          }
+        },
+        {
+          "id": "alg1-1step-gp2",
+          "prompt": "Solve: 8m = 56",
+          "answer": "m = 7",
+          "hint": "m is multiplied by 8. Divide both sides by 8.",
+          "feedback": {
+            "correct": "Correct. 56 ÷ 8 = 7.",
+            "incorrect": "Divide both sides by 8: 8m/8 = 56/8, so m = 7."
+          }
+        },
+        {
+          "id": "alg1-1step-gp3",
+          "prompt": "Solve: n/3 = -9",
+          "answer": "n = -27",
+          "hint": "n is divided by 3. Multiply both sides by 3.",
+          "feedback": {
+            "correct": "Right. n/3 × 3 = -9 × 3 → n = -27.",
+            "incorrect": "Multiply both sides by 3: n = -9 × 3 = -27."
+          }
+        },
+        {
+          "id": "alg1-1step-gp4",
+          "prompt": "Solve: p + 25 = 10",
+          "answer": "p = -15",
+          "hint": "Subtract 25 from both sides. The result will be negative.",
+          "feedback": {
+            "correct": "Correct. 10 - 25 = -15, so p = -15.",
+            "incorrect": "p + 25 - 25 = 10 - 25 → p = -15. The answer is negative because 25 > 10."
+          }
+        },
+        {
+          "id": "alg1-1step-gp5",
+          "prompt": "Solve: -6k = 42",
+          "answer": "k = -7",
+          "hint": "k is multiplied by -6. Divide both sides by -6.",
+          "feedback": {
+            "correct": "Right. 42 ÷ (-6) = -7. A positive divided by a negative is negative.",
+            "incorrect": "Divide both sides by -6: k = 42 ÷ (-6) = -7. Positive ÷ negative = negative."
+          }
+        }
+      ],
+      "masteryCheck": {
+        "passingScore": 80,
+        "questions": [
+          {
+            "id": "alg1-1step-mc1",
+            "question": "Solve: x + 14 = 30",
+            "options": ["A) x = 44", "B) x = 16", "C) x = 14", "D) x = -16"],
+            "correctAnswer": "B",
+            "explanation": "Subtract 14 from both sides: x = 30 - 14 = 16."
+          },
+          {
+            "id": "alg1-1step-mc2",
+            "question": "Solve: 7y = -63",
+            "options": ["A) y = -9", "B) y = 9", "C) y = -56", "D) y = -441"],
+            "correctAnswer": "A",
+            "explanation": "Divide both sides by 7: y = -63 ÷ 7 = -9."
+          },
+          {
+            "id": "alg1-1step-mc3",
+            "question": "Solve: n/4 = 12",
+            "options": ["A) n = 3", "B) n = 8", "C) n = 16", "D) n = 48"],
+            "correctAnswer": "D",
+            "explanation": "Multiply both sides by 4: n = 12 × 4 = 48."
+          },
+          {
+            "id": "alg1-1step-mc4",
+            "question": "Which step correctly begins solving 5x = 45?",
+            "options": ["A) Add 5 to both sides", "B) Subtract 5 from both sides", "C) Multiply both sides by 5", "D) Divide both sides by 5"],
+            "correctAnswer": "D",
+            "explanation": "x is multiplied by 5. The inverse of multiplication is division. Divide both sides by 5."
+          },
+          {
+            "id": "alg1-1step-mc5",
+            "question": "A student solves x - 8 = 3 and gets x = -5. What error did they make?",
+            "options": ["A) Subtracted 8 from the right side instead of adding", "B) Used the wrong inverse operation", "C) Made a calculation error: 3 - 8 instead of 3 + 8", "D) Both B and C"],
+            "correctAnswer": "D",
+            "explanation": "To isolate x, you ADD 8 (the inverse of subtracting 8). x = 3 + 8 = 11. The student subtracted instead of adding, and computed 3 - 8 = -5."
+          }
+        ]
+      },
+      "remediationPath": {
+        "action": "simpler_explanation",
+        "message": "Let's go back to the balance scale idea. Watch a demonstration of how adding or subtracting the same amount keeps both sides equal, then try the practice problems again one operation at a time."
+      },
+      "whyItMatters": "Every equation you'll ever solve — in algebra, chemistry, physics, economics — reduces to a series of one-step moves. Master this and every harder equation type becomes just a sequence of things you already know.",
+      "metadata": {
+        "tags": ["equations", "inverse-operations", "solving", "balance"],
+        "estimatedMinutes": 20,
+        "gradeBand": "9-12",
+        "difficulty": "foundational",
+        "standardsAlignment": [
+          { "standard": "Common Core", "code": "A-REI.B.3" }
+        ]
+      }
+    },
+
+    {
+      "id": "alg1-two-step-equations",
+      "name": "Two-Step Equations",
+      "description": "Solving equations that require two operations. Order of inverse operations matters.",
+      "prerequisites": ["alg1-one-step-equations"],
+      "level": 9,
+      "objective": "Solve two-step linear equations and translate word problems into two-step equations."
+    },
+
+    {
+      "id": "alg1-multi-step-equations",
+      "name": "Multi-Step & Equations with Variables on Both Sides",
+      "description": "Solving equations with multiple operations and collecting variable terms from both sides.",
+      "prerequisites": ["alg1-two-step-equations"],
+      "level": 9,
+      "objective": "Solve multi-step equations including those with variables on both sides, fractions, and the distributive property."
+    },
+
+    {
+      "id": "alg1-inequalities",
+      "name": "Solving Inequalities",
+      "description": "Solving linear inequalities, graphing solution sets on number lines, and understanding when the inequality sign flips.",
+      "prerequisites": ["alg1-one-step-equations"],
+      "level": 9,
+      "objective": "Solve and graph one- and two-step linear inequalities, including cases requiring sign reversal when multiplying or dividing by negatives."
+    },
+
+    {
+      "id": "alg1-compound-inequalities",
+      "name": "Compound Inequalities",
+      "description": "AND/OR compound inequalities and absolute value inequalities. Graphing solution sets.",
+      "prerequisites": ["alg1-inequalities"],
+      "level": 9,
+      "objective": "Solve compound inequalities joined by 'and' or 'or' and represent solutions on number lines and in interval notation."
+    },
+
+    {
+      "id": "alg1-literal-equations",
+      "name": "Literal Equations & Formulas",
+      "description": "Rearranging multi-variable formulas to isolate a specified variable. Applied to geometry, physics, and real-world formulas.",
+      "prerequisites": ["alg1-multi-step-equations"],
+      "level": 9,
+      "objective": "Rearrange literal equations to solve for a specified variable, applying the same inverse-operation principles used in one-variable equations."
+    },
+
+    {
+      "id": "alg1-functions-intro",
+      "name": "Introduction to Functions",
+      "description": "What a function is: domain, range, input-output pairs, function notation f(x), and the vertical line test.",
+      "prerequisites": ["alg1-expressions"],
+      "level": 9,
+      "objective": "Determine whether a relation is a function, evaluate functions using notation, and identify domain and range."
+    },
+
+    {
+      "id": "alg1-slope",
+      "name": "Slope & Rate of Change",
+      "description": "Slope as rise over run and as a rate of change. Calculating slope from two points, graphs, and tables.",
+      "prerequisites": ["alg1-functions-intro"],
+      "level": 9,
+      "objective": "Calculate slope from two points, a graph, or a table, and interpret slope as a rate of change in context."
+    },
+
+    {
+      "id": "alg1-slope-intercept",
+      "name": "Slope-Intercept Form",
+      "description": "y = mx + b: graphing lines, identifying slope and y-intercept, and writing equations from graphs.",
+      "prerequisites": ["alg1-slope"],
+      "level": 9,
+      "objective": "Graph a linear equation in slope-intercept form and write the equation of a line given its graph or key characteristics."
+    },
+
+    {
+      "id": "alg1-point-slope-form",
+      "name": "Point-Slope Form & Standard Form",
+      "description": "Writing linear equations from a point and slope or from two points. Converting between equation forms.",
+      "prerequisites": ["alg1-slope-intercept"],
+      "level": 9,
+      "objective": "Write the equation of a line in point-slope and standard form given two points or a point and slope."
+    },
+
+    {
+      "id": "alg1-parallel-perpendicular",
+      "name": "Parallel & Perpendicular Lines",
+      "description": "Slope relationships between parallel lines (equal slopes) and perpendicular lines (negative reciprocal slopes).",
+      "prerequisites": ["alg1-point-slope-form"],
+      "level": 9,
+      "objective": "Identify and write equations of lines parallel or perpendicular to a given line through a specific point."
+    },
+
+    {
+      "id": "alg1-systems-graphing",
+      "name": "Systems of Equations: Graphing",
+      "description": "Solving systems by graphing two lines and identifying the intersection point. Types of solutions: one, none, infinite.",
+      "prerequisites": ["alg1-slope-intercept"],
+      "level": 9,
+      "objective": "Solve a system of two linear equations by graphing and interpret the solution in context, including identifying inconsistent and dependent systems."
+    },
+
+    {
+      "id": "alg1-systems-substitution",
+      "name": "Systems of Equations: Substitution",
+      "description": "Algebraic method: substitute one equation into the other to solve exactly.",
+      "prerequisites": ["alg1-systems-graphing", "alg1-multi-step-equations"],
+      "level": 9,
+      "objective": "Solve systems of linear equations using the substitution method and check solutions."
+    },
+
+    {
+      "id": "alg1-systems-elimination",
+      "name": "Systems of Equations: Elimination",
+      "description": "Adding or subtracting equations to eliminate a variable. Multiplying to create equal coefficients.",
+      "prerequisites": ["alg1-systems-substitution"],
+      "level": 9,
+      "objective": "Solve systems of linear equations using the elimination (addition/subtraction) method."
+    },
+
+    {
+      "id": "alg1-systems-applications",
+      "name": "Systems of Equations: Applications",
+      "description": "Translating real-world problems (mixtures, rates, costs) into systems and solving.",
+      "prerequisites": ["alg1-systems-elimination"],
+      "level": 9,
+      "objective": "Model and solve real-world problems using systems of two linear equations, choosing the most efficient solution method."
+    },
+
+    {
+      "id": "alg1-exponent-rules",
+      "name": "Exponent Rules",
+      "description": "Product rule, quotient rule, power rule, zero exponent, negative exponents. Simplifying exponential expressions.",
+      "prerequisites": ["alg1-expressions"],
+      "level": 9,
+      "objective": "Apply the laws of exponents to simplify expressions involving products, quotients, and powers, including zero and negative exponents."
+    },
+
+    {
+      "id": "alg1-scientific-notation",
+      "name": "Scientific Notation",
+      "description": "Writing very large and very small numbers in scientific notation. Operations with scientific notation.",
+      "prerequisites": ["alg1-exponent-rules"],
+      "level": 9,
+      "objective": "Convert between standard and scientific notation and perform multiplication and division with numbers in scientific notation."
+    },
+
+    {
+      "id": "alg1-exponential-functions",
+      "name": "Exponential Functions",
+      "description": "Exponential growth and decay. The form y = ab^x. Comparing exponential vs. linear growth.",
+      "prerequisites": ["alg1-functions-intro", "alg1-exponent-rules"],
+      "level": 9,
+      "objective": "Write, evaluate, and graph exponential functions and distinguish exponential growth from decay."
+    },
+
+    {
+      "id": "alg1-polynomials-add-subtract",
+      "name": "Polynomials: Adding & Subtracting",
+      "description": "Polynomial vocabulary (monomial, binomial, trinomial, degree). Adding and subtracting polynomials by combining like terms.",
+      "prerequisites": ["alg1-expressions"],
+      "level": 9,
+      "objective": "Identify polynomial types by degree and number of terms, and add and subtract polynomials."
+    },
+
+    {
+      "id": "alg1-polynomials-multiply",
+      "name": "Polynomials: Multiplying",
+      "description": "Multiplying monomials and polynomials. FOIL for binomial × binomial. Distributing a polynomial.",
+      "prerequisites": ["alg1-polynomials-add-subtract"],
+      "level": 9,
+      "objective": "Multiply polynomials using distribution and FOIL, and apply special product patterns."
+    },
+
+    {
+      "id": "alg1-special-products",
+      "name": "Special Products",
+      "description": "Perfect square trinomials: (a+b)² = a²+2ab+b². Difference of squares: (a+b)(a-b) = a²-b².",
+      "prerequisites": ["alg1-polynomials-multiply"],
+      "level": 9,
+      "objective": "Recognize and apply perfect square trinomial and difference of squares patterns to expand and factor expressions."
+    },
+
+    {
+      "id": "alg1-factoring-gcf",
+      "name": "Factoring: Greatest Common Factor",
+      "description": "Finding the GCF of polynomial terms and factoring it out. Reverse of the distributive property.",
+      "prerequisites": ["alg1-polynomials-multiply"],
+      "level": 9,
+      "objective": "Factor out the greatest common factor from polynomials and factor by grouping."
+    },
+
+    {
+      "id": "alg1-factoring-trinomials",
+      "name": "Factoring Trinomials",
+      "description": "Factoring ax² + bx + c when a=1 and when a≠1. The AC method and trial-and-error.",
+      "prerequisites": ["alg1-factoring-gcf", "alg1-special-products"],
+      "level": 9,
+      "objective": "Factor quadratic trinomials of the form ax² + bx + c, including when a ≠ 1."
+    },
+
+    {
+      "id": "alg1-factoring-special",
+      "name": "Factoring Special Forms",
+      "description": "Factoring perfect square trinomials and differences of squares using recognizable patterns.",
+      "prerequisites": ["alg1-factoring-trinomials"],
+      "level": 9,
+      "objective": "Factor perfect square trinomials and differences of squares by identifying and applying their patterns."
+    },
+
+    {
+      "id": "alg1-quadratics-intro",
+      "name": "Introduction to Quadratic Functions",
+      "description": "The parabola: vertex, axis of symmetry, direction of opening, and key features of y = ax² + bx + c.",
+      "prerequisites": ["alg1-factoring-trinomials"],
+      "level": 9,
+      "objective": "Identify key features of a quadratic function from its equation and graph, including vertex, axis of symmetry, and direction of opening."
+    },
+
+    {
+      "id": "alg1-solving-quadratics-factoring",
+      "name": "Solving Quadratics by Factoring",
+      "description": "Zero product property: if ab=0 then a=0 or b=0. Solving quadratic equations by factoring.",
+      "prerequisites": ["alg1-quadratics-intro", "alg1-factoring-special"],
+      "level": 9,
+      "objective": "Solve quadratic equations by factoring using the zero product property."
+    },
+
+    {
+      "id": "alg1-completing-square",
+      "name": "Completing the Square",
+      "description": "Rewriting quadratic equations in vertex form by completing the square. Solving using square roots.",
+      "prerequisites": ["alg1-solving-quadratics-factoring"],
+      "level": 9,
+      "objective": "Solve quadratic equations by completing the square and convert to vertex form."
+    },
+
+    {
+      "id": "alg1-quadratic-formula",
+      "name": "The Quadratic Formula",
+      "description": "x = (-b ± √(b²-4ac)) / 2a. Using the formula to solve any quadratic. The discriminant.",
+      "prerequisites": ["alg1-completing-square"],
+      "level": 9,
+      "objective": "Solve quadratic equations using the quadratic formula and use the discriminant to determine the number and type of solutions."
+    },
+
+    {
+      "id": "alg1-radicals-simplify",
+      "name": "Radical Expressions: Simplifying",
+      "description": "Square roots, cube roots, simplifying radicals by factoring out perfect squares. Rationalizing denominators.",
+      "prerequisites": ["alg1-real-numbers"],
+      "level": 9,
+      "objective": "Simplify radical expressions by factoring out perfect square factors and rationalize denominators containing radicals."
+    },
+
+    {
+      "id": "alg1-radicals-operations",
+      "name": "Radical Expressions: Operations",
+      "description": "Adding, subtracting, multiplying, and dividing radical expressions. Solving equations with radicals.",
+      "prerequisites": ["alg1-radicals-simplify", "alg1-one-step-equations"],
+      "level": 9,
+      "objective": "Perform operations with radical expressions and solve basic radical equations."
+    },
+
+    {
+      "id": "alg1-statistics-intro",
+      "name": "Statistics: Univariate Data",
+      "description": "Measures of center (mean, median, mode), spread (range, IQR, standard deviation), and data displays.",
+      "prerequisites": ["alg1-expressions"],
+      "level": 9,
+      "objective": "Calculate and interpret measures of center and spread for a data set and represent data in appropriate displays."
+    },
+
+    {
+      "id": "alg1-scatter-plots",
+      "name": "Scatter Plots & Correlation",
+      "description": "Scatter plots, correlation (positive, negative, none), correlation coefficient, and line of best fit.",
+      "prerequisites": ["alg1-statistics-intro", "alg1-slope-intercept"],
+      "level": 9,
+      "objective": "Create and interpret scatter plots, describe correlation, and use a line of best fit to make predictions."
+    },
+
+    {
+      "id": "alg1-linear-regression",
+      "name": "Linear Regression & Residuals",
+      "description": "Least-squares regression line, residuals, interpreting slope and y-intercept in context, and assessing fit.",
+      "prerequisites": ["alg1-scatter-plots"],
+      "level": 9,
+      "objective": "Fit a linear model to data, interpret the slope and intercept in context, calculate residuals, and assess the appropriateness of the linear model."
+    }
+
+  ]
+}

@@ -1,8 +1,9 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../App';
 
 export default function Landing() {
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <div style={{ minHeight: '100vh' }}>
@@ -34,13 +35,20 @@ export default function Landing() {
             Personalized tutoring that adapts to every student. Math, Reading, and Science - from kindergarten through high school.
           </p>
           <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link to="/signup?role=student" className="btn btn-primary" style={{ fontSize: '1.125rem', padding: '1rem 2rem' }}>
-              Start Learning
-            </Link>
-            <Link to="/signup?role=parent" className="btn btn-outline" style={{ fontSize: '1.125rem', padding: '1rem 2rem' }}>
-              Parent Portal
+            <button
+              onClick={() => navigate('/demo')}
+              className="btn btn-primary"
+              style={{ fontSize: '1.125rem', padding: '1rem 2rem' }}
+            >
+              Try it now — no signup
+            </button>
+            <Link to="/signup?role=student" className="btn btn-outline" style={{ fontSize: '1.125rem', padding: '1rem 2rem' }}>
+              Create free account
             </Link>
           </div>
+          <p style={{ marginTop: '1rem', color: 'var(--text-light)', fontSize: '0.9rem' }}>
+            20 free messages in demo · unlimited with a free account
+          </p>
         </div>
       </section>
 
@@ -114,11 +122,67 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* Open Curriculum */}
+      <section style={{ padding: '4rem 0', background: 'var(--surface)' }}>
+        <div className="container">
+          <h3 style={{ fontSize: '2rem', fontWeight: 600, textAlign: 'center', marginBottom: '1rem' }}>
+            The Wikipedia of Learning
+          </h3>
+          <p style={{ textAlign: 'center', color: 'var(--text-light)', maxWidth: '600px', margin: '0 auto 3rem', lineHeight: 1.7 }}>
+            The curriculum is a public, open dataset — like Wikipedia, anyone can contribute.
+            Agents and humans improve lessons, add examples, and fill gaps. Every improvement
+            reaches every student instantly.
+          </p>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem', marginBottom: '2.5rem' }}>
+            <div className="card">
+              <h4 style={{ fontWeight: 700, marginBottom: '0.5rem' }}>Public Curriculum Graph</h4>
+              <p style={{ color: 'var(--text-light)', fontSize: '0.9rem', marginBottom: '1rem' }}>
+                The full K-12 knowledge graph as open JSON — every concept, every prerequisite link.
+              </p>
+              <a href="/api/curriculum/graph" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary)', fontSize: '0.875rem', fontWeight: 600 }}>
+                GET /api/curriculum/graph →
+              </a>
+            </div>
+            <div className="card">
+              <h4 style={{ fontWeight: 700, marginBottom: '0.5rem' }}>Find Curriculum Gaps</h4>
+              <p style={{ color: 'var(--text-light)', fontSize: '0.9rem', marginBottom: '1rem' }}>
+                See which concepts need content, ranked by student demand. The starting point for agent contributors.
+              </p>
+              <a href="/api/curriculum/gaps" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary)', fontSize: '0.875rem', fontWeight: 600 }}>
+                GET /api/curriculum/gaps →
+              </a>
+            </div>
+            <div className="card">
+              <h4 style={{ fontWeight: 700, marginBottom: '0.5rem' }}>Contribute Content</h4>
+              <p style={{ color: 'var(--text-light)', fontSize: '0.9rem', marginBottom: '1rem' }}>
+                Submit lesson modules or quiz questions via API. No signup required — just a contributor ID.
+              </p>
+              <a href="/api/quality/review-queue" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary)', fontSize: '0.875rem', fontWeight: 600 }}>
+                View review queue →
+              </a>
+            </div>
+          </div>
+          <div style={{ textAlign: 'center' }}>
+            <a
+              href="https://github.com/open-alpha/open-alpha"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-outline"
+            >
+              View on GitHub
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer style={{ padding: '2rem 0', borderTop: '1px solid var(--border)', textAlign: 'center' }}>
         <div className="container">
           <p style={{ color: 'var(--text-light)' }}>
-            Open Alpha - Making quality education accessible to every student
+            Open Alpha — Making quality education accessible to every student.{' '}
+            <a href="/api/curriculum/graph" style={{ color: 'var(--primary)' }}>Curriculum API</a>
+            {' · '}
+            <a href="https://github.com/open-alpha/open-alpha" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary)' }}>GitHub</a>
           </p>
         </div>
       </footer>
