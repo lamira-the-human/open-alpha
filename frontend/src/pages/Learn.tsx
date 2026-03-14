@@ -38,6 +38,13 @@ interface Concept {
   whyItMatters?: string;
 }
 
+const TUTOR_LEVELS = [
+  { id: 'eli5' as const,     label: 'ELI5' },
+  { id: 'standard' as const, label: 'Standard' },
+  { id: 'expert' as const,   label: 'Expert' },
+];
+type TutorLevel = typeof TUTOR_LEVELS[number]['id'];
+
 export default function Learn() {
   const { subject, conceptId } = useParams<{ subject: string; conceptId?: string }>();
   const { token } = useAuth();
@@ -52,6 +59,7 @@ export default function Learn() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [nextConceptBanner, setNextConceptBanner] = useState<Concept | null>(null);
   const [generatingLesson, setGeneratingLesson] = useState(false);
+  const [chatLevel, setChatLevel] = useState<TutorLevel>('standard');
 
   async function fetchConcepts() {
     setError(null);
@@ -114,6 +122,10 @@ export default function Learn() {
     // this after generation enriches the concept, resetting it to the stub.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [conceptId, concepts]);
+
+  useEffect(() => {
+    setChatLevel('standard');
+  }, [selectedConcept?.id]);
 
   useEffect(() => {
     setShowQuiz(false);
@@ -506,7 +518,39 @@ export default function Learn() {
                       onStartChat={() => setShowIntro(false)}
                     />
                   ) : (
-                    <Chat subject={subject || ''} conceptId={selectedConcept.id} />
+                    <>
+                      <div style={{
+                        padding: '0.625rem 1.5rem',
+                        borderBottom: '1px solid var(--border)',
+                        background: 'var(--surface)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem',
+                        flexWrap: 'wrap',
+                        flexShrink: 0,
+                      }}>
+                        <span style={{ fontSize: '0.8125rem', color: 'var(--text-light)', whiteSpace: 'nowrap' }}>Explain like I'm:</span>
+                        {TUTOR_LEVELS.map(level => (
+                          <button
+                            key={level.id}
+                            onClick={() => setChatLevel(level.id)}
+                            style={{
+                              padding: '0.3rem 0.75rem',
+                              borderRadius: '9999px',
+                              border: '1px solid var(--border)',
+                              background: chatLevel === level.id ? 'var(--primary)' : 'transparent',
+                              color: chatLevel === level.id ? 'white' : 'var(--text)',
+                              fontSize: '0.8125rem',
+                              cursor: 'pointer',
+                              whiteSpace: 'nowrap',
+                            }}
+                          >
+                            {level.label}
+                          </button>
+                        ))}
+                      </div>
+                      <Chat subject={subject || ''} conceptId={selectedConcept.id} explanationLevel={chatLevel} />
+                    </>
                   )}
                 </div>
               </>

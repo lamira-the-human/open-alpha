@@ -9,9 +9,10 @@ interface Message {
 interface ChatProps {
   subject: string;
   conceptId: string;
+  explanationLevel?: string;
 }
 
-export default function Chat({ subject, conceptId }: ChatProps) {
+export default function Chat({ subject, conceptId, explanationLevel }: ChatProps) {
   const { token } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
@@ -51,6 +52,7 @@ export default function Chat({ subject, conceptId }: ChatProps) {
           subject,
           conceptId,
           sessionId: sessionId || undefined,
+          explanationLevel: explanationLevel || undefined,
         }),
       });
 

@@ -30,8 +30,9 @@ export async function POST(request: Request) {
       subject: string;
       conceptId: string;
       sessionId?: number;
+      explanationLevel?: 'eli5' | 'standard' | 'expert';
     };
-    const { message, subject, conceptId, sessionId } = body;
+    const { message, subject, conceptId, sessionId, explanationLevel } = body;
 
     if (!message || !subject || !conceptId) {
       return Response.json({ error: 'Missing required fields' }, { status: 400 });
@@ -103,6 +104,7 @@ export async function POST(request: Request) {
       storedExplanation: concept.explanation?.text,
       workedExamplesText,
       whyItMatters: concept.whyItMatters,
+      explanationLevelOverride: explanationLevel,
     };
 
     const aiResponse = await chatWithTutor(messages, context);

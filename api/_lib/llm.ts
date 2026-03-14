@@ -35,6 +35,8 @@ export interface TutorContext {
   storedExplanation?: string;
   workedExamplesText?: string;
   whyItMatters?: string;
+  // Optional override for explanation depth level
+  explanationLevelOverride?: 'eli5' | 'standard' | 'expert';
 }
 
 export interface CoachContext {
@@ -44,8 +46,23 @@ export interface CoachContext {
 
 function getTutorSystemPrompt(context: TutorContext): string {
   const hasStoredContent = context.storedExplanation || context.workedExamplesText;
+  const level = context.explanationLevelOverride;
 
-  let prompt = `You are an encouraging AI tutor for a grade ${context.gradeLevel} student learning ${context.subject}.
+  let audienceIntro: string;
+  let languageGuideline: string;
+
+  if (level === 'eli5') {
+    audienceIntro = `You are an encouraging AI tutor teaching ${context.subject}.`;
+    languageGuideline = '- Explain as if to a curious 5-year-old. Use very simple words, concrete comparisons, and short sentences. No jargon whatsoever.';
+  } else if (level === 'expert') {
+    audienceIntro = `You are an encouraging AI tutor teaching ${context.subject}.`;
+    languageGuideline = '- Explain at a graduate/PhD level. Use precise technical language, formal definitions, and connect to advanced theory. Do not oversimplify.';
+  } else {
+    audienceIntro = `You are an encouraging AI tutor for a grade ${context.gradeLevel} student learning ${context.subject}.`;
+    languageGuideline = `- Use age-appropriate language for grade ${context.gradeLevel}`;
+  }
+
+  let prompt = `${audienceIntro}
 
 Current concept: ${context.conceptName}
 ${context.conceptDescription}`;
@@ -65,7 +82,7 @@ ${context.conceptDescription}`;
   prompt += `\n\nStudent's learning history: ${context.progressContext}
 
 Guidelines:
-- Use age-appropriate language for grade ${context.gradeLevel}
+${languageGuideline}
 - Celebrate small wins and progress
 - If the student is struggling, break concepts into smaller steps
 - Keep responses concise and engaging
@@ -73,7 +90,7 @@ Guidelines:
 - Be patient and supportive${hasStoredContent ? `
 - Use the provided explanation and examples as your source of truth for this concept
 - Do not introduce definitions or examples that contradict the stored content` : `
-- Use examples relevant to their age group`}
+- Use examples relevant to the student's background`}
 
 When generating practice problems:
 - Match the difficulty to grade ${context.gradeLevel}

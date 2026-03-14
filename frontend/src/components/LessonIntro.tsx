@@ -34,6 +34,13 @@ const altTypeLabels: Record<string, string> = {
   formal: 'Formal definition',
 };
 
+const DEPTH_LEVELS = [
+  { id: 'eli5' as const,     label: 'ELI5' },
+  { id: 'standard' as const, label: 'Standard' },
+  { id: 'expert' as const,   label: 'Expert' },
+];
+type DepthLevel = 'eli5' | 'standard' | 'expert';
+
 function FormattedText({ text }: { text: string }) {
   return (
     <>
@@ -59,6 +66,18 @@ export default function LessonIntro({
   const [speaking, setSpeaking] = useState(false);
   const [expandedAlt, setExpandedAlt] = useState<number | null>(null);
   const [showExample, setShowExample] = useState(false);
+  const [depthLevel, setDepthLevel] = useState<DepthLevel>('standard');
+
+  const availableLevels = DEPTH_LEVELS.filter(l => {
+    if (l.id === 'eli5') return !!explanation.childVersion;
+    if (l.id === 'expert') return !!explanation.adultVersion;
+    return true;
+  });
+
+  const currentText =
+    depthLevel === 'eli5' && explanation.childVersion ? explanation.childVersion :
+    depthLevel === 'expert' && explanation.adultVersion ? explanation.adultVersion :
+    explanation.text;
 
   function handleReadAloud() {
     if (speaking) {
@@ -66,7 +85,7 @@ export default function LessonIntro({
       setSpeaking(false);
       return;
     }
-    const utterance = new SpeechSynthesisUtterance(explanation.text);
+    const utterance = new SpeechSynthesisUtterance(currentText);
     utterance.onend = () => setSpeaking(false);
     utterance.onerror = () => setSpeaking(false);
     window.speechSynthesis.speak(utterance);
@@ -117,9 +136,34 @@ export default function LessonIntro({
         </div>
       )}
 
+      {/* Depth level selector */}
+      {availableLevels.length > 1 && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
+          <span style={{ fontSize: '0.8125rem', color: 'var(--text-light)', whiteSpace: 'nowrap' }}>Explain like I'm:</span>
+          {availableLevels.map(level => (
+            <button
+              key={level.id}
+              onClick={() => setDepthLevel(level.id)}
+              style={{
+                padding: '0.3rem 0.75rem',
+                borderRadius: '9999px',
+                border: '1px solid var(--border)',
+                background: depthLevel === level.id ? 'var(--primary)' : 'transparent',
+                color: depthLevel === level.id ? 'white' : 'var(--text)',
+                fontSize: '0.8125rem',
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {level.label}
+            </button>
+          ))}
+        </div>
+      )}
+
       {/* Primary explanation */}
       <div style={{ fontSize: '0.9375rem', marginBottom: '0.5rem' }}>
-        <FormattedText text={explanation.text} />
+        <FormattedText text={currentText} />
       </div>
 
       {/* Read aloud + alternate explanation row */}
