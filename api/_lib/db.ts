@@ -90,12 +90,107 @@ export async function initializeSchema(): Promise<void> {
       grade_level INTEGER,
       created_at TEXT DEFAULT (datetime('now'))
     );
+
+    -- Curriculum contributions from agents and humans
+    CREATE TABLE IF NOT EXISTS contributions (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      contributor_id TEXT NOT NULL,
+      contributor_type TEXT DEFAULT 'human' CHECK (contributor_type IN ('agent', 'human', 'institution')),
+      contribution_type TEXT NOT NULL CHECK (contribution_type IN ('lesson_module', 'quiz_item', 'pedagogical_improvement', 'new_concept')),
+      subject_id TEXT NOT NULL,
+      concept_id TEXT NOT NULL,
+      content TEXT NOT NULL,
+      status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'auto_validated', 'approved', 'rejected', 'deployed')),
+      validation_results TEXT DEFAULT '{}',
+      created_at TEXT DEFAULT (datetime('now')),
+      updated_at TEXT DEFAULT (datetime('now'))
+    );
+
+    -- Reviews of contributions (human reviewers and automated systems)
+    CREATE TABLE IF NOT EXISTS contribution_reviews (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      contribution_id INTEGER REFERENCES contributions(id),
+      reviewer_id TEXT NOT NULL,
+      reviewer_type TEXT DEFAULT 'human' CHECK (reviewer_type IN ('agent', 'human', 'automated')),
+      decision TEXT NOT NULL CHECK (decision IN ('approve', 'reject', 'improve')),
+      feedback TEXT,
+      created_at TEXT DEFAULT (datetime('now'))
+    );
+
+    -- Contributor reputation scores (higher = more trusted, content auto-approved sooner)
+    CREATE TABLE IF NOT EXISTS contributor_reputation (
+      contributor_id TEXT PRIMARY KEY,
+      contributor_type TEXT DEFAULT 'human',
+      total_contributions INTEGER DEFAULT 0,
+      approved_contributions INTEGER DEFAULT 0,
+      rejected_contributions INTEGER DEFAULT 0,
+      reputation_score REAL DEFAULT 0.0,
+      last_contribution_at TEXT,
+      updated_at TEXT DEFAULT (datetime('now'))
+    );
+
+    -- Guest sessions for demo mode (no account required)
+    CREATE TABLE IF NOT EXISTS guest_sessions (
+      id TEXT PRIMARY KEY,
+      subject TEXT,
+      concept_id TEXT,
+      grade_level INTEGER DEFAULT 9,
+      messages TEXT DEFAULT '[]',
+      message_count INTEGER DEFAULT 0,
+      ip_hash TEXT,
+      created_at TEXT DEFAULT (datetime('now')),
+      updated_at TEXT DEFAULT (datetime('now'))
+    );
   `);
 
   // Migrations: add new columns to existing installs (errors ignored if already present)
   const migrations = [
     'ALTER TABLE users ADD COLUMN atxp_account_id TEXT',
     'ALTER TABLE users ADD COLUMN atxp_connection_token TEXT',
+    // Contribution system tables (added after initial launch)
+    `CREATE TABLE IF NOT EXISTS contributions (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      contributor_id TEXT NOT NULL,
+      contributor_type TEXT DEFAULT 'human' CHECK (contributor_type IN ('agent', 'human', 'institution')),
+      contribution_type TEXT NOT NULL CHECK (contribution_type IN ('lesson_module', 'quiz_item', 'pedagogical_improvement', 'new_concept')),
+      subject_id TEXT NOT NULL,
+      concept_id TEXT NOT NULL,
+      content TEXT NOT NULL,
+      status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'auto_validated', 'approved', 'rejected', 'deployed')),
+      validation_results TEXT DEFAULT '{}',
+      created_at TEXT DEFAULT (datetime('now')),
+      updated_at TEXT DEFAULT (datetime('now'))
+    )`,
+    `CREATE TABLE IF NOT EXISTS contribution_reviews (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      contribution_id INTEGER REFERENCES contributions(id),
+      reviewer_id TEXT NOT NULL,
+      reviewer_type TEXT DEFAULT 'human' CHECK (reviewer_type IN ('agent', 'human', 'automated')),
+      decision TEXT NOT NULL CHECK (decision IN ('approve', 'reject', 'improve')),
+      feedback TEXT,
+      created_at TEXT DEFAULT (datetime('now'))
+    )`,
+    `CREATE TABLE IF NOT EXISTS contributor_reputation (
+      contributor_id TEXT PRIMARY KEY,
+      contributor_type TEXT DEFAULT 'human',
+      total_contributions INTEGER DEFAULT 0,
+      approved_contributions INTEGER DEFAULT 0,
+      rejected_contributions INTEGER DEFAULT 0,
+      reputation_score REAL DEFAULT 0.0,
+      last_contribution_at TEXT,
+      updated_at TEXT DEFAULT (datetime('now'))
+    )`,
+    `CREATE TABLE IF NOT EXISTS guest_sessions (
+      id TEXT PRIMARY KEY,
+      subject TEXT,
+      concept_id TEXT,
+      grade_level INTEGER DEFAULT 9,
+      messages TEXT DEFAULT '[]',
+      message_count INTEGER DEFAULT 0,
+      ip_hash TEXT,
+      created_at TEXT DEFAULT (datetime('now')),
+      updated_at TEXT DEFAULT (datetime('now'))
+    )`,
   ];
   for (const sql of migrations) {
     try {
