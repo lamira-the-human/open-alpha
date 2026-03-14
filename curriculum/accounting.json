@@ -1,0 +1,91 @@
+{
+  "id": "accounting",
+  "name": "Accounting & Bookkeeping",
+  "description": "Understand financial records, statements, and the language of business",
+  "concepts": [
+    {
+      "id": "acct-what-is-accounting",
+      "name": "What Is Accounting?",
+      "description": "The purpose of accounting: tracking economic activity so decisions can be made with reliable information.",
+      "prerequisites": [],
+      "level": 13
+    },
+    {
+      "id": "acct-accounting-equation",
+      "name": "The Accounting Equation",
+      "description": "Assets = Liabilities + Equity. Every transaction keeps this equation balanced.",
+      "prerequisites": ["acct-what-is-accounting"],
+      "level": 13
+    },
+    {
+      "id": "acct-debits-credits",
+      "name": "Debits and Credits",
+      "description": "The double-entry system: every transaction has equal debits and credits across accounts.",
+      "prerequisites": ["acct-accounting-equation"],
+      "level": 13
+    },
+    {
+      "id": "acct-chart-of-accounts",
+      "name": "Chart of Accounts",
+      "description": "Organizing accounts into categories: assets, liabilities, equity, revenue, and expenses.",
+      "prerequisites": ["acct-debits-credits"],
+      "level": 14
+    },
+    {
+      "id": "acct-journal-entries",
+      "name": "Journal Entries",
+      "description": "Recording transactions in chronological order with debits and credits.",
+      "prerequisites": ["acct-debits-credits"],
+      "level": 14
+    },
+    {
+      "id": "acct-general-ledger",
+      "name": "The General Ledger",
+      "description": "Posting journal entries to individual account ledgers and maintaining running balances.",
+      "prerequisites": ["acct-journal-entries", "acct-chart-of-accounts"],
+      "level": 14
+    },
+    {
+      "id": "acct-trial-balance",
+      "name": "Trial Balance",
+      "description": "Summing all account balances to verify that total debits equal total credits.",
+      "prerequisites": ["acct-general-ledger"],
+      "level": 14
+    },
+    {
+      "id": "acct-income-statement",
+      "name": "The Income Statement",
+      "description": "Revenue minus expenses equals net income. Measures profitability over a period.",
+      "prerequisites": ["acct-trial-balance"],
+      "level": 15
+    },
+    {
+      "id": "acct-balance-sheet",
+      "name": "The Balance Sheet",
+      "description": "A snapshot of assets, liabilities, and equity at a point in time.",
+      "prerequisites": ["acct-trial-balance"],
+      "level": 15
+    },
+    {
+      "id": "acct-cash-flow-statement",
+      "name": "Cash Flow Statement",
+      "description": "Tracking cash in and out across operating, investing, and financing activities.",
+      "prerequisites": ["acct-income-statement", "acct-balance-sheet"],
+      "level": 15
+    },
+    {
+      "id": "acct-accrual-vs-cash",
+      "name": "Accrual vs Cash Basis",
+      "description": "Recognizing revenue when earned vs when cash is received, and why accrual is the standard.",
+      "prerequisites": ["acct-income-statement"],
+      "level": 15
+    },
+    {
+      "id": "acct-adjusting-entries",
+      "name": "Adjusting Entries",
+      "description": "End-of-period adjustments for prepaid expenses, unearned revenue, depreciation, and accruals.",
+      "prerequisites": ["acct-accrual-vs-cash"],
+      "level": 16
+    }
+  ]
+}

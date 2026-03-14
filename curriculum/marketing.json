@@ -1,0 +1,77 @@
+{
+  "id": "marketing",
+  "name": "Marketing",
+  "description": "Learn how to understand customers, communicate value, and grow a product or business",
+  "concepts": [
+    {
+      "id": "mktg-what-is-marketing",
+      "name": "What Is Marketing?",
+      "description": "Marketing as understanding what people need and communicating how your product solves that need.",
+      "prerequisites": [],
+      "level": 13
+    },
+    {
+      "id": "mktg-target-audience",
+      "name": "Target Audience & Segmentation",
+      "description": "Identifying who your product is for. Demographics, psychographics, and behavioral segmentation.",
+      "prerequisites": ["mktg-what-is-marketing"],
+      "level": 13
+    },
+    {
+      "id": "mktg-value-proposition",
+      "name": "Value Proposition",
+      "description": "Articulating why someone should choose your product over alternatives. Features vs benefits.",
+      "prerequisites": ["mktg-target-audience"],
+      "level": 14
+    },
+    {
+      "id": "mktg-positioning",
+      "name": "Positioning & Messaging",
+      "description": "How your product is perceived relative to competitors. Crafting a positioning statement.",
+      "prerequisites": ["mktg-value-proposition"],
+      "level": 14
+    },
+    {
+      "id": "mktg-marketing-funnel",
+      "name": "The Marketing Funnel",
+      "description": "Awareness, consideration, conversion, retention. How customers move from stranger to loyal buyer.",
+      "prerequisites": ["mktg-target-audience"],
+      "level": 14
+    },
+    {
+      "id": "mktg-content-marketing",
+      "name": "Content Marketing",
+      "description": "Creating valuable content that attracts and educates your audience. Blog posts, videos, newsletters.",
+      "prerequisites": ["mktg-marketing-funnel", "mktg-positioning"],
+      "level": 15
+    },
+    {
+      "id": "mktg-seo-basics",
+      "name": "SEO Basics",
+      "description": "How search engines rank content. Keywords, on-page optimization, and creating content that gets found.",
+      "prerequisites": ["mktg-content-marketing"],
+      "level": 15
+    },
+    {
+      "id": "mktg-paid-ads",
+      "name": "Paid Advertising",
+      "description": "Google Ads, social media ads. CPC, CPM, targeting, and measuring return on ad spend.",
+      "prerequisites": ["mktg-marketing-funnel"],
+      "level": 15
+    },
+    {
+      "id": "mktg-email-marketing",
+      "name": "Email Marketing",
+      "description": "Building a list, writing effective emails, automation sequences, and measuring open/click rates.",
+      "prerequisites": ["mktg-marketing-funnel"],
+      "level": 15
+    },
+    {
+      "id": "mktg-analytics",
+      "name": "Marketing Analytics",
+      "description": "Measuring what works. Key metrics (CAC, LTV, conversion rate), attribution, and A/B testing.",
+      "prerequisites": ["mktg-paid-ads", "mktg-content-marketing"],
+      "level": 16
+    }
+  ]
+}

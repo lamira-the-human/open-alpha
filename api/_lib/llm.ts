@@ -146,6 +146,143 @@ export async function chatWithCoach(
   return response.choices[0]?.message?.content || 'I apologize, but I had trouble generating a response. Please try again.';
 }
 
+// ── On-demand lesson generation ─────────────────────────────────────────────
+
+export const LESSON_PROMPT_VERSION = 1;
+
+export interface GeneratedLessonContent {
+  objective: string;
+  explanation: {
+    text: string;
+    childVersion?: string;
+    adultVersion?: string;
+  };
+  alternateExplanations: Array<{ type: string; text: string }>;
+  workedExamples: Array<{ problem: string; steps: string[]; answer: string }>;
+  guidedPractice: Array<{
+    id: string;
+    prompt: string;
+    answer: string;
+    hint: string;
+    feedback: { correct: string; incorrect: string };
+  }>;
+  masteryCheck: {
+    passingScore: number;
+    questions: Array<{
+      id: string;
+      question: string;
+      options: string[];
+      correctAnswer: string;
+      explanation: string;
+    }>;
+  };
+  remediationPath: {
+    action: string;
+    message: string;
+  };
+  whyItMatters: string;
+}
+
+interface LessonGenerationContext {
+  subjectName: string;
+  conceptId: string;
+  conceptName: string;
+  conceptDescription: string;
+  level: number;
+  prerequisites: string[];
+  gradeBand?: string;
+}
+
+function getLessonGenerationPrompt(ctx: LessonGenerationContext): string {
+  const isAdult = ctx.level > 12;
+  const audienceNote = isAdult
+    ? 'This is an adult learner. Use practical, real-world framing. Skip childVersion in the explanation. Include adultVersion.'
+    : `This is for approximately grade level ${ctx.level}. Include both childVersion (for younger learners) and adultVersion (for older/adult learners) in the explanation.`;
+
+  return `Generate a complete lesson module for the following concept. Return ONLY valid JSON matching the schema below — no markdown, no commentary.
+
+Subject: ${ctx.subjectName}
+Concept: ${ctx.conceptName}
+Description: ${ctx.conceptDescription}
+Level: ${ctx.level}
+Prerequisites: ${ctx.prerequisites.length > 0 ? ctx.prerequisites.join(', ') : 'None'}
+
+${audienceNote}
+
+Required JSON schema:
+{
+  "objective": "One sentence: what the learner should be able to do after this lesson.",
+  "explanation": {
+    "text": "Primary explanation. Clear, accurate, well-structured. At least 100 words.",
+    "childVersion": "Simplified version for younger learners (K-5). Concrete examples, simple language. Omit for adult-only subjects.",
+    "adultVersion": "Practical version for older/adult learners. Real-world applications."
+  },
+  "alternateExplanations": [
+    { "type": "visual", "text": "Explanation using visual/spatial reasoning or diagrams described in text." },
+    { "type": "realWorld", "text": "Explanation grounded in a practical real-world scenario." }
+  ],
+  "workedExamples": [
+    { "problem": "Problem statement", "steps": ["Step 1: reasoning...", "Step 2: reasoning..."], "answer": "Final answer" },
+    { "problem": "...", "steps": ["..."], "answer": "..." },
+    { "problem": "...", "steps": ["..."], "answer": "..." }
+  ],
+  "guidedPractice": [
+    { "id": "${ctx.conceptId}-gp1", "prompt": "Practice problem", "answer": "Expected answer", "hint": "Helpful hint without giving it away", "feedback": { "correct": "Reinforcing message", "incorrect": "Diagnostic message explaining what to look for" } },
+    { "id": "${ctx.conceptId}-gp2", "prompt": "...", "answer": "...", "hint": "...", "feedback": { "correct": "...", "incorrect": "..." } },
+    { "id": "${ctx.conceptId}-gp3", "prompt": "...", "answer": "...", "hint": "...", "feedback": { "correct": "...", "incorrect": "..." } },
+    { "id": "${ctx.conceptId}-gp4", "prompt": "...", "answer": "...", "hint": "...", "feedback": { "correct": "...", "incorrect": "..." } },
+    { "id": "${ctx.conceptId}-gp5", "prompt": "...", "answer": "...", "hint": "...", "feedback": { "correct": "...", "incorrect": "..." } }
+  ],
+  "masteryCheck": {
+    "passingScore": 80,
+    "questions": [
+      { "id": "${ctx.conceptId}-mc1", "question": "Question text", "options": ["A) ...", "B) ...", "C) ...", "D) ..."], "correctAnswer": "A", "explanation": "Why this is correct" },
+      { "id": "${ctx.conceptId}-mc2", "question": "...", "options": ["A) ...", "B) ...", "C) ...", "D) ..."], "correctAnswer": "B", "explanation": "..." },
+      { "id": "${ctx.conceptId}-mc3", "question": "...", "options": ["A) ...", "B) ...", "C) ...", "D) ..."], "correctAnswer": "C", "explanation": "..." },
+      { "id": "${ctx.conceptId}-mc4", "question": "...", "options": ["A) ...", "B) ...", "C) ...", "D) ..."], "correctAnswer": "D", "explanation": "..." },
+      { "id": "${ctx.conceptId}-mc5", "question": "...", "options": ["A) ...", "B) ...", "C) ...", "D) ..."], "correctAnswer": "A", "explanation": "..." }
+    ]
+  },
+  "remediationPath": {
+    "action": "review_prerequisites",
+    "message": "Encouraging message about what to do if they didn't pass. Point them toward reviewing the foundational ideas."
+  },
+  "whyItMatters": "Short explanation of why this concept matters in school, work, or daily life."
+}
+
+Rules:
+- Every worked example must have at least 2 steps that explain REASONING, not just arithmetic.
+- Guided practice problems should progress from easy to hard.
+- Mastery check questions should test understanding, not just recall.
+- All content must be factually accurate.
+- Do not vary the correct answer distribution — mix them naturally.
+- Return ONLY the JSON object. No wrapping, no code fences.`;
+}
+
+export async function generateLesson(
+  ctx: LessonGenerationContext,
+  model: string = 'claude-sonnet-4-20250514'
+): Promise<GeneratedLessonContent> {
+  const openai = getClient();
+
+  const prompt = getLessonGenerationPrompt(ctx);
+
+  const response = await openai.chat.completions.create({
+    model,
+    messages: [{ role: 'user', content: prompt }],
+    max_tokens: 4096,
+    temperature: 0.4,
+  });
+
+  const raw = response.choices[0]?.message?.content || '';
+
+  // Strip any accidental code fences
+  const cleaned = raw.replace(/^```(?:json)?\s*/m, '').replace(/\s*```\s*$/m, '').trim();
+
+  const parsed = JSON.parse(cleaned) as GeneratedLessonContent;
+  return parsed;
+}
+
 export async function generateQuizQuestions(
   subject: string,
   conceptName: string,

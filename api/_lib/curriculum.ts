@@ -1,5 +1,6 @@
 import { readFileSync, readdirSync } from 'fs';
 import { join } from 'path';
+import { executeSql } from './db.js';
 
 // ── Enriched content types ────────────────────────────────────────────────────
 
@@ -182,4 +183,56 @@ export function getNextConcept(
     if (completedConceptIds.includes(concept.id)) return false;
     return concept.prerequisites.every(prereq => completedConceptIds.includes(prereq));
   });
+}
+
+// ── On-demand lesson resolution ──────────────────────────────────────────────
+
+interface CachedLessonRow {
+  content: string;
+}
+
+/**
+ * Returns a concept enriched with lesson content from any available source:
+ *   1. Pre-authored JSON (already on the concept object)
+ *   2. Cached generated lesson from the DB
+ *
+ * Does NOT trigger generation — that's the job of the /api/curriculum/lesson endpoint.
+ * This function is for internal use (e.g., the tutor chat) where we want the best
+ * available content without blocking on LLM generation.
+ */
+export async function getConceptWithLesson(
+  subjectId: string,
+  conceptId: string
+): Promise<Concept | undefined> {
+  const concept = getConcept(subjectId, conceptId);
+  if (!concept) return undefined;
+
+  // If the concept already has full content from JSON, return as-is
+  if (concept.explanation && concept.workedExamples?.length && concept.masteryCheck) {
+    return concept;
+  }
+
+  // Check for cached generated lesson
+  const cached = await executeSql<CachedLessonRow>(
+    'SELECT content FROM generated_lessons WHERE subject_id = $1 AND concept_id = $2',
+    [subjectId, conceptId]
+  );
+
+  if (cached.rows.length > 0) {
+    const lesson = JSON.parse(cached.rows[0].content);
+    return {
+      ...concept,
+      objective: lesson.objective ?? concept.objective,
+      explanation: lesson.explanation ?? concept.explanation,
+      alternateExplanations: lesson.alternateExplanations ?? concept.alternateExplanations,
+      workedExamples: lesson.workedExamples ?? concept.workedExamples,
+      guidedPractice: lesson.guidedPractice ?? concept.guidedPractice,
+      masteryCheck: lesson.masteryCheck ?? concept.masteryCheck,
+      remediationPath: lesson.remediationPath ?? concept.remediationPath,
+      whyItMatters: lesson.whyItMatters ?? concept.whyItMatters,
+    };
+  }
+
+  // No cached content — return the stub concept
+  return concept;
 }

@@ -24,7 +24,7 @@
 
 import { executeSql } from '../_lib/db.js';
 import { chatWithTutor, ChatMessage, TutorContext } from '../_lib/llm.js';
-import { getConcept } from '../_lib/curriculum.js';
+import { getConceptWithLesson } from '../_lib/curriculum.js';
 
 const DEMO_MESSAGE_LIMIT = 20;
 
@@ -81,7 +81,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const concept = getConcept(subject, conceptId);
+    const concept = await getConceptWithLesson(subject, conceptId);
     if (!concept) {
       return Response.json(
         { error: `Concept '${conceptId}' not found in subject '${subject}'` },

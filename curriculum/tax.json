@@ -1,0 +1,77 @@
+{
+  "id": "tax",
+  "name": "Personal Tax & Finance",
+  "description": "Understand how taxes work, how to file, and how to make informed financial decisions",
+  "concepts": [
+    {
+      "id": "tax-why-taxes-exist",
+      "name": "Why Taxes Exist",
+      "description": "What taxes fund, how government revenue works, and the social contract behind taxation.",
+      "prerequisites": [],
+      "level": 13
+    },
+    {
+      "id": "tax-income-types",
+      "name": "Types of Income",
+      "description": "W-2 wages, 1099 self-employment, investment income, and how each is taxed differently.",
+      "prerequisites": ["tax-why-taxes-exist"],
+      "level": 13
+    },
+    {
+      "id": "tax-brackets",
+      "name": "Tax Brackets & Marginal Rates",
+      "description": "How progressive taxation works. Why moving into a higher bracket doesn't mean all your income is taxed at that rate.",
+      "prerequisites": ["tax-income-types"],
+      "level": 13
+    },
+    {
+      "id": "tax-deductions-vs-credits",
+      "name": "Deductions vs Credits",
+      "description": "Deductions reduce taxable income; credits reduce tax owed. Standard deduction vs itemizing.",
+      "prerequisites": ["tax-brackets"],
+      "level": 14
+    },
+    {
+      "id": "tax-filing-status",
+      "name": "Filing Status",
+      "description": "Single, married filing jointly, head of household — how status affects brackets and standard deduction.",
+      "prerequisites": ["tax-brackets"],
+      "level": 14
+    },
+    {
+      "id": "tax-w4-withholding",
+      "name": "W-4 & Withholding",
+      "description": "How employers withhold taxes from each paycheck, and how to adjust your W-4 to avoid owing or over-withholding.",
+      "prerequisites": ["tax-filing-status"],
+      "level": 14
+    },
+    {
+      "id": "tax-filing-return",
+      "name": "Filing a Tax Return",
+      "description": "What forms you need (W-2, 1099), choosing software or a preparer, and the filing timeline.",
+      "prerequisites": ["tax-deductions-vs-credits", "tax-w4-withholding"],
+      "level": 14
+    },
+    {
+      "id": "tax-retirement-accounts",
+      "name": "Retirement Accounts & Taxes",
+      "description": "Traditional vs Roth IRAs and 401(k)s. Tax-deferred vs tax-free growth and contribution limits.",
+      "prerequisites": ["tax-deductions-vs-credits"],
+      "level": 15
+    },
+    {
+      "id": "tax-capital-gains",
+      "name": "Capital Gains Tax",
+      "description": "Short-term vs long-term capital gains. How selling investments, property, or assets triggers taxable events.",
+      "prerequisites": ["tax-income-types", "tax-brackets"],
+      "level": 15
+    },
+    {
+      "id": "tax-self-employment",
+      "name": "Self-Employment Tax",
+      "description": "How freelancers and contractors pay both the employee and employer share of Social Security and Medicare.",
+      "prerequisites": ["tax-income-types", "tax-filing-return"],
+      "level": 15
+    }
+  ]
+}

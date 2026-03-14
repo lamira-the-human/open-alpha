@@ -118,7 +118,7 @@ export function GET(_request: Request) {
   return Response.json(
     {
       version: '1.0',
-      description: 'Open Alpha curriculum graph — a public domain K-12 knowledge graph',
+      description: 'Open Alpha curriculum graph — a public domain knowledge graph for K-12 and adult learning',
       license: 'CC BY 4.0',
       contribute: 'https://github.com/open-alpha/open-alpha',
       subjects: graph,
