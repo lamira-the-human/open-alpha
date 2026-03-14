@@ -129,6 +129,20 @@ export async function initializeSchema(): Promise<void> {
       updated_at TEXT DEFAULT (datetime('now'))
     );
 
+    -- On-demand generated lessons (cached LLM output)
+    CREATE TABLE IF NOT EXISTS generated_lessons (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      subject_id TEXT NOT NULL,
+      concept_id TEXT NOT NULL,
+      content TEXT NOT NULL,
+      generation_model TEXT,
+      generation_prompt_version INTEGER DEFAULT 1,
+      feedback_count INTEGER DEFAULT 0,
+      created_at TEXT DEFAULT (datetime('now')),
+      updated_at TEXT DEFAULT (datetime('now')),
+      UNIQUE(subject_id, concept_id)
+    );
+
     -- Guest sessions for demo mode (no account required)
     CREATE TABLE IF NOT EXISTS guest_sessions (
       id TEXT PRIMARY KEY,
@@ -190,6 +204,18 @@ export async function initializeSchema(): Promise<void> {
       ip_hash TEXT,
       created_at TEXT DEFAULT (datetime('now')),
       updated_at TEXT DEFAULT (datetime('now'))
+    )`,
+    `CREATE TABLE IF NOT EXISTS generated_lessons (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      subject_id TEXT NOT NULL,
+      concept_id TEXT NOT NULL,
+      content TEXT NOT NULL,
+      generation_model TEXT,
+      generation_prompt_version INTEGER DEFAULT 1,
+      feedback_count INTEGER DEFAULT 0,
+      created_at TEXT DEFAULT (datetime('now')),
+      updated_at TEXT DEFAULT (datetime('now')),
+      UNIQUE(subject_id, concept_id)
     )`,
   ];
   for (const sql of migrations) {

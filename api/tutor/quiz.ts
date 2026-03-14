@@ -1,7 +1,7 @@
 import { executeSql } from '../_lib/db.js';
 import { getAuthFromRequest, unauthorized } from '../_lib/auth.js';
 import { generateQuizQuestions } from '../_lib/llm.js';
-import { getConcept } from '../_lib/curriculum.js';
+import { getConceptWithLesson } from '../_lib/curriculum.js';
 
 interface User {
   grade_level: number | null;
@@ -28,7 +28,7 @@ export async function POST(request: Request) {
       return Response.json({ error: 'Grade level not set' }, { status: 400 });
     }
 
-    const concept = getConcept(subject, conceptId);
+    const concept = await getConceptWithLesson(subject, conceptId);
     if (!concept) {
       return Response.json({ error: 'Concept not found' }, { status: 400 });
     }

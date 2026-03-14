@@ -1,0 +1,77 @@
+{
+  "id": "ai",
+  "name": "Artificial Intelligence",
+  "description": "Understand how AI systems work, from basic concepts to modern language models",
+  "concepts": [
+    {
+      "id": "ai-what-is-ai",
+      "name": "What Is AI?",
+      "description": "Artificial intelligence as pattern recognition from data. What AI can and cannot do today.",
+      "prerequisites": [],
+      "level": 13
+    },
+    {
+      "id": "ai-ml-basics",
+      "name": "Machine Learning Basics",
+      "description": "Learning from examples instead of explicit rules. Training data, models, and predictions.",
+      "prerequisites": ["ai-what-is-ai"],
+      "level": 13
+    },
+    {
+      "id": "ai-supervised-learning",
+      "name": "Supervised Learning",
+      "description": "Learning from labeled examples. Classification (cat vs dog) and regression (predicting a number).",
+      "prerequisites": ["ai-ml-basics"],
+      "level": 14
+    },
+    {
+      "id": "ai-unsupervised-learning",
+      "name": "Unsupervised Learning",
+      "description": "Finding patterns without labels. Clustering, dimensionality reduction, and anomaly detection.",
+      "prerequisites": ["ai-ml-basics"],
+      "level": 14
+    },
+    {
+      "id": "ai-neural-networks",
+      "name": "Neural Networks",
+      "description": "Layers of interconnected nodes that transform inputs into outputs. Weights, biases, and activation functions.",
+      "prerequisites": ["ai-supervised-learning"],
+      "level": 15
+    },
+    {
+      "id": "ai-training-process",
+      "name": "Training a Model",
+      "description": "Loss functions, gradient descent, and backpropagation — how a neural network learns from its mistakes.",
+      "prerequisites": ["ai-neural-networks"],
+      "level": 15
+    },
+    {
+      "id": "ai-llms",
+      "name": "Large Language Models",
+      "description": "How models like GPT and Claude work: tokenization, attention, and next-token prediction at scale.",
+      "prerequisites": ["ai-training-process"],
+      "level": 16
+    },
+    {
+      "id": "ai-prompting",
+      "name": "Prompt Engineering",
+      "description": "Crafting effective prompts. System prompts, few-shot examples, chain-of-thought, and common pitfalls.",
+      "prerequisites": ["ai-llms"],
+      "level": 14
+    },
+    {
+      "id": "ai-ethics",
+      "name": "AI Ethics & Bias",
+      "description": "How biased training data leads to biased outputs. Fairness, transparency, and responsible deployment.",
+      "prerequisites": ["ai-ml-basics"],
+      "level": 14
+    },
+    {
+      "id": "ai-agents",
+      "name": "AI Agents",
+      "description": "Autonomous systems that observe, plan, and act. Tool use, multi-step reasoning, and human oversight.",
+      "prerequisites": ["ai-llms", "ai-prompting"],
+      "level": 16
+    }
+  ]
+}

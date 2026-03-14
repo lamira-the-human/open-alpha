@@ -1,0 +1,105 @@
+{
+  "id": "computer-science",
+  "name": "Computer Science",
+  "description": "Core concepts of computing, from how computers work to algorithms and data structures",
+  "concepts": [
+    {
+      "id": "cs-what-is-computing",
+      "name": "What Is Computing?",
+      "description": "Computers as machines that follow instructions. Input, processing, output, and storage.",
+      "prerequisites": [],
+      "level": 6
+    },
+    {
+      "id": "cs-binary",
+      "name": "Binary & Data Representation",
+      "description": "How computers represent numbers, text, and images using only 0s and 1s.",
+      "prerequisites": ["cs-what-is-computing"],
+      "level": 7
+    },
+    {
+      "id": "cs-algorithms-intro",
+      "name": "What Is an Algorithm?",
+      "description": "A step-by-step procedure for solving a problem. Algorithms exist in cooking, navigation, and code.",
+      "prerequisites": ["cs-what-is-computing"],
+      "level": 7
+    },
+    {
+      "id": "cs-variables-types",
+      "name": "Variables & Data Types",
+      "description": "Storing values in named containers. Integers, strings, booleans, and why types matter.",
+      "prerequisites": ["cs-algorithms-intro"],
+      "level": 8
+    },
+    {
+      "id": "cs-conditionals",
+      "name": "Conditionals (If/Else)",
+      "description": "Making decisions in code. Boolean expressions, if/else chains, and nested conditions.",
+      "prerequisites": ["cs-variables-types"],
+      "level": 8
+    },
+    {
+      "id": "cs-loops",
+      "name": "Loops",
+      "description": "Repeating actions with for loops and while loops. Loop counters, conditions, and avoiding infinite loops.",
+      "prerequisites": ["cs-conditionals"],
+      "level": 8
+    },
+    {
+      "id": "cs-functions",
+      "name": "Functions",
+      "description": "Packaging reusable logic into named blocks. Parameters, return values, and scope.",
+      "prerequisites": ["cs-loops"],
+      "level": 9
+    },
+    {
+      "id": "cs-arrays-lists",
+      "name": "Arrays & Lists",
+      "description": "Storing ordered collections of values. Indexing, iteration, and common operations.",
+      "prerequisites": ["cs-loops"],
+      "level": 9
+    },
+    {
+      "id": "cs-debugging",
+      "name": "Debugging",
+      "description": "Finding and fixing errors. Reading error messages, using print statements, and systematic elimination.",
+      "prerequisites": ["cs-functions"],
+      "level": 9
+    },
+    {
+      "id": "cs-sorting",
+      "name": "Sorting Algorithms",
+      "description": "Bubble sort, selection sort, and merge sort. Comparing efficiency and understanding O(n log n).",
+      "prerequisites": ["cs-arrays-lists", "cs-functions"],
+      "level": 10
+    },
+    {
+      "id": "cs-dictionaries",
+      "name": "Dictionaries & Hash Maps",
+      "description": "Key-value storage. When to use a dictionary vs a list, and how hashing works conceptually.",
+      "prerequisites": ["cs-arrays-lists"],
+      "level": 10
+    },
+    {
+      "id": "cs-recursion",
+      "name": "Recursion",
+      "description": "Functions that call themselves. Base cases, recursive cases, and the call stack.",
+      "prerequisites": ["cs-functions"],
+      "level": 11
+    },
+    {
+      "id": "cs-big-o",
+      "name": "Big-O Notation",
+      "description": "Describing algorithm efficiency. O(1), O(n), O(n²), O(log n) and what they mean in practice.",
+      "prerequisites": ["cs-sorting"],
+      "level": 11
+    },
+    {
+      "id": "cs-trees",
+      "name": "Trees & Graphs",
+      "description": "Hierarchical and networked data structures. Binary trees, traversals, and graph basics.",
+      "prerequisites": ["cs-recursion", "cs-dictionaries"],
+      "level": 12
+    }
+  ]
+}
