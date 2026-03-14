@@ -29,10 +29,10 @@ export default function Landing() {
       <section style={{ padding: '4rem 0', textAlign: 'center' }}>
         <div className="container">
           <h2 className="hero-title" style={{ fontSize: '3rem', fontWeight: 700, marginBottom: '1rem', color: 'var(--text)' }}>
-            AI-Powered Learning for K-12
+            AI-Powered Learning for Everyone
           </h2>
           <p className="hero-subtitle" style={{ fontSize: '1.25rem', color: 'var(--text-light)', maxWidth: '600px', margin: '0 auto 2rem' }}>
-            Personalized tutoring that adapts to every student. Math, Reading, and Science - from kindergarten through high school.
+            Personalized tutoring that adapts to every learner. K-12 subjects, plus accounting, computer science, AI, marketing, tax, and more.
           </p>
           <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
             <button
@@ -63,7 +63,7 @@ export default function Landing() {
               <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>1</div>
               <h4 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '0.5rem' }}>Choose Your Subject</h4>
               <p style={{ color: 'var(--text-light)' }}>
-                Pick from Math, Reading, or Science. Content adapts to your grade level.
+                Pick from a growing catalog of subjects — K-12 and adult. Content adapts to your level.
               </p>
             </div>
             <div className="card" style={{ textAlign: 'center' }}>
@@ -137,7 +137,7 @@ export default function Landing() {
             <div className="card">
               <h4 style={{ fontWeight: 700, marginBottom: '0.5rem' }}>Public Curriculum Graph</h4>
               <p style={{ color: 'var(--text-light)', fontSize: '0.9rem', marginBottom: '1rem' }}>
-                The full K-12 knowledge graph as open JSON — every concept, every prerequisite link.
+                The full knowledge graph as open JSON — every concept, every prerequisite link, K-12 through adult.
               </p>
               <a href="/api/curriculum/graph" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary)', fontSize: '0.875rem', fontWeight: 600 }}>
                 GET /api/curriculum/graph →
@@ -179,7 +179,7 @@ export default function Landing() {
       <footer style={{ padding: '2rem 0', borderTop: '1px solid var(--border)', textAlign: 'center' }}>
         <div className="container">
           <p style={{ color: 'var(--text-light)' }}>
-            Open Alpha — Making quality education accessible to every student.{' '}
+            Open Alpha — Making quality education accessible to every learner.{' '}
             <a href="/api/curriculum/graph" style={{ color: 'var(--primary)' }}>Curriculum API</a>
             {' · '}
             <a href="https://github.com/open-alpha/open-alpha" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary)' }}>GitHub</a>

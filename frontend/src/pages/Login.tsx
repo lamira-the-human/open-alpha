@@ -33,7 +33,7 @@ export default function Login() {
         <Link to="/">
           <h1 style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--primary)', marginBottom: '0.5rem' }}>Open Alpha</h1>
         </Link>
-        <p style={{ color: 'var(--text-light)', marginBottom: '2rem' }}>Free AI tutoring for K–12 students</p>
+        <p style={{ color: 'var(--text-light)', marginBottom: '2rem' }}>Free AI tutoring for every learner</p>
 
         <button
           onClick={handleSignIn}
