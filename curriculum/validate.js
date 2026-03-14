@@ -40,11 +40,14 @@ const ENRICHMENT_FIELDS = [
 ];
 
 function loadSubjects() {
-  const files = readdirSync(__dirname).filter(f => f.endsWith('.json') && f !== 'schema.json');
-  return files.map(f => {
-    const raw = readFileSync(join(__dirname, f), 'utf-8');
-    return { file: f, ...JSON.parse(raw) };
-  });
+  const files = readdirSync(__dirname).filter(f => f.endsWith('.json') && !f.includes('schema'));
+  return files
+    .map(f => {
+      const raw = readFileSync(join(__dirname, f), 'utf-8');
+      const data = JSON.parse(raw);
+      return { file: f, ...data };
+    })
+    .filter(s => s.id && Array.isArray(s.concepts));
 }
 
 function validate() {

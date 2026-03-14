@@ -42,10 +42,32 @@ Add a way to force-regenerate a cached lesson (e.g. `DELETE /api/curriculum/less
 
 ---
 
-## Content & curriculum
+## Community & contributions
 
-### Subjects list is stale in README
-README still lists only Math, Reading, Science. Live subjects now include: Accounting & Bookkeeping, Personal Tax & Finance, AI, Marketing, Computer Science, Algebra 1.
+### Contributor-funded lesson generation
+Right now the platform absorbs all LLM costs via the owner's ATXP credentials. Better model: contributors bring their own ATXP connection string when they generate or submit new content. The server accepts a contributor key for that request, uses it for that call only, and never persists it in plaintext. This turns lesson creation into a resource contributors opt into rather than a cost the platform carries — and it scales naturally as the contributor base grows. Needed: a contributor auth/key-submission flow, a per-request key-injection pattern in the lesson API, and clear UI messaging about what "use your own credits" means.
+
+### Subject and lesson requests + voting
+Allow logged-in users to request new subjects or concepts, and upvote existing requests. Most-requested items become the prioritised generation queue. Schema: `subject_requests` and `concept_requests` tables with a votes column. Endpoints: `GET /api/requests`, `POST /api/requests`, `POST /api/requests/:id/vote`. UI: a lightweight "request board" page. Requests can graduate to stub concepts once they hit a vote threshold (or an admin approves them).
+
+### Lesson quality voting
+Users should be able to thumbs-up / thumbs-down a lesson after reading it. Feeds the quality review queue — the `contribution_reviews` table already exists. High-downvote lessons get flagged for regeneration; high-upvote ones get promoted. A `POST /api/lesson/vote` endpoint is all that's needed on the backend.
+
+### Contributor units — create and edit curriculum
+A contributor UI for adding new subjects, defining concept graphs, and editing lesson content — not just voting and requesting. Each discrete piece of work (a concept graph, a lesson, a correction) is a "contribution". The `contributions` table already exists. Needed: a `/contribute` dashboard, forms for subject/concept metadata, and a review/approval flow before content goes live.
+
+### Contributor leaderboard
+Public `/leaderboard` page ranking contributors by: concepts authored, upvotes received on their lessons, requests fulfilled. Good for recognition and for signalling that contributions matter. Consider milestone badges: "First concept", "Subject creator", "100 upvotes".
+
+### API-first contribution flow
+AI agents are likely to be major contributors. The entire contribution pipeline should be scriptable — no UI-only steps. Every create / edit / request / vote action needs a clean REST endpoint so an agent can fork the curriculum, generate content, submit for review, and receive feedback without touching the browser.
+
+### Contributing docs (hold until built)
+Don't document the contribution flow until it exists and has been tested end-to-end. Once the above pieces are in place, add `CONTRIBUTING.md` covering: how to get an ATXP key, how to submit a concept, how the review queue works, and example agent scripts for automated contribution. The README can then link to it with a short "Want to help build the curriculum?" section.
+
+---
+
+## Content & curriculum
 
 ### "What Is Accounting?" lesson
 The first concept in the accounting tree is also a stub — it needs a lesson generated. Same for all other non-math subjects.
