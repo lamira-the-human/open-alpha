@@ -51,6 +51,7 @@ export default function Learn() {
   const [error, setError] = useState<Error | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [nextConceptBanner, setNextConceptBanner] = useState<Concept | null>(null);
+  const [generatingLesson, setGeneratingLesson] = useState(false);
 
   async function fetchConcepts() {
     setError(null);
@@ -95,20 +96,67 @@ export default function Learn() {
   }, [subject, conceptId, token]);
 
   useEffect(() => {
-    setShowIntro(!!selectedConcept?.explanation);
     setShowQuiz(false);
+
+    if (selectedConcept?.explanation) {
+      // Concept already has lesson content — show it
+      setShowIntro(true);
+      setGeneratingLesson(false);
+    } else if (selectedConcept) {
+      // Concept is a stub — generate lesson on-demand
+      setShowIntro(true);
+      setGeneratingLesson(true);
+
+      fetch(`/api/curriculum/lesson?subject=${subject}&concept=${selectedConcept.id}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.lesson) {
+            // Merge the generated lesson content onto the concept
+            const enriched: Concept = {
+              ...selectedConcept,
+              objective: data.lesson.objective,
+              explanation: data.lesson.explanation,
+              alternateExplanations: data.lesson.alternateExplanations,
+              workedExamples: data.lesson.workedExamples,
+              whyItMatters: data.lesson.whyItMatters,
+            };
+            setSelectedConcept(enriched);
+            setConcepts(prev => prev.map(c => c.id === enriched.id ? enriched : c));
+          }
+        })
+        .catch(err => {
+          console.error('Lesson generation failed:', err);
+          // Fall back to tutor chat
+          setShowIntro(false);
+        })
+        .finally(() => {
+          setGeneratingLesson(false);
+        });
+    }
   }, [selectedConcept?.id]);
 
   const subjectNames: Record<string, string> = {
     math: 'Mathematics',
+    algebra1: 'Algebra 1',
     reading: 'Reading & Language Arts',
     science: 'Science',
+    'computer-science': 'Computer Science',
+    accounting: 'Accounting & Bookkeeping',
+    tax: 'Personal Tax & Finance',
+    ai: 'Artificial Intelligence',
+    marketing: 'Marketing',
   };
 
   const subjectEmojis: Record<string, string> = {
     math: '📐',
+    algebra1: '📐',
     reading: '📖',
     science: '🔬',
+    'computer-science': '💻',
+    accounting: '📊',
+    tax: '🏛️',
+    ai: '🤖',
+    marketing: '📣',
   };
 
   const handleQuizComplete = (score: number, passed: boolean) => {
@@ -362,7 +410,7 @@ export default function Learn() {
                 </div>
 
                 {/* Lesson / Tutor tabs */}
-                {hasIntro && (
+                {(hasIntro || generatingLesson) && (
                   <div style={{
                     display: 'flex',
                     borderBottom: '1px solid var(--border)',
@@ -398,7 +446,34 @@ export default function Learn() {
 
                 {/* Content */}
                 <div style={{ flex: 1, overflowY: 'auto' }}>
-                  {showIntro && hasIntro ? (
+                  {generatingLesson ? (
+                    <div style={{
+                      flex: 1,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      padding: '4rem 2rem',
+                      textAlign: 'center',
+                      gap: '1.5rem',
+                    }}>
+                      <div style={{
+                        fontSize: '3rem',
+                        animation: 'pulse 1.5s ease-in-out infinite',
+                      }}>
+                        📝
+                      </div>
+                      <div>
+                        <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '0.5rem' }}>
+                          Writing your lesson...
+                        </h3>
+                        <p style={{ color: 'var(--text-light)', maxWidth: '400px', lineHeight: 1.6 }}>
+                          Our AI is crafting a personalized lesson on <strong>{selectedConcept.name}</strong>. This takes a few seconds the first time — after that, it's instant for everyone.
+                        </p>
+                      </div>
+                      <style>{`@keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.05); } }`}</style>
+                    </div>
+                  ) : showIntro && hasIntro ? (
                     <LessonIntro
                       objective={selectedConcept.objective}
                       explanation={selectedConcept.explanation!}

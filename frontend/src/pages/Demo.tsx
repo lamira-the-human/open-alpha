@@ -95,7 +95,7 @@ export default function Demo() {
       const data = await res.json();
       if (data.subjects && data.subjects[0]) {
         const allConcepts: Concept[] = data.subjects[0].concepts
-          .filter((c: Concept & { level: number }) => c.level <= gradeLevel + 2)
+          .filter((c: Concept & { level: number }) => c.level <= Math.max(gradeLevel, 16) + 2)
           .map((c: { conceptId?: string; id?: string; conceptName?: string; name?: string; level?: number; completenessPercent?: number; demandScore?: number; prerequisites?: string[] }) => ({
             conceptId: c.conceptId || c.id,
             conceptName: c.conceptName || c.name,
@@ -115,6 +115,11 @@ export default function Demo() {
   }
 
   function handleSubjectSelect(subjectId: string) {
+    // Auto-set level for adult subjects so the filter doesn't hide everything
+    const adultSubjects = ['accounting', 'tax', 'ai', 'marketing'];
+    if (adultSubjects.includes(subjectId) && gradeLevel < 13) {
+      setGradeLevel(15);
+    }
     loadConcepts(subjectId);
     setStep('select-concept');
   }
