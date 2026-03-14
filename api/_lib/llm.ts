@@ -103,7 +103,7 @@ Guidelines:
 export async function chatWithTutor(
   messages: ChatMessage[],
   context: TutorContext,
-  model: string = 'claude-sonnet-4-20250514'
+  model: string = 'claude-sonnet-4-6'
 ): Promise<string> {
   const openai = getClient();
 
@@ -126,7 +126,7 @@ export async function chatWithTutor(
 export async function chatWithCoach(
   messages: ChatMessage[],
   context: CoachContext,
-  model: string = 'claude-sonnet-4-20250514'
+  model: string = 'claude-sonnet-4-6'
 ): Promise<string> {
   const openai = getClient();
 
@@ -261,7 +261,7 @@ Rules:
 
 export async function generateLesson(
   ctx: LessonGenerationContext,
-  model: string = 'claude-sonnet-4-20250514'
+  model: string = 'claude-sonnet-4-6'
 ): Promise<GeneratedLessonContent> {
   const openai = getClient();
 
@@ -308,7 +308,7 @@ Format each question as JSON:
 Make questions age-appropriate and progressively challenging.`;
 
   const response = await openai.chat.completions.create({
-    model: 'claude-sonnet-4-20250514',
+    model: 'claude-sonnet-4-6',
     messages: [{ role: 'user', content: prompt }],
     max_tokens: 2048,
     temperature: 0.8,

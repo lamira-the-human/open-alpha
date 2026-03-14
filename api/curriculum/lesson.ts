@@ -125,7 +125,7 @@ export async function GET(request: Request) {
       return prereq ? prereq.name : pid;
     });
 
-    const model = 'claude-sonnet-4-20250514';
+    const model = 'claude-sonnet-4-6';
     const lesson = await generateLesson({
       subjectName: subject.name,
       conceptId: concept.id,
