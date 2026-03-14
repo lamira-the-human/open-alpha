@@ -223,39 +223,14 @@ Required JSON schema:
   ],
   "workedExamples": [
     { "problem": "Problem statement", "steps": ["Step 1: reasoning...", "Step 2: reasoning..."], "answer": "Final answer" },
-    { "problem": "...", "steps": ["..."], "answer": "..." },
     { "problem": "...", "steps": ["..."], "answer": "..." }
   ],
-  "guidedPractice": [
-    { "id": "${ctx.conceptId}-gp1", "prompt": "Practice problem", "answer": "Expected answer", "hint": "Helpful hint without giving it away", "feedback": { "correct": "Reinforcing message", "incorrect": "Diagnostic message explaining what to look for" } },
-    { "id": "${ctx.conceptId}-gp2", "prompt": "...", "answer": "...", "hint": "...", "feedback": { "correct": "...", "incorrect": "..." } },
-    { "id": "${ctx.conceptId}-gp3", "prompt": "...", "answer": "...", "hint": "...", "feedback": { "correct": "...", "incorrect": "..." } },
-    { "id": "${ctx.conceptId}-gp4", "prompt": "...", "answer": "...", "hint": "...", "feedback": { "correct": "...", "incorrect": "..." } },
-    { "id": "${ctx.conceptId}-gp5", "prompt": "...", "answer": "...", "hint": "...", "feedback": { "correct": "...", "incorrect": "..." } }
-  ],
-  "masteryCheck": {
-    "passingScore": 80,
-    "questions": [
-      { "id": "${ctx.conceptId}-mc1", "question": "Question text", "options": ["A) ...", "B) ...", "C) ...", "D) ..."], "correctAnswer": "A", "explanation": "Why this is correct" },
-      { "id": "${ctx.conceptId}-mc2", "question": "...", "options": ["A) ...", "B) ...", "C) ...", "D) ..."], "correctAnswer": "B", "explanation": "..." },
-      { "id": "${ctx.conceptId}-mc3", "question": "...", "options": ["A) ...", "B) ...", "C) ...", "D) ..."], "correctAnswer": "C", "explanation": "..." },
-      { "id": "${ctx.conceptId}-mc4", "question": "...", "options": ["A) ...", "B) ...", "C) ...", "D) ..."], "correctAnswer": "D", "explanation": "..." },
-      { "id": "${ctx.conceptId}-mc5", "question": "...", "options": ["A) ...", "B) ...", "C) ...", "D) ..."], "correctAnswer": "A", "explanation": "..." }
-    ]
-  },
-  "remediationPath": {
-    "action": "review_prerequisites",
-    "message": "Encouraging message about what to do if they didn't pass. Point them toward reviewing the foundational ideas."
-  },
   "whyItMatters": "Short explanation of why this concept matters in school, work, or daily life."
 }
 
 Rules:
 - Every worked example must have at least 2 steps that explain REASONING, not just arithmetic.
-- Guided practice problems should progress from easy to hard.
-- Mastery check questions should test understanding, not just recall.
 - All content must be factually accurate.
-- Do not vary the correct answer distribution — mix them naturally.
 - Return ONLY the JSON object. No wrapping, no code fences.`;
 }
 
@@ -270,7 +245,7 @@ export async function generateLesson(
   const response = await openai.chat.completions.create({
     model,
     messages: [{ role: 'user', content: prompt }],
-    max_tokens: 4096,
+    max_tokens: 8192,
     temperature: 0.4,
   });
 
