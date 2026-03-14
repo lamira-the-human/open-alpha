@@ -54,10 +54,16 @@ You can see what your child is learning, but you can't do their work for them. T
 ## Subjects Available
 
 - **Mathematics** - From counting to calculus, adapted to grade level
+- **Algebra 1** - Variables, equations, functions, and graphing
 - **Reading & Language Arts** - Comprehension, vocabulary, writing skills
 - **Science** - Biology, chemistry, physics, earth science basics
+- **Computer Science** - Programming concepts, algorithms, data structures
+- **Accounting & Bookkeeping** - Financial records, statements, the language of business
+- **Personal Tax & Finance** - Taxes, budgeting, investing basics
+- **Artificial Intelligence** - How AI systems work, prompt engineering, ethics
+- **Marketing** - Strategy, branding, consumer behaviour
 
-More subjects coming as we grow.
+Subjects with pre-authored lessons load instantly. Newer subjects generate lessons on-demand via AI on first visit and cache them for everyone after — usually 15–30 seconds the first time, instant on every subsequent load.
 
 ---
 
@@ -179,8 +185,8 @@ For production (Vercel):
 
 ### Contributing
 
-See [ROADMAP.md](./ROADMAP.md) for planned features. Pull requests welcome!
+See [ROADMAP.md](./ROADMAP.md) for the phased feature plan and [TODO.md](./TODO.md) for near-term improvements and known rough edges. Pull requests welcome!
 
 ---
 
-*Built with Claude Code, January 2026*
+*Built with Claude Code*
