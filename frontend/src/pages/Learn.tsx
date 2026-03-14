@@ -91,9 +91,29 @@ export default function Learn() {
     }
   }
 
+  // Only re-fetch when the subject or auth token changes — NOT when the user
+  // clicks a different concept. Fetching on every conceptId change races with
+  // the lesson-generation flow: the spinner hides the "Writing your lesson..."
+  // screen, and if fetchConcepts completes after generation it overwrites the
+  // enriched selectedConcept with the un-enriched stub.
   useEffect(() => {
     fetchConcepts();
-  }, [subject, conceptId, token]);
+  }, [subject, token]);
+
+  // Sync selectedConcept when the URL conceptId changes via browser
+  // history navigation or a direct link (not a sidebar click, which already
+  // calls setSelectedConcept before navigate).
+  useEffect(() => {
+    if (conceptId && concepts.length > 0) {
+      const concept = concepts.find(c => c.id === conceptId);
+      if (concept && concept.id !== selectedConcept?.id) {
+        setSelectedConcept(concept);
+      }
+    }
+    // selectedConcept intentionally omitted — including it would re-run
+    // this after generation enriches the concept, resetting it to the stub.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [conceptId, concepts]);
 
   useEffect(() => {
     setShowQuiz(false);
@@ -183,7 +203,10 @@ export default function Learn() {
     }
   };
 
-  if (loading) return <Spinner size="large" text="Loading concepts..." />;
+  // Only show the full-page spinner on the very first load (no concepts yet).
+  // After concepts are loaded, switching concepts must NOT re-trigger this
+  // spinner — it would hide the "Writing your lesson..." generating screen.
+  if (loading && concepts.length === 0) return <Spinner size="large" text="Loading concepts..." />;
 
   if (error) {
     return (
