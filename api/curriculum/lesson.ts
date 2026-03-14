@@ -141,9 +141,9 @@ export async function GET(request: Request) {
       `INSERT INTO generated_lessons (subject_id, concept_id, content, generation_model, generation_prompt_version)
        VALUES ($1, $2, $3, $4, $5)
        ON CONFLICT(subject_id, concept_id) DO UPDATE SET
-         content = $3,
-         generation_model = $4,
-         generation_prompt_version = $5,
+         content = EXCLUDED.content,
+         generation_model = EXCLUDED.generation_model,
+         generation_prompt_version = EXCLUDED.generation_prompt_version,
          updated_at = datetime('now')`,
       [subjectId, conceptId, JSON.stringify(lesson), model, LESSON_PROMPT_VERSION]
     );
