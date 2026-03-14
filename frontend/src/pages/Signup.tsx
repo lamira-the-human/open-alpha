@@ -19,6 +19,7 @@ const gradeLabels: Record<number, string> = {
   10: '10th Grade',
   11: '11th Grade',
   12: '12th Grade',
+  15: 'Adult Learner',
 };
 
 function Under13Screen() {
@@ -165,7 +166,7 @@ export default function Signup() {
 
             {role === 'student' && (
               <div className="form-group">
-                <label htmlFor="gradeLevel">Your grade level</label>
+                <label htmlFor="gradeLevel">Your level</label>
                 <select
                   id="gradeLevel"
                   className="input"

@@ -32,6 +32,11 @@ const SUBJECTS = [
   { id: 'algebra1', name: 'Algebra 1', emoji: 'x²', description: 'High school algebra — Common Core' },
   { id: 'reading', name: 'Reading & Writing', emoji: '📖', description: 'Comprehension through critical analysis' },
   { id: 'science', name: 'Science', emoji: '🔬', description: 'Life, earth, and physical sciences' },
+  { id: 'computer-science', name: 'Computer Science', emoji: '💻', description: 'Computing, algorithms, and data structures' },
+  { id: 'accounting', name: 'Accounting', emoji: '📊', description: 'Financial records, statements, and bookkeeping' },
+  { id: 'tax', name: 'Personal Tax', emoji: '🏛️', description: 'How taxes work, filing, and financial decisions' },
+  { id: 'ai', name: 'Artificial Intelligence', emoji: '🤖', description: 'How AI systems work, from basics to LLMs' },
+  { id: 'marketing', name: 'Marketing', emoji: '📣', description: 'Customers, value, and growing a business' },
 ];
 
 const GRADE_OPTIONS = [
@@ -48,6 +53,7 @@ const GRADE_OPTIONS = [
   { value: 10, label: 'Grade 10 (Sophomore)' },
   { value: 11, label: 'Grade 11 (Junior)' },
   { value: 12, label: 'Grade 12 (Senior)' },
+  { value: 15, label: 'Adult Learner' },
 ];
 
 type Step = 'select-subject' | 'select-concept' | 'learning';
@@ -239,7 +245,7 @@ export default function Demo() {
 
           <div style={{ marginBottom: '2rem' }}>
             <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.5rem', fontSize: '0.875rem' }}>
-              YOUR GRADE LEVEL
+              YOUR LEVEL
             </label>
             <select
               value={gradeLevel}

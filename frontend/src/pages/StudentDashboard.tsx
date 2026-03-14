@@ -106,8 +106,14 @@ export default function StudentDashboard() {
 
   const subjectEmojis: Record<string, string> = {
     math: '📐',
+    algebra1: '📐',
     reading: '📚',
     science: '🔬',
+    'computer-science': '💻',
+    accounting: '📊',
+    tax: '🏛️',
+    ai: '🤖',
+    marketing: '📣',
   };
 
   if (loading) {
