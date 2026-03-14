@@ -213,7 +213,7 @@ interface LessonGenerationContext {
 function getLessonGenerationPrompt(ctx: LessonGenerationContext): string {
   const isAdult = ctx.level > 12;
   const audienceNote = isAdult
-    ? 'This is an adult learner. Use practical, real-world framing. Skip childVersion in the explanation. Include adultVersion.'
+    ? 'This is an adult learner. Use practical, real-world framing. Include both childVersion (a simple analogy a 5-year-old could grasp) and adultVersion (practical real-world application).'
     : `This is for approximately grade level ${ctx.level}. Include both childVersion (for younger learners) and adultVersion (for older/adult learners) in the explanation.`;
 
   return `Generate a complete lesson module for the following concept. Return ONLY valid JSON matching the schema below — no markdown, no commentary.

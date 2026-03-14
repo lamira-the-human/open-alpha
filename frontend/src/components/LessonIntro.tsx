@@ -69,7 +69,6 @@ export default function LessonIntro({
   const [depthLevel, setDepthLevel] = useState<DepthLevel>('standard');
 
   const availableLevels = DEPTH_LEVELS.filter(l => {
-    if (l.id === 'eli5') return !!explanation.childVersion;
     if (l.id === 'expert') return !!explanation.adultVersion;
     return true;
   });
