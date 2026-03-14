@@ -72,8 +72,28 @@ Don't document the contribution flow until it exists and has been tested end-to-
 ### "What Is Accounting?" lesson
 The first concept in the accounting tree is also a stub — it needs a lesson generated. Same for all other non-math subjects.
 
-### `childVersion` / `adultVersion` in explanation
-The LLM generates both but `LessonIntro` never surfaces them. Consider a toggle ("Explain it simply" / "Give me the full version") that swaps the displayed explanation text.
+### Explanation depth levels (replaces `childVersion` / `adultVersion`)
+
+**The idea:** every concept should be explainable at multiple intellectual depths. The same topic — subtraction, quantum physics, supply and demand — reads completely differently depending on how deeply you go. This is valuable in both directions: a kindergartner's framing of a hard concept is often the clearest intuition pump, and the PhD framing of a "simple" concept reveals its real structure.
+
+Proposed levels (four is probably the right number — enough range, not overwhelming):
+
+| Level | Label | Framing |
+|-------|-------|---------|
+| 1 | **ELI5** | Concrete, story-based, no jargon. As if explaining to a 5-year-old. |
+| 2 | **Middle school** | Procedural — here's how you do it. Relatable examples. |
+| 3 | **High school / default** | Conceptual — why it works, not just how. Some abstraction. |
+| 4 | **PhD / Expert** | Formal foundations, edge cases, connections to adjacent theory. No hand-holding. |
+
+The current `childVersion` / `adultVersion` binary maps roughly to levels 1 and 3 — collapse it into this system.
+
+**Two sub-features to build:**
+
+1. **Static lesson level selector** — lesson page shows the current explanation with a pill/chip row (ELI5 · Middle School · High School · Expert). Switching levels swaps the explanation text. Levels are generated lazily on first request and cached per-concept in the DB (extend the `generated_lessons` schema with a `level` column, or use a separate `generated_explanations` table). The default shown is the level matching the student's grade — but anyone can switch.
+
+2. **Tutor chat level override** — a compact dropdown or chip in the tutor panel header lets the user change the tutor's explanation register mid-conversation without leaving the page. This is purely a system prompt change: the tutor context already passes `gradeLevel`, so overriding it to `"ELI5"` or `"PhD"` changes how the tutor responds from the next message onward. No DB changes needed for this half.
+
+The killer use case the feature enables: a grad student curious why "simple subtraction" is actually a statement about group inverses can flip to Expert mode. A parent trying to explain compound interest to their 7-year-old can flip to ELI5. Both are currently impossible.
 
 ### Alternate explanation types
 Currently the prompt asks for `visual` and `realWorld`. The UI supports more (`analogy`, `stepByStep`, `formal`). Consider asking the LLM for 3–4 types and letting learners pick.
