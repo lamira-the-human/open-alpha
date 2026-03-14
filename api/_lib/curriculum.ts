@@ -88,12 +88,19 @@ export interface Subject {
 
 function loadSubjects(): Subject[] {
   const curriculumDir = join(process.cwd(), 'curriculum');
-  const files = readdirSync(curriculumDir).filter(f => f.endsWith('.json') && f !== 'schema.json');
+  // Only load files that are subject definitions (have a concepts array).
+  // Exclude any *schema*.json files (schema.json, contribution-schema.json, etc.)
+  const files = readdirSync(curriculumDir).filter(
+    f => f.endsWith('.json') && !f.includes('schema')
+  );
 
-  return files.map(file => {
+  const result: Subject[] = [];
+  for (const file of files) {
     const raw = readFileSync(join(curriculumDir, file), 'utf-8');
     const data = JSON.parse(raw);
-    return {
+    // Skip files that aren't subject definitions
+    if (!data.id || !Array.isArray(data.concepts)) continue;
+    result.push({
       id: data.id,
       name: data.name,
       description: data.description,
@@ -114,8 +121,9 @@ function loadSubjects(): Subject[] {
         ...(c.whyItMatters !== undefined && { whyItMatters: c.whyItMatters }),
         ...(c.metadata !== undefined && { metadata: c.metadata }),
       })),
-    };
-  });
+    });
+  }
+  return result;
 }
 
 // Load once at startup
