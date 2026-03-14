@@ -54,7 +54,6 @@ type Step = 'select-subject' | 'select-concept' | 'learning';
 
 export default function Demo() {
   const [step, setStep] = useState<Step>('select-subject');
-  const [selectedSubject, setSelectedSubject] = useState('');
   const [selectedConcept, setSelectedConcept] = useState<Concept | null>(null);
   const [gradeLevel, setGradeLevel] = useState(9);
   const [concepts, setConcepts] = useState<Concept[]>([]);
@@ -110,7 +109,6 @@ export default function Demo() {
   }
 
   function handleSubjectSelect(subjectId: string) {
-    setSelectedSubject(subjectId);
     loadConcepts(subjectId);
     setStep('select-concept');
   }
@@ -190,7 +188,6 @@ export default function Demo() {
 
   function resetDemo() {
     setStep('select-subject');
-    setSelectedSubject('');
     setSelectedConcept(null);
     setMessages([]);
     setSessionId(null);
