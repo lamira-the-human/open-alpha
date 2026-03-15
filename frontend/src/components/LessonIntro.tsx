@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 interface ConceptExplanation {
   text: string;
@@ -41,18 +41,61 @@ const DEPTH_LEVELS = [
 ];
 type DepthLevel = 'eli5' | 'standard' | 'expert';
 
+function renderInline(text: string): React.ReactNode[] {
+  const parts: React.ReactNode[] = [];
+  const regex = /\*\*(.+?)\*\*|\*(.+?)\*/g;
+  let lastIndex = 0;
+  let match;
+  let key = 0;
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > lastIndex) parts.push(text.slice(lastIndex, match.index));
+    if (match[1] !== undefined) parts.push(<strong key={key++}>{match[1]}</strong>);
+    else parts.push(<em key={key++}>{match[2]}</em>);
+    lastIndex = match.index + match[0].length;
+  }
+  if (lastIndex < text.length) parts.push(text.slice(lastIndex));
+  return parts;
+}
+
 function FormattedText({ text }: { text: string }) {
-  return (
-    <>
-      {text.split('\n\n').map((para, i) => (
-        <p key={i} style={{ marginBottom: '0.85rem', lineHeight: '1.7' }}>
-          {para.split('\n').map((line, j, arr) => (
-            <span key={j}>{line}{j < arr.length - 1 && <br />}</span>
-          ))}
-        </p>
-      ))}
-    </>
-  );
+  const elements: React.ReactNode[] = [];
+
+  text.split('\n\n').forEach((block, bi) => {
+    const lines = block.split('\n');
+    type Seg = { type: 'list'; items: string[] } | { type: 'prose'; lines: string[] };
+    const segs: Seg[] = [];
+    let cur: Seg | null = null;
+
+    for (const line of lines) {
+      if (/^[•\-]\s/.test(line)) {
+        if (cur?.type !== 'list') { cur = { type: 'list', items: [] }; segs.push(cur); }
+        (cur as { type: 'list'; items: string[] }).items.push(line.replace(/^[•\-]\s/, ''));
+      } else {
+        if (cur?.type !== 'prose') { cur = { type: 'prose', lines: [] }; segs.push(cur); }
+        (cur as { type: 'prose'; lines: string[] }).lines.push(line);
+      }
+    }
+
+    segs.forEach((seg, si) => {
+      if (seg.type === 'list') {
+        elements.push(
+          <ul key={`${bi}-${si}`} style={{ paddingLeft: '1.25rem', marginBottom: '0.85rem', lineHeight: '1.7' }}>
+            {seg.items.map((item, ii) => <li key={ii}>{renderInline(item)}</li>)}
+          </ul>
+        );
+      } else {
+        elements.push(
+          <p key={`${bi}-${si}`} style={{ marginBottom: '0.85rem', lineHeight: '1.7' }}>
+            {seg.lines.map((line, li, arr) => (
+              <span key={li}>{renderInline(line)}{li < arr.length - 1 && <br />}</span>
+            ))}
+          </p>
+        );
+      }
+    });
+  });
+
+  return <>{elements}</>;
 }
 
 export default function LessonIntro({
@@ -65,7 +108,14 @@ export default function LessonIntro({
 }: LessonIntroProps) {
   const [speaking, setSpeaking] = useState(false);
   const [expandedAlt, setExpandedAlt] = useState<number | null>(null);
-  const [showExample, setShowExample] = useState(false);
+  const [expandedExamples, setExpandedExamples] = useState<Set<number>>(new Set());
+  function toggleExample(idx: number) {
+    setExpandedExamples(prev => {
+      const next = new Set(prev);
+      if (next.has(idx)) next.delete(idx); else next.add(idx);
+      return next;
+    });
+  }
   const [depthLevel, setDepthLevel] = useState<DepthLevel>('standard');
 
   const availableLevels = DEPTH_LEVELS.filter(l => {
@@ -91,7 +141,6 @@ export default function LessonIntro({
     setSpeaking(true);
   }
 
-  const firstExample = workedExamples?.[0];
   const hasTTS = typeof window !== 'undefined' && 'speechSynthesis' in window;
 
   return (
@@ -227,69 +276,77 @@ export default function LessonIntro({
         </div>
       )}
 
-      {/* Worked example */}
-      {firstExample && (
+      {/* Worked examples */}
+      {workedExamples && workedExamples.length > 0 && (
         <div style={{ marginBottom: '2.25rem' }}>
-          <button
-            onClick={() => setShowExample(!showExample)}
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.4rem',
-              background: 'none',
-              border: 'none',
-              padding: '0 0 0.5rem',
-              cursor: 'pointer',
-              fontSize: '0.875rem',
-              fontWeight: 600,
-              color: 'var(--primary)',
-            }}
-          >
-            <span style={{
-              display: 'inline-block',
-              transition: 'transform 0.15s',
-              transform: showExample ? 'rotate(90deg)' : 'none',
-              fontSize: '0.625rem',
-            }}>▶</span>
-            Worked example
-          </button>
-
-          {showExample && (
-            <div style={{ border: '1px solid var(--border)', borderRadius: '0.5rem', overflow: 'hidden' }}>
-              <div style={{
-                padding: '0.875rem 1rem',
-                background: 'var(--surface)',
-                borderBottom: '1px solid var(--border)',
-                fontSize: '0.9rem',
-                fontWeight: 500,
-              }}>
-                {firstExample.problem}
-              </div>
-              <div style={{ padding: '0.875rem 1rem' }}>
-                {firstExample.steps.map((step, i) => (
-                  <div key={i} style={{
-                    display: 'flex',
-                    gap: '0.75rem',
-                    marginBottom: '0.625rem',
+          {workedExamples.map((example, idx) => {
+            const isOpen = expandedExamples.has(idx);
+            const label = workedExamples.length > 1 ? `Worked example ${idx + 1}` : 'Worked example';
+            return (
+              <div key={idx} style={{ marginBottom: idx < workedExamples.length - 1 ? '0.75rem' : 0 }}>
+                <button
+                  onClick={() => toggleExample(idx)}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.4rem',
+                    background: 'none',
+                    border: 'none',
+                    padding: '0 0 0.5rem',
+                    cursor: 'pointer',
                     fontSize: '0.875rem',
-                    lineHeight: '1.55',
-                  }}>
-                    <span style={{ color: 'var(--text-light)', flexShrink: 0, minWidth: '3.5rem' }}>Step {i + 1}.</span>
-                    <span>{step}</span>
+                    fontWeight: 600,
+                    color: 'var(--primary)',
+                  }}
+                >
+                  <span style={{
+                    display: 'inline-block',
+                    transition: 'transform 0.15s',
+                    transform: isOpen ? 'rotate(90deg)' : 'none',
+                    fontSize: '0.625rem',
+                  }}>▶</span>
+                  {label}
+                </button>
+
+                {isOpen && (
+                  <div style={{ border: '1px solid var(--border)', borderRadius: '0.5rem', overflow: 'hidden' }}>
+                    <div style={{
+                      padding: '0.875rem 1rem',
+                      background: 'var(--surface)',
+                      borderBottom: '1px solid var(--border)',
+                      fontSize: '0.9rem',
+                      fontWeight: 500,
+                    }}>
+                      {example.problem}
+                    </div>
+                    <div style={{ padding: '0.875rem 1rem' }}>
+                      {example.steps.map((step, i) => (
+                        <div key={i} style={{
+                          display: 'flex',
+                          gap: '0.75rem',
+                          marginBottom: '0.625rem',
+                          fontSize: '0.875rem',
+                          lineHeight: '1.55',
+                        }}>
+                          <span style={{ color: 'var(--text-light)', flexShrink: 0, minWidth: '3.5rem' }}>Step {i + 1}.</span>
+                          <span>{step}</span>
+                        </div>
+                      ))}
+                      <div style={{
+                        marginTop: '0.75rem',
+                        paddingTop: '0.75rem',
+                        borderTop: '1px solid var(--border)',
+                        fontSize: '0.875rem',
+                        fontWeight: 600,
+                      }}>
+                        Answer: {example.answer}
+                      </div>
+                    </div>
                   </div>
-                ))}
-                <div style={{
-                  marginTop: '0.75rem',
-                  paddingTop: '0.75rem',
-                  borderTop: '1px solid var(--border)',
-                  fontSize: '0.875rem',
-                  fontWeight: 600,
-                }}>
-                  Answer: {firstExample.answer}
-                </div>
+                )}
               </div>
-            </div>
-          )}
+            );
+          })}
         </div>
       )}
 
