@@ -177,4 +177,48 @@ router.get('/activity/recent', async (req: Request, res: Response) => {
   }
 });
 
+// Gamification stats
+router.get('/gamification', async (req: Request, res: Response) => {
+  try {
+    const auth = getUser(req);
+    if (!auth) {
+      res.status(401).json({ error: 'Not authenticated' });
+      return;
+    }
+
+    const result = await executeSql<{ xp_points: number; streak_days: number; last_active_date: string | null }>(
+      'SELECT xp_points, streak_days, last_active_date FROM users WHERE id = $1',
+      [auth.userId]
+    );
+
+    if (result.rows.length === 0) {
+      res.json({ xp: 0, streak: 0, level: 1, xpForCurrent: 0, xpForNext: 200, levelProgress: 0 });
+      return;
+    }
+
+    const { xp_points, streak_days, last_active_date } = result.rows[0];
+    const xp = xp_points || 0;
+    const today = new Date().toISOString().split('T')[0];
+    const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+    const streak = (!last_active_date || last_active_date === today || last_active_date === yesterday)
+      ? (streak_days || 0) : 0;
+
+    const LEVEL_THRESHOLDS = [0, 200, 500, 1000, 2000, 3500, 5500, 8000, 11000, 15000];
+    let level = 1;
+    for (let i = LEVEL_THRESHOLDS.length - 1; i >= 0; i--) {
+      if (xp >= LEVEL_THRESHOLDS[i]) { level = i + 1; break; }
+    }
+    const xpForCurrent = LEVEL_THRESHOLDS[level - 1] ?? 0;
+    const xpForNext = LEVEL_THRESHOLDS[level] ?? LEVEL_THRESHOLDS[LEVEL_THRESHOLDS.length - 1];
+    const levelProgress = xpForNext > xpForCurrent
+      ? Math.round(((xp - xpForCurrent) / (xpForNext - xpForCurrent)) * 100)
+      : 100;
+
+    res.json({ xp, streak, level, xpForCurrent, xpForNext, levelProgress });
+  } catch (error) {
+    console.error('Gamification error:', error);
+    res.status(500).json({ error: 'Failed to get gamification stats' });
+  }
+});
+
 export default router;

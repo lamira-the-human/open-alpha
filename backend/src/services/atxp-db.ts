@@ -142,6 +142,9 @@ export async function initializeSchema(): Promise<void> {
   const migrations = [
     'ALTER TABLE users ADD COLUMN atxp_account_id TEXT UNIQUE',
     'ALTER TABLE users ADD COLUMN atxp_connection_token TEXT',
+    'ALTER TABLE users ADD COLUMN xp_points INTEGER DEFAULT 0',
+    'ALTER TABLE users ADD COLUMN streak_days INTEGER DEFAULT 0',
+    'ALTER TABLE users ADD COLUMN last_active_date TEXT',
   ];
   for (const sql of migrations) {
     try {

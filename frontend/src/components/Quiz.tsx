@@ -15,9 +15,10 @@ interface QuizProps {
   conceptName: string;
   onComplete: (score: number, passed: boolean) => void;
   onCancel: () => void;
+  onReviewLesson?: () => void;
 }
 
-export default function Quiz({ subject, conceptId, conceptName, onComplete, onCancel }: QuizProps) {
+export default function Quiz({ subject, conceptId, conceptName, onComplete, onCancel, onReviewLesson }: QuizProps) {
   const { token } = useAuth();
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -193,26 +194,26 @@ export default function Quiz({ subject, conceptId, conceptName, onComplete, onCa
 
   return (
     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '1.5rem', overflow: 'auto' }}>
-      {/* Progress */}
-      <div style={{ marginBottom: '1.5rem' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-          <span style={{ fontWeight: 600 }}>
-            Question {currentIndex + 1} of {questions.length}
+      {/* Progress dots */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+        <div style={{ display: 'flex', gap: '0.375rem', alignItems: 'center' }}>
+          {questions.map((_, i) => (
+            <div key={i} style={{
+              height: '8px',
+              width: i === currentIndex ? '20px' : '8px',
+              borderRadius: '4px',
+              background: i < currentIndex ? 'var(--success)' : i === currentIndex ? 'var(--primary)' : 'var(--border)',
+              transition: 'all 0.2s ease',
+              flexShrink: 0,
+            }} />
+          ))}
+          <span style={{ fontSize: '0.8125rem', color: 'var(--text-light)', marginLeft: '0.375rem' }}>
+            {currentIndex + 1}/{questions.length}
           </span>
-          <button onClick={onCancel} style={{ background: 'none', border: 'none', color: 'var(--text-light)', cursor: 'pointer' }}>
-            Cancel
-          </button>
         </div>
-        <div style={{ height: '4px', background: 'var(--border)', borderRadius: '2px', overflow: 'hidden' }}>
-          <div
-            style={{
-              height: '100%',
-              width: `${((currentIndex + 1) / questions.length) * 100}%`,
-              background: 'var(--primary)',
-              transition: 'width 0.3s ease',
-            }}
-          />
-        </div>
+        <button onClick={onCancel} style={{ background: 'none', border: 'none', color: 'var(--text-light)', cursor: 'pointer', fontSize: '0.875rem' }}>
+          Cancel
+        </button>
       </div>
 
       {/* Question */}
@@ -277,6 +278,20 @@ export default function Quiz({ subject, conceptId, conceptName, onComplete, onCa
             {isCorrect ? 'Correct!' : 'Not quite right'}
           </p>
           <p>{question.explanation}</p>
+          {!isCorrect && onReviewLesson && (
+            <div style={{ marginTop: '0.75rem', paddingTop: '0.75rem', borderTop: '1px solid rgba(239,68,68,0.25)' }}>
+              <button
+                onClick={onReviewLesson}
+                style={{
+                  background: 'none', border: 'none', cursor: 'pointer',
+                  color: 'var(--primary)', fontWeight: 500, fontSize: '0.875rem',
+                  padding: 0,
+                }}
+              >
+                ← Review the lesson
+              </button>
+            </div>
+          )}
         </div>
       )}
 

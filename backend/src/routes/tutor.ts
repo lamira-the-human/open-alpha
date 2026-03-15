@@ -351,39 +351,77 @@ router.post('/quiz/submit', async (req: Request, res: Response) => {
       [auth.userId, data.subject, data.conceptId]
     );
 
+    let masteryScore: number;
+    let completed: boolean;
+
     if (existingProgress.rows.length > 0) {
       // Update existing progress - keep highest score
       const currentScore = existingProgress.rows[0].mastery_score;
-      const newScore = Math.max(currentScore, data.score);
-      const completed = newScore >= 80;
+      masteryScore = Math.max(currentScore, data.score);
+      completed = masteryScore >= 80;
 
       await executeSql(
         `UPDATE progress SET mastery_score = $1, attempts = attempts + 1, last_attempt_at = datetime('now')${completed ? ", completed_at = datetime('now')" : ''}
          WHERE student_id = $2 AND subject = $3 AND concept_id = $4`,
-        [newScore, auth.userId, data.subject, data.conceptId]
+        [masteryScore, auth.userId, data.subject, data.conceptId]
       );
-
-      res.json({
-        masteryScore: newScore,
-        passed: completed,
-        message: completed ? 'Congratulations! You\'ve mastered this concept!' : 'Keep practicing to reach 80% mastery.',
-      });
     } else {
       // Insert new progress
-      const completed = data.score >= 80;
+      masteryScore = data.score;
+      completed = masteryScore >= 80;
 
       await executeSql(
         `INSERT INTO progress (student_id, subject, concept_id, mastery_score, attempts, last_attempt_at${completed ? ', completed_at' : ''})
          VALUES ($1, $2, $3, $4, 1, datetime('now')${completed ? ", datetime('now')" : ''})`,
-        [auth.userId, data.subject, data.conceptId, data.score]
+        [auth.userId, data.subject, data.conceptId, masteryScore]
       );
-
-      res.json({
-        masteryScore: data.score,
-        passed: completed,
-        message: completed ? 'Congratulations! You\'ve mastered this concept!' : 'Keep practicing to reach 80% mastery.',
-      });
     }
+
+    // --- Gamification: XP + streak ---
+    const today = new Date().toISOString().split('T')[0];
+    let xpGained = 0;
+    let newXp = 0;
+    let newStreak = 0;
+
+    try {
+      const userRow = await executeSql<{ xp_points: number; streak_days: number; last_active_date: string | null }>(
+        'SELECT xp_points, streak_days, last_active_date FROM users WHERE id = $1',
+        [auth.userId]
+      );
+      if (userRow.rows.length > 0) {
+        const { xp_points, streak_days, last_active_date } = userRow.rows[0];
+        const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+
+        if (!last_active_date) {
+          newStreak = 1;
+        } else if (last_active_date === today) {
+          newStreak = streak_days || 1;
+        } else if (last_active_date === yesterday) {
+          newStreak = (streak_days || 0) + 1;
+        } else {
+          newStreak = 1;
+        }
+
+        xpGained = data.score >= 80 ? 100 : 50;
+        newXp = (xp_points || 0) + xpGained;
+
+        await executeSql(
+          `UPDATE users SET xp_points = $1, streak_days = $2, last_active_date = $3 WHERE id = $4`,
+          [newXp, newStreak, today, auth.userId]
+        );
+      }
+    } catch {
+      // gamification errors are non-fatal
+    }
+
+    res.json({
+      masteryScore,
+      passed: completed,
+      message: completed ? 'Congratulations! You\'ve mastered this concept!' : 'Keep practicing to reach 80% mastery.',
+      xpGained,
+      totalXp: newXp,
+      streak: newStreak,
+    });
   } catch (error) {
     if (error instanceof z.ZodError) {
       res.status(400).json({ error: 'Invalid input', details: error.errors });

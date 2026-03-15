@@ -234,6 +234,9 @@ export default function Learn() {
   }
 
   const hasIntro = !!selectedConcept?.explanation;
+  const nextConcept = selectedConcept
+    ? concepts.slice(concepts.findIndex(c => c.id === selectedConcept.id) + 1).find(c => !c.completed) ?? null
+    : null;
   const subjectName = subjectNames[subject || ''] || subject || '';
   const subjectEmoji = subjectEmojis[subject || ''] || '';
 
@@ -404,6 +407,32 @@ export default function Learn() {
                       {concept.name}
                     </span>
                   </button>
+                  {selectedConcept?.id === concept.id && (
+                    <div style={{ display: 'flex', gap: '0.25rem', padding: '0.25rem 0.75rem 0.375rem calc(0.75rem + 18px + 0.5rem)', flexWrap: 'wrap' }}>
+                      {[
+                        { label: '📄 Lesson', action: () => { setShowQuiz(false); setShowIntro(true); setSidebarOpen(false); } },
+                        { label: '💬 Tutor',  action: () => { setShowQuiz(false); setShowIntro(false); setSidebarOpen(false); } },
+                        { label: '🎯 Quiz',   action: () => { setShowQuiz(true); setSidebarOpen(false); } },
+                      ].map(({ label, action }) => (
+                        <button
+                          key={label}
+                          onClick={(e) => { e.stopPropagation(); action(); }}
+                          style={{
+                            padding: '0.2rem 0.5rem',
+                            borderRadius: '9999px',
+                            border: '1px solid var(--border)',
+                            background: 'transparent',
+                            color: 'var(--text-light)',
+                            fontSize: '0.7rem',
+                            cursor: 'pointer',
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
+                          {label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </li>
               ))}
             </ul>
@@ -420,6 +449,7 @@ export default function Learn() {
                 conceptName={selectedConcept.name}
                 onComplete={handleQuizComplete}
                 onCancel={() => setShowQuiz(false)}
+                onReviewLesson={() => { setShowQuiz(false); setShowIntro(true); }}
               />
             ) : (
               <>
@@ -558,6 +588,34 @@ export default function Learn() {
           ) : (
             <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <p style={{ color: 'var(--text-light)' }}>Select a lesson from the left to start learning</p>
+            </div>
+          )}
+
+          {/* Up next footer */}
+          {!showQuiz && nextConcept && (
+            <div style={{
+              borderTop: '1px solid var(--border)',
+              background: 'var(--surface)',
+              padding: '0.625rem 1.5rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flexShrink: 0,
+            }}>
+              <span style={{ fontSize: '0.8125rem', color: 'var(--text-light)' }}>Up next</span>
+              <button
+                onClick={() => {
+                  setSelectedConcept(nextConcept);
+                  navigate(`/learn/${subject}/${nextConcept.id}`);
+                }}
+                style={{
+                  background: 'none', border: 'none', cursor: 'pointer',
+                  color: 'var(--primary)', fontWeight: 500, fontSize: '0.875rem',
+                  display: 'flex', alignItems: 'center', gap: '0.25rem',
+                }}
+              >
+                {nextConcept.name} →
+              </button>
             </div>
           )}
         </main>

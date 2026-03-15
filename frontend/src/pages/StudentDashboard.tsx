@@ -29,12 +29,22 @@ interface ReviewItem {
   daysSince: number;
 }
 
+interface Gamification {
+  xp: number;
+  streak: number;
+  level: number;
+  xpForCurrent: number;
+  xpForNext: number;
+  levelProgress: number;
+}
+
 export default function StudentDashboard() {
   const { user, token } = useAuth();
   const navigate = useNavigate();
   const [summary, setSummary] = useState<SubjectSummary[]>([]);
   const [recentActivity, setRecentActivity] = useState<Activity[]>([]);
   const [reviewQueue, setReviewQueue] = useState<ReviewItem[]>([]);
+  const [gamification, setGamification] = useState<Gamification | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const [inviteCode, setInviteCode] = useState<string | null>(null);
@@ -44,7 +54,7 @@ export default function StudentDashboard() {
     setError(null);
     setLoading(true);
     try {
-      const [summaryRes, activityRes, reviewRes] = await Promise.all([
+      const [summaryRes, activityRes, reviewRes, gamRes] = await Promise.all([
         fetch('/api/progress/summary', {
           headers: { Authorization: `Bearer ${token}` },
         }),
@@ -52,6 +62,9 @@ export default function StudentDashboard() {
           headers: { Authorization: `Bearer ${token}` },
         }),
         fetch('/api/progress/review', {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        fetch('/api/progress/gamification', {
           headers: { Authorization: `Bearer ${token}` },
         }),
       ]);
@@ -63,10 +76,12 @@ export default function StudentDashboard() {
       const summaryData = await summaryRes.json();
       const activityData = await activityRes.json();
       const reviewData = reviewRes.ok ? await reviewRes.json() : { review: [] };
+      const gamData = gamRes.ok ? await gamRes.json() : null;
 
       setSummary(summaryData.summary);
       setRecentActivity(activityData.recentProgress || []);
       setReviewQueue(reviewData.review || []);
+      setGamification(gamData && gamData.xp !== undefined ? gamData : null);
     } catch (err) {
       console.error('Failed to fetch dashboard data:', err);
       setError(err instanceof Error ? err : new Error('Failed to load dashboard'));
@@ -140,6 +155,53 @@ export default function StudentDashboard() {
         <h2 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '1.5rem' }}>
           Welcome back{user?.displayName ? `, ${user.displayName}` : ''}!
         </h2>
+
+        {gamification && (
+          <div style={{
+            display: 'flex',
+            gap: '1rem',
+            marginBottom: '2rem',
+            flexWrap: 'wrap',
+            alignItems: 'stretch',
+          }}>
+            {/* Streak */}
+            <div className="card" style={{ padding: '1rem 1.25rem', display: 'flex', alignItems: 'center', gap: '0.625rem', flex: '0 0 auto' }}>
+              <span style={{ fontSize: '1.5rem' }}>🔥</span>
+              <div>
+                <div style={{ fontSize: '1.25rem', fontWeight: 700, lineHeight: 1 }}>{gamification.streak}</div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-light)' }}>day streak</div>
+              </div>
+            </div>
+
+            {/* XP */}
+            <div className="card" style={{ padding: '1rem 1.25rem', display: 'flex', alignItems: 'center', gap: '0.625rem', flex: '0 0 auto' }}>
+              <span style={{ fontSize: '1.5rem' }}>⚡</span>
+              <div>
+                <div style={{ fontSize: '1.25rem', fontWeight: 700, lineHeight: 1 }}>{gamification.xp.toLocaleString()}</div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-light)' }}>XP earned</div>
+              </div>
+            </div>
+
+            {/* Level */}
+            <div className="card" style={{ padding: '1rem 1.25rem', flex: 1, minWidth: '180px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '0.5rem' }}>
+                <span style={{ fontWeight: 700 }}>Level {gamification.level}</span>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-light)' }}>
+                  {gamification.xp} / {gamification.xpForNext} XP
+                </span>
+              </div>
+              <div style={{ height: '6px', background: 'var(--border)', borderRadius: '3px', overflow: 'hidden' }}>
+                <div style={{
+                  height: '100%',
+                  width: `${gamification.levelProgress}%`,
+                  background: 'var(--primary)',
+                  borderRadius: '3px',
+                  transition: 'width 0.5s ease',
+                }} />
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Spaced Repetition: Due for Review */}
         {reviewQueue.length > 0 && (
