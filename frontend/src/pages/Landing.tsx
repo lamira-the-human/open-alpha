@@ -15,46 +15,112 @@ const DEMO_INTERESTS: DemoInterest[] = [
   { id: 'minecraft', label: 'Minecraft', emoji: '🟩' },
   { id: 'cooking', label: 'Cooking', emoji: '🍳' },
   { id: 'space', label: 'Space', emoji: '🚀' },
-  { id: 'music', label: 'Music', emoji: '🎵' },
 ];
 
-const DEMO_CONCEPT = 'Fractions';
+interface DemoSubject {
+  id: string;
+  label: string;
+  grade: string;
+}
 
-const DEMO_LESSONS: Record<string, { lesson: string; problem: string; options: string[]; correct: number; explanation: string }> = {
-  baseball: {
-    lesson: `A fraction represents part of a whole — a numerator (top) over a denominator (bottom).\n\nImagine a baseball game has **9 innings**. If your team has played **4 innings**, they've completed **4/9** of the game.\n\nThe denominator (9) tells you the total innings. The numerator (4) tells you how many are done. That's what a fraction is — **how many parts out of the whole**.`,
-    problem: 'A pitcher throws 30 pitches in an inning. 12 are strikes. What fraction of pitches are strikes?',
-    options: ['12/30', '30/12', '12/42', '18/30'],
-    correct: 0,
-    explanation: 'The total pitches (whole) = 30, and the strikes (part) = 12, so the fraction is 12/30.',
+const DEMO_SUBJECTS: DemoSubject[] = [
+  { id: 'fractions', label: 'Fractions', grade: 'Math · Grade 5' },
+  { id: 'chemistry', label: 'Chemistry', grade: 'Science · Grade 8' },
+  { id: 'physics', label: 'Physics', grade: 'Science · Grade 9' },
+];
+
+type LessonData = { lesson: string; problem: string; options: string[]; correct: number; explanation: string };
+
+const DEMO_LESSONS: Record<string, Record<string, LessonData>> = {
+  fractions: {
+    baseball: {
+      lesson: `A fraction represents part of a whole — a numerator (top) over a denominator (bottom).\n\nImagine a baseball game has **9 innings**. If your team has played **4 innings**, they've completed **4/9** of the game.\n\nThe denominator (9) tells you the total innings. The numerator (4) tells you how many are done. That's what a fraction is — **how many parts out of the whole**.`,
+      problem: 'A pitcher throws 30 pitches in an inning. 12 are strikes. What fraction of pitches are strikes?',
+      options: ['12/30', '30/12', '12/42', '18/30'],
+      correct: 0,
+      explanation: 'The total pitches (whole) = 30, and the strikes (part) = 12, so the fraction is 12/30.',
+    },
+    minecraft: {
+      lesson: `A fraction represents part of a whole — a numerator (top) over a denominator (bottom).\n\nPicture a **stack of 64 blocks** in Minecraft. If you've placed **16 blocks**, you've used **16/64** of your stack.\n\nThe denominator (64) is your full stack. The numerator (16) is how many you used. A fraction is just **how many parts of the whole thing**.`,
+      problem: 'You have a stack of 64 cobblestone. You use 24 blocks to build a wall. What fraction of your stack did you use?',
+      options: ['64/24', '24/64', '24/40', '40/64'],
+      correct: 1,
+      explanation: 'The total stack (whole) = 64, and blocks used (part) = 24, so the fraction is 24/64.',
+    },
+    cooking: {
+      lesson: `A fraction represents part of a whole — a numerator (top) over a denominator (bottom).\n\nSay a recipe needs **4 cups** of flour total, and you've measured out **1 cup** so far. You've added **1/4** of the flour.\n\nThe denominator (4) is the full amount needed. The numerator (1) is what you've done. A fraction is just **how much of the recipe you've measured**.`,
+      problem: 'A pizza is cut into 8 slices. You eat 3 slices. What fraction of the pizza did you eat?',
+      options: ['8/3', '3/5', '3/8', '5/8'],
+      correct: 2,
+      explanation: 'The total slices (whole) = 8, and slices eaten (part) = 3, so the fraction is 3/8.',
+    },
+    space: {
+      lesson: `A fraction represents part of a whole — a numerator (top) over a denominator (bottom).\n\nImagine a rocket journey to the Moon takes **3 days**. After **1 day**, the astronauts have completed **1/3** of the trip.\n\nThe denominator (3) is the total journey. The numerator (1) is how far they've traveled. A fraction is **what portion of the mission is complete**.`,
+      problem: 'A space station orbits Earth 16 times per day. After 6 orbits, what fraction of the daily orbits are complete?',
+      options: ['16/6', '6/10', '6/16', '10/16'],
+      correct: 2,
+      explanation: 'The total orbits (whole) = 16, and completed orbits (part) = 6, so the fraction is 6/16.',
+    },
   },
-  minecraft: {
-    lesson: `A fraction represents part of a whole — a numerator (top) over a denominator (bottom).\n\nPicture a **stack of 64 blocks** in Minecraft. If you've placed **16 blocks**, you've used **16/64** of your stack.\n\nThe denominator (64) is your full stack. The numerator (16) is how many you used. A fraction is just **how many parts of the whole thing**.`,
-    problem: 'You have a stack of 64 cobblestone. You use 24 blocks to build a wall. What fraction of your stack did you use?',
-    options: ['64/24', '24/64', '24/40', '40/64'],
-    correct: 1,
-    explanation: 'The total stack (whole) = 64, and blocks used (part) = 24, so the fraction is 24/64.',
+  chemistry: {
+    baseball: {
+      lesson: `Everything around you is made of **atoms** — tiny particles you can't see. Atoms combine into **molecules**, and molecules determine how substances behave.\n\nThink about a baseball. The **leather** cover is made of carbon, hydrogen, and oxygen atoms bonded together. The **rubber** core? That's long chains of carbon and hydrogen called **polymers**.\n\nEven the **chalk** on the pitcher's hands is a molecule — **magnesium carbonate (MgCO₃)**. Chemistry is just understanding **what things are made of and why they act the way they do**.`,
+      problem: 'The chalk pitchers use (magnesium carbonate) has the formula MgCO₃. How many total atoms are in one molecule?',
+      options: ['3', '4', '5', '6'],
+      correct: 2,
+      explanation: 'MgCO₃ has 1 magnesium + 1 carbon + 3 oxygen = 5 atoms total.',
+    },
+    minecraft: {
+      lesson: `Everything around you is made of **atoms** — tiny particles you can't see. Atoms combine into **molecules**, and molecules determine how substances behave.\n\nIn Minecraft, you smelt **iron ore** in a furnace to get **iron ingots**. In real life, this is actual chemistry! Iron ore contains **iron oxide (Fe₂O₃)** — iron atoms bonded to oxygen. Heat breaks those bonds and releases the pure **iron (Fe)**.\n\nThe coal you burn? That's mostly **carbon (C)**. It reacts with oxygen to produce heat. Chemistry is just understanding **what blocks are really made of and how they transform**.`,
+      problem: 'Iron ore is iron oxide — Fe₂O₃. How many total atoms are in one molecule of iron oxide?',
+      options: ['3', '4', '5', '6'],
+      correct: 2,
+      explanation: 'Fe₂O₃ has 2 iron atoms + 3 oxygen atoms = 5 atoms total.',
+    },
+    cooking: {
+      lesson: `Everything around you is made of **atoms** — tiny particles you can't see. Atoms combine into **molecules**, and molecules determine how substances behave.\n\nWhen you bake a cake, you're doing chemistry. **Baking soda (NaHCO₃)** reacts with an acid like vinegar and produces **carbon dioxide gas (CO₂)** — that's what makes the batter rise!\n\nThe **sugar** you add? That's **sucrose (C₁₂H₂₂O₁₁)** — a molecule made of carbon, hydrogen, and oxygen. When it heats up, those atoms rearrange and you get **caramelization**. Cooking is chemistry you can taste.`,
+      problem: 'Baking soda is NaHCO₃. How many total atoms are in one molecule?',
+      options: ['4', '5', '6', '7'],
+      correct: 2,
+      explanation: 'NaHCO₃ has 1 sodium + 1 hydrogen + 1 carbon + 3 oxygen = 6 atoms total.',
+    },
+    space: {
+      lesson: `Everything around you is made of **atoms** — tiny particles you can't see. Atoms combine into **molecules**, and molecules determine how substances behave.\n\nRocket fuel is pure chemistry. The Space Shuttle burned **liquid hydrogen (H₂)** and **liquid oxygen (O₂)**. When they react: **2H₂ + O₂ → 2H₂O**. The product is just **water** — but the reaction releases massive energy that launches you into orbit.\n\nEven the air astronauts breathe on the ISS is chemistry — machines split **CO₂** to recycle the **oxygen**. Chemistry is **how atoms rearrange to create everything from rocket thrust to breathable air**.`,
+      problem: 'A water molecule is H₂O. How many total atoms are in one molecule of water?',
+      options: ['2', '3', '4', '5'],
+      correct: 1,
+      explanation: 'H₂O has 2 hydrogen atoms + 1 oxygen atom = 3 atoms total.',
+    },
   },
-  cooking: {
-    lesson: `A fraction represents part of a whole — a numerator (top) over a denominator (bottom).\n\nSay a recipe needs **4 cups** of flour total, and you've measured out **1 cup** so far. You've added **1/4** of the flour.\n\nThe denominator (4) is the full amount needed. The numerator (1) is what you've done. A fraction is just **how much of the recipe you've measured**.`,
-    problem: 'A pizza is cut into 8 slices. You eat 3 slices. What fraction of the pizza did you eat?',
-    options: ['8/3', '3/5', '3/8', '5/8'],
-    correct: 2,
-    explanation: 'The total slices (whole) = 8, and slices eaten (part) = 3, so the fraction is 3/8.',
-  },
-  space: {
-    lesson: `A fraction represents part of a whole — a numerator (top) over a denominator (bottom).\n\nImagine a rocket journey to the Moon takes **3 days**. After **1 day**, the astronauts have completed **1/3** of the trip.\n\nThe denominator (3) is the total journey. The numerator (1) is how far they've traveled. A fraction is **what portion of the mission is complete**.`,
-    problem: 'A space station orbits Earth 16 times per day. After 6 orbits, what fraction of the daily orbits are complete?',
-    options: ['16/6', '6/10', '6/16', '10/16'],
-    correct: 2,
-    explanation: 'The total orbits (whole) = 16, and completed orbits (part) = 6, so the fraction is 6/16.',
-  },
-  music: {
-    lesson: `A fraction represents part of a whole — a numerator (top) over a denominator (bottom).\n\nThink of a **measure in 4/4 time** — it holds **4 beats**. A half note fills **2 beats**, which is **2/4** of the measure.\n\nThe denominator (4) is the total beats per measure. The numerator (2) is how many beats the note takes. A fraction is **how much of the measure one note fills**.`,
-    problem: 'A song has 12 bars. You have learned to play 5 bars. What fraction of the song can you play?',
-    options: ['12/5', '5/7', '7/12', '5/12'],
-    correct: 3,
-    explanation: 'The total bars (whole) = 12, and bars learned (part) = 5, so the fraction is 5/12.',
+  physics: {
+    baseball: {
+      lesson: `**Force** is a push or pull that changes how something moves. Isaac Newton figured out that **Force = mass × acceleration (F = ma)**.\n\nWhen a batter hits a baseball, the bat applies a **force** to the ball. The ball has a mass of about **0.145 kg**. The harder the batter swings (more force), the faster the ball accelerates off the bat.\n\nA fastball pitcher applies force too — their arm accelerates the ball from rest to **40 m/s** in a fraction of a second. That's **Newton's Second Law** in every single pitch.`,
+      problem: 'A baseball (0.145 kg) accelerates at 200 m/s². Using F = ma, what force was applied?',
+      options: ['14.5 N', '29 N', '1379 N', '200 N'],
+      correct: 1,
+      explanation: 'F = ma = 0.145 kg × 200 m/s² = 29 N.',
+    },
+    minecraft: {
+      lesson: `**Force** is a push or pull that changes how something moves. Isaac Newton figured out that **Force = mass × acceleration (F = ma)**.\n\nIn Minecraft, when you shoot an **arrow**, the bow applies a force that accelerates the arrow forward. A fully charged bow gives more force = faster arrow = more damage.\n\n**Gravity** is also a force — it's why sand and gravel fall, and why you take damage from heights. The longer you fall, the more you accelerate (up to terminal velocity). That's **F = ma** — the Earth's mass pulling you down.`,
+      problem: 'A block of gravel (mass = 5 kg) falls with gravity at 10 m/s². What gravitational force pulls it down?',
+      options: ['2 N', '15 N', '50 N', '500 N'],
+      correct: 2,
+      explanation: 'F = ma = 5 kg × 10 m/s² = 50 N.',
+    },
+    cooking: {
+      lesson: `**Force** is a push or pull that changes how something moves. Isaac Newton figured out that **Force = mass × acceleration (F = ma)**.\n\nWhen you **knead dough**, your hands apply a force that pushes and stretches the dough. More force = more stretching = better gluten development.\n\nEven **boiling water** involves force — as heat adds energy, water molecules move faster and faster until the **pressure** (force per area) of the steam exceeds the air pressure above the pot. That's when bubbles form. Physics is happening on your stove right now.`,
+      problem: 'You push a 2 kg rolling pin across the counter, accelerating it at 3 m/s². What force did you apply?',
+      options: ['1.5 N', '5 N', '6 N', '8 N'],
+      correct: 2,
+      explanation: 'F = ma = 2 kg × 3 m/s² = 6 N.',
+    },
+    space: {
+      lesson: `**Force** is a push or pull that changes how something moves. Isaac Newton figured out that **Force = mass × acceleration (F = ma)**.\n\nA rocket works by **Newton's Third Law** — for every action, there's an equal and opposite reaction. The engines push exhaust gas downward with enormous force, and the rocket accelerates upward.\n\nThe Saturn V rocket produced **35 million Newtons** of thrust to accelerate its **2.8 million kg** mass off the launchpad. More mass means you need more force to get the same acceleration — that's why rockets are mostly fuel.`,
+      problem: 'A 1,000 kg satellite thruster applies 500 N of force. What is the acceleration?',
+      options: ['0.5 m/s²', '2 m/s²', '500 m/s²', '1000 m/s²'],
+      correct: 0,
+      explanation: 'a = F/m = 500 N / 1,000 kg = 0.5 m/s².',
+    },
   },
 };
 
@@ -100,22 +166,30 @@ export default function Landing() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
+  const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
   const [selectedInterest, setSelectedInterest] = useState<string | null>(null);
   const [quizAnswer, setQuizAnswer] = useState<number | null>(null);
   const [showResult, setShowResult] = useState(false);
   const demoRef = useRef<HTMLDivElement>(null);
 
-  const demo = selectedInterest ? DEMO_LESSONS[selectedInterest] : null;
+  const demo = selectedSubject && selectedInterest ? DEMO_LESSONS[selectedSubject]?.[selectedInterest] : null;
+  const activeSubject = DEMO_SUBJECTS.find(s => s.id === selectedSubject);
   const { displayed: lessonText, done: lessonDone } = useTypewriter(
     demo?.lesson || '',
     10
   );
 
+  function handleSubjectClick(id: string) {
+    setSelectedSubject(id);
+    setSelectedInterest(null);
+    setQuizAnswer(null);
+    setShowResult(false);
+  }
+
   function handleInterestClick(id: string) {
     setSelectedInterest(id);
     setQuizAnswer(null);
     setShowResult(false);
-    // Scroll the demo into view on mobile
     setTimeout(() => demoRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
   }
 
@@ -130,7 +204,7 @@ export default function Landing() {
 
       {/* ── Hero ── */}
       <section style={{
-        padding: '5rem 0 4rem',
+        padding: '4rem 0 1.5rem',
         textAlign: 'center',
         background: 'linear-gradient(180deg, #eef2ff 0%, var(--background) 100%)',
       }}>
@@ -159,79 +233,14 @@ export default function Landing() {
             Learn faster.<br />
             <span style={{ color: 'var(--primary)' }}>Earn your time back.</span>
           </h1>
-
-          <p className="hero-subtitle" style={{
-            fontSize: '1.25rem',
-            color: 'var(--text-light)',
-            maxWidth: '580px',
-            margin: '0 auto 2rem',
-            lineHeight: 1.6,
-          }}>
-            An AI tutor that teaches through <em>your</em> interests.
-            Master concepts at your own pace, prove it with quizzes,
-            and get your free time back.
-          </p>
-
-          <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <button
-              onClick={() => {
-                const el = document.getElementById('try-it');
-                el?.scrollIntoView({ behavior: 'smooth' });
-              }}
-              className="btn btn-primary"
-              style={{ fontSize: '1.125rem', padding: '0.875rem 2rem' }}
-            >
-              See how it works
-            </button>
-            <Link
-              to="/signup?role=student"
-              className="btn btn-outline"
-              style={{ fontSize: '1.125rem', padding: '0.875rem 2rem' }}
-            >
-              Start learning free
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Philosophy strip ── */}
-      <section style={{
-        padding: '2.5rem 0',
-        background: 'var(--surface)',
-        borderTop: '1px solid var(--border)',
-        borderBottom: '1px solid var(--border)',
-      }}>
-        <div className="container" style={{
-          display: 'flex',
-          justifyContent: 'center',
-          gap: '3rem',
-          flexWrap: 'wrap',
-          textAlign: 'center',
-        }}>
-          {[
-            { num: '1', title: 'Tell us what you love', desc: 'Baseball, Minecraft, cooking — anything.' },
-            { num: '2', title: 'AI builds YOUR lesson', desc: 'Same math, framed in your world.' },
-            { num: '3', title: 'Prove mastery, earn time', desc: 'Pass the quiz, get your time back.' },
-          ].map(({ num, title, desc }) => (
-            <div key={num} style={{ maxWidth: '240px' }}>
-              <div style={{
-                width: '36px', height: '36px', borderRadius: '50%',
-                background: 'var(--primary)', color: 'white',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontWeight: 700, fontSize: '0.875rem', margin: '0 auto 0.5rem',
-              }}>{num}</div>
-              <div style={{ fontWeight: 600, marginBottom: '0.25rem' }}>{title}</div>
-              <div style={{ fontSize: '0.875rem', color: 'var(--text-light)' }}>{desc}</div>
-            </div>
-          ))}
         </div>
       </section>
 
       {/* ── Interactive Demo ── */}
-      <section id="try-it" style={{ padding: '4rem 0' }}>
+      <section id="try-it" style={{ padding: '2rem 0 3rem' }}>
         <div className="container" style={{ maxWidth: '800px' }}>
           <h2 style={{
-            fontSize: '2rem',
+            fontSize: '1.75rem',
             fontWeight: 700,
             textAlign: 'center',
             marginBottom: '0.5rem',
@@ -241,48 +250,92 @@ export default function Landing() {
           <p style={{
             textAlign: 'center',
             color: 'var(--text-light)',
-            marginBottom: '2rem',
+            marginBottom: '1.5rem',
             fontSize: '1.0625rem',
           }}>
-            Pick something you're into. Watch the lesson change.
+            Pick a subject and something you love. Watch the lesson change.
           </p>
 
-          {/* Interest picker */}
-          <div style={{
-            display: 'flex',
-            justifyContent: 'center',
-            gap: '0.75rem',
-            marginBottom: '2rem',
-            flexWrap: 'wrap',
-          }}>
-            {DEMO_INTERESTS.map(interest => (
-              <button
-                key={interest.id}
-                onClick={() => handleInterestClick(interest.id)}
-                style={{
-                  padding: '0.625rem 1.25rem',
-                  borderRadius: '9999px',
-                  border: selectedInterest === interest.id
-                    ? '2px solid var(--primary)'
-                    : '2px solid var(--border)',
-                  background: selectedInterest === interest.id
-                    ? 'rgba(79,70,229,0.08)'
-                    : 'var(--surface)',
-                  color: selectedInterest === interest.id ? 'var(--primary)' : 'var(--text)',
-                  fontWeight: selectedInterest === interest.id ? 600 : 400,
-                  fontSize: '1rem',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                }}
-              >
-                {interest.emoji} {interest.label}
-              </button>
-            ))}
+          {/* Subject picker */}
+          <div style={{ textAlign: 'center', marginBottom: '0.5rem' }}>
+            <div style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--text-light)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.5rem' }}>
+              What do you want to learn?
+            </div>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'center',
+              gap: '0.625rem',
+              marginBottom: '1.25rem',
+              flexWrap: 'wrap',
+            }}>
+              {DEMO_SUBJECTS.map(subject => (
+                <button
+                  key={subject.id}
+                  onClick={() => handleSubjectClick(subject.id)}
+                  style={{
+                    padding: '0.5rem 1.25rem',
+                    borderRadius: '9999px',
+                    border: selectedSubject === subject.id
+                      ? '2px solid var(--primary)'
+                      : '2px solid var(--border)',
+                    background: selectedSubject === subject.id
+                      ? 'rgba(79,70,229,0.08)'
+                      : 'var(--surface)',
+                    color: selectedSubject === subject.id ? 'var(--primary)' : 'var(--text)',
+                    fontWeight: selectedSubject === subject.id ? 600 : 400,
+                    fontSize: '0.9375rem',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                  }}
+                >
+                  {subject.label}
+                </button>
+              ))}
+            </div>
           </div>
+
+          {/* Interest picker — appears after subject is chosen */}
+          {selectedSubject && (
+            <div style={{ textAlign: 'center', marginBottom: '1.5rem', animation: 'fadeIn 0.3s ease' }}>
+              <div style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--text-light)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.5rem' }}>
+                Now pick something you love
+              </div>
+              <div style={{
+                display: 'flex',
+                justifyContent: 'center',
+                gap: '0.75rem',
+                flexWrap: 'wrap',
+              }}>
+                {DEMO_INTERESTS.map(interest => (
+                  <button
+                    key={interest.id}
+                    onClick={() => handleInterestClick(interest.id)}
+                    style={{
+                      padding: '0.625rem 1.25rem',
+                      borderRadius: '9999px',
+                      border: selectedInterest === interest.id
+                        ? '2px solid var(--primary)'
+                        : '2px solid var(--border)',
+                      background: selectedInterest === interest.id
+                        ? 'rgba(79,70,229,0.08)'
+                        : 'var(--surface)',
+                      color: selectedInterest === interest.id ? 'var(--primary)' : 'var(--text)',
+                      fontWeight: selectedInterest === interest.id ? 600 : 400,
+                      fontSize: '1rem',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                    }}
+                  >
+                    {interest.emoji} {interest.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Lesson card */}
           <div ref={demoRef}>
-            {!selectedInterest ? (
+            {!demo ? (
               <div className="card" style={{
                 textAlign: 'center',
                 padding: '3rem 2rem',
@@ -294,7 +347,10 @@ export default function Landing() {
                   👆
                 </div>
                 <p style={{ fontSize: '1.0625rem' }}>
-                  Pick an interest above to see how we teach <strong style={{ color: 'var(--text)' }}>{DEMO_CONCEPT}</strong> through something you already love.
+                  {!selectedSubject
+                    ? 'Pick a subject above to get started.'
+                    : <>Pick an interest to see how we teach <strong style={{ color: 'var(--text)' }}>{activeSubject?.label}</strong> through something you already love.</>
+                  }
                 </p>
               </div>
             ) : demo && (
@@ -319,9 +375,9 @@ export default function Landing() {
                       letterSpacing: '0.05em',
                       marginBottom: '0.125rem',
                     }}>
-                      Mathematics &middot; Grade 5
+                      {activeSubject?.grade}
                     </div>
-                    <h3 style={{ fontSize: '1.375rem', fontWeight: 700 }}>{DEMO_CONCEPT}</h3>
+                    <h3 style={{ fontSize: '1.375rem', fontWeight: 700 }}>{activeSubject?.label}</h3>
                   </div>
                   <span style={{
                     padding: '0.25rem 0.75rem',
@@ -476,6 +532,67 @@ export default function Landing() {
               </div>
             </div>
           )}
+        </div>
+      </section>
+
+      {/* ── Subtext ── */}
+      <section style={{
+        padding: '3rem 0 1.5rem',
+        textAlign: 'center',
+      }}>
+        <div className="container" style={{ maxWidth: '600px' }}>
+          <p className="hero-subtitle" style={{
+            fontSize: '1.25rem',
+            color: 'var(--text-light)',
+            lineHeight: 1.6,
+            margin: '0 auto 1.5rem',
+          }}>
+            An AI tutor that teaches through <em>your</em> interests.
+            Master concepts at your own pace, prove it with quizzes,
+            and get your free time back.
+          </p>
+          <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <Link
+              to="/signup?role=student"
+              className="btn btn-primary"
+              style={{ fontSize: '1.125rem', padding: '0.875rem 2rem' }}
+            >
+              Start learning free
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Philosophy strip (1-2-3) ── */}
+      <section style={{
+        padding: '2.5rem 0',
+        background: 'var(--surface)',
+        borderTop: '1px solid var(--border)',
+        borderBottom: '1px solid var(--border)',
+      }}>
+        <div className="container" style={{
+          display: 'flex',
+          justifyContent: 'center',
+          gap: '3rem',
+          flexWrap: 'wrap',
+          textAlign: 'center',
+        }}>
+          {[
+            { num: '1', title: 'Tell us what you love', desc: 'Baseball, Minecraft, cooking — anything.' },
+            { num: '2', title: 'AI builds YOUR lesson', desc: 'Same concept, framed in your world.' },
+            { num: '3', title: 'Prove mastery, earn time', desc: 'Pass the quiz, get your time back.' },
+          ].map(({ num, title, desc }) => (
+            <div key={num} style={{ maxWidth: '240px' }}>
+              <div style={{
+                width: '36px', height: '36px', borderRadius: '50%',
+                background: 'var(--primary)', color: 'white',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontWeight: 700, fontSize: '0.875rem', margin: '0 auto 0.5rem',
+              }}>{num}</div>
+              <div style={{ fontWeight: 600, marginBottom: '0.25rem' }}>{title}</div>
+              <div style={{ fontSize: '0.875rem', color: 'var(--text-light)' }}>{desc}</div>
+            </div>
+          ))}
         </div>
       </section>
 
