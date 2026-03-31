@@ -45,6 +45,25 @@ const TUTOR_LEVELS = [
 ];
 type TutorLevel = typeof TUTOR_LEVELS[number]['id'];
 
+// Fire-and-forget event tracking for timeback / waste meter
+function trackEvent(
+  token: string | null,
+  subject: string,
+  conceptId: string,
+  eventType: string,
+  payload?: Record<string, unknown>
+) {
+  if (!token) return;
+  fetch('/api/progress/events', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ subject, conceptId, eventType, payload }),
+  }).catch(() => {/* non-critical */});
+}
+
 export default function Learn() {
   const { subject, conceptId } = useParams<{ subject: string; conceptId?: string }>();
   const { token } = useAuth();
@@ -134,6 +153,8 @@ export default function Learn() {
       // Concept already has lesson content — show it
       setShowIntro(true);
       setGeneratingLesson(false);
+      // Track lesson start
+      if (subject) trackEvent(token, subject, selectedConcept.id, 'lesson_start');
     } else if (selectedConcept) {
       // Concept is a stub — generate lesson on-demand
       setShowIntro(true);
@@ -199,6 +220,8 @@ export default function Learn() {
       setConcepts(concepts.map((c) =>
         c.id === selectedConcept.id ? { ...c, masteryScore: score, completed: passed } : c
       ));
+      // Track quiz completion
+      if (subject) trackEvent(token, subject, selectedConcept.id, 'quiz_complete', { score, passed });
     }
 
     if (passed) {
@@ -302,7 +325,11 @@ export default function Learn() {
         {/* Right: Take Quiz */}
         {selectedConcept && !showQuiz && (
           <button
-            onClick={() => setShowQuiz(true)}
+            onClick={() => {
+              // Track lesson end before transitioning to quiz
+              if (subject) trackEvent(token, subject, selectedConcept.id, 'lesson_end');
+              setShowQuiz(true);
+            }}
             className="btn btn-secondary"
             style={{ padding: '0.4rem 0.875rem', fontSize: '0.875rem', flexShrink: 0 }}
           >

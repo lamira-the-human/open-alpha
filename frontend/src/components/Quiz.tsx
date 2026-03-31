@@ -55,6 +55,15 @@ export default function Quiz({ subject, conceptId, conceptName, onComplete, onCa
 
       if (data.questions && data.questions.length > 0) {
         setQuestions(data.questions);
+        // Track quiz start
+        fetch('/api/progress/events', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ subject, conceptId, eventType: 'quiz_start' }),
+        }).catch(() => {/* non-critical */});
       } else {
         throw new Error('No questions received');
       }
@@ -86,14 +95,38 @@ export default function Quiz({ subject, conceptId, conceptName, onComplete, onCa
     }
   }
 
+  const [questionStartTime, setQuestionStartTime] = useState<number>(Date.now());
+
+  // Reset timer when moving to a new question
+  useEffect(() => {
+    setQuestionStartTime(Date.now());
+  }, [currentIndex]);
+
   function handleAnswer(answer: string) {
     if (showExplanation) return;
     setSelectedAnswer(answer);
     setShowExplanation(true);
 
-    if (answer === questions[currentIndex].correctAnswer) {
+    const correct = answer === questions[currentIndex].correctAnswer;
+    if (correct) {
       setCorrectCount((prev) => prev + 1);
     }
+
+    // Track each answer for waste meter (rapid guess detection)
+    const responseTimeMs = Date.now() - questionStartTime;
+    fetch('/api/progress/events', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        subject,
+        conceptId,
+        eventType: 'quiz_answer',
+        payload: { correct, responseTimeMs, questionIndex: currentIndex },
+      }),
+    }).catch(() => {/* non-critical */});
   }
 
   function handleNext() {

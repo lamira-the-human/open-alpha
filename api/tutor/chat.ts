@@ -89,6 +89,13 @@ export async function POST(request: Request) {
       .map(p => `${p.concept_id}: ${p.mastery_score}%`)
       .join(', ') || 'No prior progress';
 
+    // Fetch student interest graph for personalized tutoring
+    const interestResult = await executeSql<{ category: string; value: string }>(
+      'SELECT category, value FROM user_interests WHERE user_id = $1 ORDER BY weight DESC',
+      [auth.userId]
+    );
+    const interests = interestResult.rows;
+
     const workedExamplesText = concept.workedExamples
       ?.map((ex, i) =>
         `Example ${i + 1}: ${ex.problem}\n${ex.steps.map((s, j) => `  Step ${j + 1}: ${s}`).join('\n')}\nAnswer: ${ex.answer}`
@@ -105,6 +112,7 @@ export async function POST(request: Request) {
       workedExamplesText,
       whyItMatters: concept.whyItMatters,
       explanationLevelOverride: explanationLevel,
+      interests: interests.length > 0 ? interests : undefined,
     };
 
     const aiResponse = await chatWithTutor(messages, context);
