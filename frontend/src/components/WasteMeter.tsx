@@ -5,7 +5,7 @@ interface Props {
   idleTimeouts: number;
 }
 
-export default function WasteMeter({ wasteScore, focusScore, rapidGuessCount, idleTimeouts }: Props) {
+export default function WasteMeter({ focusScore, rapidGuessCount, idleTimeouts }: Props) {
   // Color gradient from green (focused) to red (waste)
   const getColor = (focus: number) => {
     if (focus >= 80) return 'var(--success)';
