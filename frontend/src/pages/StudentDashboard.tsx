@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../App';
 import Spinner from '../components/Spinner';
 import ErrorAlert from '../components/ErrorAlert';
+import TimebackDashboard from '../components/TimebackDashboard';
+import InterestSetup from '../components/InterestSetup';
 
 interface SubjectSummary {
   subjectId: string;
@@ -49,6 +51,8 @@ export default function StudentDashboard() {
   const [error, setError] = useState<Error | null>(null);
   const [inviteCode, setInviteCode] = useState<string | null>(null);
   const [generatingCode, setGeneratingCode] = useState(false);
+  const [showInterestSetup, setShowInterestSetup] = useState(false);
+  const [hasInterests, setHasInterests] = useState<boolean | null>(null);
 
   async function fetchData() {
     setError(null);
@@ -82,6 +86,21 @@ export default function StudentDashboard() {
       setRecentActivity(activityData.recentProgress || []);
       setReviewQueue(reviewData.review || []);
       setGamification(gamData && gamData.xp !== undefined ? gamData : null);
+
+      // Check if student has set up interests
+      try {
+        const interestRes = await fetch('/api/interests', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (interestRes.ok) {
+          const interestData = await interestRes.json();
+          const has = interestData.interests && interestData.interests.length > 0;
+          setHasInterests(has);
+          if (!has) setShowInterestSetup(true);
+        }
+      } catch {
+        // Non-critical
+      }
     } catch (err) {
       console.error('Failed to fetch dashboard data:', err);
       setError(err instanceof Error ? err : new Error('Failed to load dashboard'));
@@ -200,6 +219,41 @@ export default function StudentDashboard() {
                 }} />
               </div>
             </div>
+          </div>
+        )}
+
+        {/* Timeback Dashboard */}
+        <section style={{ marginBottom: '2rem' }}>
+          <TimebackDashboard />
+        </section>
+
+        {/* Interest Setup Prompt */}
+        {showInterestSetup && (
+          <section style={{ marginBottom: '2rem' }}>
+            <InterestSetup
+              onComplete={() => {
+                setShowInterestSetup(false);
+                setHasInterests(true);
+              }}
+            />
+          </section>
+        )}
+
+        {/* Edit interests link if already set */}
+        {hasInterests && !showInterestSetup && (
+          <div style={{ marginBottom: '1rem', textAlign: 'right' }}>
+            <button
+              onClick={() => setShowInterestSetup(true)}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: 'var(--primary)',
+                fontSize: '0.8125rem',
+                cursor: 'pointer',
+              }}
+            >
+              Edit my interests
+            </button>
           </div>
         )}
 

@@ -143,6 +143,28 @@ export async function initializeSchema(): Promise<void> {
       UNIQUE(subject_id, concept_id)
     );
 
+    -- Student interest profiles (for personalized lesson generation)
+    CREATE TABLE IF NOT EXISTS user_interests (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER REFERENCES users(id),
+      category TEXT NOT NULL CHECK (category IN ('hobby', 'sport', 'media', 'hero', 'career', 'other')),
+      value TEXT NOT NULL,
+      weight REAL DEFAULT 1.0,
+      created_at TEXT DEFAULT (datetime('now')),
+      UNIQUE(user_id, category, value)
+    );
+
+    -- Learning events for waste meter / timeback tracking
+    CREATE TABLE IF NOT EXISTS learning_events (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      student_id INTEGER REFERENCES users(id),
+      subject TEXT NOT NULL,
+      concept_id TEXT NOT NULL,
+      event_type TEXT NOT NULL CHECK (event_type IN ('lesson_start', 'lesson_end', 'quiz_start', 'quiz_answer', 'quiz_complete', 'hint_request', 'idle_timeout')),
+      payload TEXT DEFAULT '{}',
+      created_at TEXT DEFAULT (datetime('now'))
+    );
+
     -- Guest sessions for demo mode (no account required)
     CREATE TABLE IF NOT EXISTS guest_sessions (
       id TEXT PRIMARY KEY,
@@ -216,6 +238,24 @@ export async function initializeSchema(): Promise<void> {
       created_at TEXT DEFAULT (datetime('now')),
       updated_at TEXT DEFAULT (datetime('now')),
       UNIQUE(subject_id, concept_id)
+    )`,
+    `CREATE TABLE IF NOT EXISTS user_interests (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER REFERENCES users(id),
+      category TEXT NOT NULL CHECK (category IN ('hobby', 'sport', 'media', 'hero', 'career', 'other')),
+      value TEXT NOT NULL,
+      weight REAL DEFAULT 1.0,
+      created_at TEXT DEFAULT (datetime('now')),
+      UNIQUE(user_id, category, value)
+    )`,
+    `CREATE TABLE IF NOT EXISTS learning_events (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      student_id INTEGER REFERENCES users(id),
+      subject TEXT NOT NULL,
+      concept_id TEXT NOT NULL,
+      event_type TEXT NOT NULL CHECK (event_type IN ('lesson_start', 'lesson_end', 'quiz_start', 'quiz_answer', 'quiz_complete', 'hint_request', 'idle_timeout')),
+      payload TEXT DEFAULT '{}',
+      created_at TEXT DEFAULT (datetime('now'))
     )`,
   ];
   for (const sql of migrations) {

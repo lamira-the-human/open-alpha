@@ -37,6 +37,8 @@ export interface TutorContext {
   whyItMatters?: string;
   // Optional override for explanation depth level
   explanationLevelOverride?: 'eli5' | 'standard' | 'expert';
+  // Student interest graph for personalized analogies
+  interests?: Array<{ category: string; value: string }>;
 }
 
 export interface CoachContext {
@@ -79,6 +81,11 @@ ${context.conceptDescription}`;
     prompt += `\n\nWhy this concept matters: ${context.whyItMatters}`;
   }
 
+  if (context.interests && context.interests.length > 0) {
+    const interestList = context.interests.map(i => `${i.category}: ${i.value}`).join(', ');
+    prompt += `\n\nStudent's personal interests: ${interestList}`;
+  }
+
   prompt += `\n\nStudent's learning history: ${context.progressContext}
 
 Guidelines:
@@ -90,7 +97,9 @@ ${languageGuideline}
 - Be patient and supportive${hasStoredContent ? `
 - Use the provided explanation and examples as your source of truth for this concept
 - Do not introduce definitions or examples that contradict the stored content` : `
-- Use examples relevant to the student's background`}
+- Use examples relevant to the student's background`}${context.interests && context.interests.length > 0 ? `
+- IMPORTANT: Weave the student's personal interests into analogies and examples. If they love baseball, teach physics via pitch trajectories. If they love Minecraft, use block-based math examples. Make the concept click by connecting it to what they already care about.
+- The core facts, formulas, and definitions must remain accurate — only the narrative framing and analogies should be personalized.` : ''}
 
 When generating practice problems:
 - Match the difficulty to grade ${context.gradeLevel}
@@ -208,6 +217,8 @@ interface LessonGenerationContext {
   level: number;
   prerequisites: string[];
   gradeBand?: string;
+  // Student interests for personalized generation
+  interests?: Array<{ category: string; value: string }>;
 }
 
 function getLessonGenerationPrompt(ctx: LessonGenerationContext): string {
@@ -215,6 +226,11 @@ function getLessonGenerationPrompt(ctx: LessonGenerationContext): string {
   const audienceNote = isAdult
     ? 'This is an adult learner. Use practical, real-world framing. Include both childVersion (a simple analogy a 5-year-old could grasp) and adultVersion (practical real-world application).'
     : `This is for approximately grade level ${ctx.level}. Include both childVersion (for younger learners) and adultVersion (for older/adult learners) in the explanation.`;
+
+  const interestNote = ctx.interests && ctx.interests.length > 0
+    ? `\nStudent interests: ${ctx.interests.map(i => `${i.category}: ${i.value}`).join(', ')}
+IMPORTANT: Personalize all analogies, real-world examples, and narrative framing using the student's interests. If they like baseball, frame physics in terms of pitches and home runs. If they like cooking, use recipe-based math examples. Keep core facts, formulas, and definitions accurate — only personalize the teaching narrative.`
+    : '';
 
   return `Generate a complete lesson module for the following concept. Return ONLY valid JSON matching the schema below — no markdown, no commentary.
 
@@ -224,7 +240,7 @@ Description: ${ctx.conceptDescription}
 Level: ${ctx.level}
 Prerequisites: ${ctx.prerequisites.length > 0 ? ctx.prerequisites.join(', ') : 'None'}
 
-${audienceNote}
+${audienceNote}${interestNote}
 
 Required JSON schema:
 {
@@ -279,12 +295,30 @@ export async function generateQuizQuestions(
   subject: string,
   conceptName: string,
   gradeLevel: number,
-  count: number = 5
+  count: number = 5,
+  interests?: Array<{ category: string; value: string }>,
+  recentAccuracy?: number
 ): Promise<string> {
   const openai = getClient();
 
-  const prompt = `Generate ${count} multiple-choice quiz questions for a grade ${gradeLevel} student on the topic: ${conceptName} (${subject}).
+  // Target 80-85% success rate (zone of proximal development)
+  let difficultyNote = '';
+  if (recentAccuracy !== undefined) {
+    if (recentAccuracy > 90) {
+      difficultyNote = '\nThe student has been scoring above 90%. Increase difficulty slightly — add one or two questions that require deeper reasoning or multi-step problem solving.';
+    } else if (recentAccuracy < 70) {
+      difficultyNote = '\nThe student has been scoring below 70%. Reduce difficulty slightly — focus on core concept recognition with clearer answer choices. Include one straightforward "confidence builder" question.';
+    } else {
+      difficultyNote = '\nThe student is in the target zone (80-85% accuracy). Maintain this difficulty level.';
+    }
+  }
 
+  const interestNote = interests && interests.length > 0
+    ? `\nFrame question scenarios using the student's interests: ${interests.map(i => `${i.value} (${i.category})`).join(', ')}. For example, if they like soccer, ask about trajectory angles using a free kick scenario. Keep the academic rigor identical — only change the narrative wrapper.`
+    : '';
+
+  const prompt = `Generate ${count} multiple-choice quiz questions for a grade ${gradeLevel} student on the topic: ${conceptName} (${subject}).
+${difficultyNote}${interestNote}
 Format each question as JSON:
 {
   "questions": [

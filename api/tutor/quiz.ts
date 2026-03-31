@@ -40,11 +40,29 @@ export async function POST(request: Request) {
       return Response.json({ questions });
     }
 
+    // Fetch student interests for personalized quiz framing
+    const interestResult = await executeSql<{ category: string; value: string }>(
+      'SELECT category, value FROM user_interests WHERE user_id = $1 ORDER BY weight DESC',
+      [auth.userId]
+    );
+    const interests = interestResult.rows.length > 0 ? interestResult.rows : undefined;
+
+    // Get recent accuracy for adaptive difficulty targeting 80-85% success rate
+    const recentResult = await executeSql<{ mastery_score: number }>(
+      'SELECT mastery_score FROM progress WHERE student_id = $1 ORDER BY last_attempt_at DESC LIMIT 5',
+      [auth.userId]
+    );
+    const recentAccuracy = recentResult.rows.length > 0
+      ? Math.round(recentResult.rows.reduce((sum, p) => sum + p.mastery_score, 0) / recentResult.rows.length)
+      : undefined;
+
     const quizJson = await generateQuizQuestions(
       subject,
       concept.name,
       userResult.rows[0].grade_level,
-      5
+      5,
+      interests,
+      recentAccuracy
     );
 
     // Extract JSON from markdown code blocks if present
