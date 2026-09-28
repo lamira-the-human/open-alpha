@@ -12,6 +12,7 @@ import tutorRoutes from './routes/tutor.js';
 import coachRoutes from './routes/coach.js';
 import progressRoutes from './routes/progress.js';
 import parentRoutes from './routes/parent.js';
+import { handleFractionPractice } from './services/fraction-handler.js';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -23,6 +24,19 @@ app.use(express.json());
 // Health check
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+app.all('/api/fractions/practice', async (req, res, next) => {
+  try {
+    const response = await handleFractionPractice(new Request('http://localhost/api/fractions/practice', {
+      method: req.method,
+      ...(req.method !== 'GET' && req.method !== 'HEAD' ? { body: JSON.stringify(req.body) } : {}),
+    }));
+    response.headers.forEach((value, name) => res.setHeader(name, value));
+    res.status(response.status).send(await response.text());
+  } catch (error) {
+    next(error);
+  }
 });
 
 // API Routes

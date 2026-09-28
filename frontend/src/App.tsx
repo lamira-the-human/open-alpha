@@ -14,6 +14,7 @@ import Learn from './pages/Learn';
 import ParentDashboard from './pages/ParentDashboard';
 import ParentCoach from './pages/ParentCoach';
 import Settings from './pages/Settings';
+import Fractions from './pages/Fractions';
 
 interface User {
   id: number;
@@ -115,6 +116,7 @@ function App() {
         <AuthProvider>
           <Header />
           <Routes>
+            <Route path="/fractions" element={<Fractions />} />
           <Route path="/" element={<Landing />} />
           <Route path="/demo" element={<Demo />} />
           <Route path="/login" element={<Login />} />

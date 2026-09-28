@@ -1,0 +1,52 @@
+.fraction-page { min-height: 100vh; background: #f3f1eb; color: #243932; padding: 1.5rem 1rem 4rem; }
+.fraction-nav { max-width: 980px; margin: 0 auto 3rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.fraction-nav a { font-weight: 750; color: #243932; font-size: 1.25rem; }
+.fraction-nav > span, .fraction-eyebrow { font-size: .75rem; letter-spacing: .12em; font-weight: 700; color: #52645b; }
+.fraction-shell { max-width: 740px; margin: auto; }
+.fraction-shell > .fraction-eyebrow { margin-bottom: 1rem; }
+.fraction-card { background: #fffefb; border: 1px solid #d7ded5; padding: clamp(1.25rem, 4vw, 3rem); border-radius: 1.25rem; box-shadow: 0 12px 40px #24393208; }
+.fraction-card h1 { font-size: clamp(1.8rem, 4vw, 2.65rem); letter-spacing: -.04em; line-height: 1.15; margin: .6rem 0 1.4rem; }
+.fraction-card h1:focus { outline: none; }
+.fraction-card p { margin: 1rem 0; }
+.fraction-card .fraction-lead { font-size: 1.15rem; line-height: 1.7; }
+.fraction-card .btn { margin-top: 1rem; }
+.fraction-card .btn-primary { background: #245a43; color: white; }
+.fraction-card .btn-primary:hover { background: #16442f; }
+.fraction-page button:disabled { opacity: .55; cursor: not-allowed; }
+.fraction-page :is(button, input, a):focus-visible { outline: 3px solid #a26b13; outline-offset: 4px; }
+.fraction-skills, .fraction-results { list-style: none; margin: 1.5rem 0; padding: 0; }
+.fraction-skills li, .fraction-results li { padding: .9rem 0; border-bottom: 1px solid #e2e7df; }
+.fraction-skills span, .fraction-results span { display: block; color: #52645b; }
+.fraction-card .fraction-note { font-size: .85rem; color: #52645b; }
+.fraction-progress { list-style: none; display: flex; gap: 1rem; margin: 0 0 1.5rem; font-size: .85rem; padding: 0; }
+.fraction-progress li { flex: 1; color: #52645b; }
+.fraction-progress span { display: inline-grid; place-items: center; width: 1.7rem; height: 1.7rem; border: 1px solid #819489; border-radius: 50%; margin-right: .4rem; }
+.fraction-progress [aria-current] { color: #16442f; font-weight: 700; }
+.fraction-progress [aria-current] span { background: #245a43; color: white; }
+.fraction-models { margin: 1.8rem 0; display: grid; gap: 1rem; }
+.fraction-models figure { margin: 0; }
+.fraction-models figcaption { font-weight: 700; margin-top: .3rem; }
+.fraction-bar { width: 100%; height: 48px; display: flex; border: 2px solid #245a43; border-radius: .35rem; overflow: hidden; }
+.fraction-bar span { flex: 1; background: #f3f1eb; border-right: 2px solid #245a43; }
+.fraction-bar span:last-child { border-right: none; }
+.fraction-bar span.selected { background: #367557; }
+.fraction-example { background: #edf3e9; padding: 1rem; border-radius: .5rem; }
+.fraction-answer { display: block; font-weight: 650; }
+.fraction-answer input { display: block; max-width: 240px; margin-top: .5rem; font-size: 1.2rem; }
+.fraction-choices { border: none; display: flex; flex-wrap: wrap; gap: .7rem; margin: 1rem 0; }
+.fraction-choices legend { margin-bottom: .6rem; font-weight: 650; }
+.fraction-choices label { display: flex; align-items: center; gap: .5rem; padding: .9rem; border: 1px solid #819489; border-radius: .5rem; cursor: pointer; }
+.fraction-choices strong { font-size: 1.3rem; }
+.fraction-feedback { margin-top: 1.4rem; padding: 1.2rem; background: #fff2d6; border-left: 4px solid #956521; border-radius: .3rem; }
+.fraction-feedback.correct { background: #eaf4e7; border-color: #245a43; }
+.fraction-feedback p { margin-bottom: 0; }
+.fraction-error { color: #9d2626; }
+.fraction-text-button { display: block; background: none; border: none; text-decoration: underline; color: #245a43; margin-top: 1.3rem; font-size: .95rem; padding: .5rem 0; }
+@media (max-width: 480px) {
+  .fraction-nav { margin-bottom: 2rem; }
+  .fraction-nav > span { font-size: .6rem; }
+  .fraction-progress { gap: .5rem; font-size: .75rem; }
+  .fraction-progress span { display: grid; margin-bottom: .3rem; }
+  .fraction-choices label { width: 100%; }
+  .fraction-card .btn { width: 100%; justify-content: center; }
+}
