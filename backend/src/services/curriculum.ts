@@ -92,7 +92,7 @@ export interface Subject {
 
 function loadSubjects(): Subject[] {
   const curriculumDir = join(__dirname, '..', '..', '..', 'curriculum');
-  const files = readdirSync(curriculumDir).filter(f => f.endsWith('.json') && f !== 'schema.json');
+  const files = readdirSync(curriculumDir).filter(f => f.endsWith('.json') && !f.includes('schema'));
 
   return files.map(file => {
     const raw = readFileSync(join(curriculumDir, file), 'utf-8');

@@ -171,6 +171,11 @@ export default function StudentDashboard() {
     <div style={{ minHeight: '100vh' }}>
       {/* Main Content */}
       <main className="container" style={{ padding: '2rem 1rem' }}>
+        <section className="card" style={{ marginBottom: '1.5rem' }}>
+          <h2>Make fractions click</h2>
+          <p>Three visual explanations. Three practice questions. Helpful feedback, without a timer.</p>
+          <Link to="/fractions" className="btn btn-primary" style={{ marginTop: '1rem' }}>Try Fraction Confidence</Link>
+        </section>
         <h2 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '1.5rem' }}>
           Welcome back{user?.displayName ? `, ${user.displayName}` : ''}!
         </h2>
